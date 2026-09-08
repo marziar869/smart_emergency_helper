@@ -133,31 +133,26 @@ Route::post('/provider/verification', function (Request $request) {
 
 })->name('provider.verification.submit');
 
+use App\Http\Controllers\PublicPageController;
+
 /* =====================================================
    PUBLIC PAGES
 ===================================================== */
 
-Route::get('/', fn() => view('home'))
+Route::get('/', [PublicPageController::class, 'home'])
     ->name('home');
 
-
-Route::get('/services', fn() => view('services'))
+Route::get('/services', [PublicPageController::class, 'services'])
     ->name('services');
 
-
-Route::get('/providers', fn() => view('providers'))
+Route::get('/providers', [PublicPageController::class, 'providers'])
     ->name('providers');
 
-
-Route::get(
-    '/providers/rapid-care-ambulance',
-    fn() => view('provider-details')
-)->name('providers.show');
-
+Route::get('/providers/{id}', [PublicPageController::class, 'providerDetails'])
+    ->name('providers.show');
 
 Route::get('/about', fn() => view('about'))
     ->name('about');
-
 
 Route::get('/contact', fn() => view('contact'))
     ->name('contact');
@@ -355,464 +350,38 @@ Route::get('/provider/verification', function () {
 })->name('provider.verification');
 
 
+use App\Http\Controllers\AdminDashboardController;
+
 /* =====================================================
-   ADMIN DASHBOARD
+   ADMIN DASHBOARD & PROVIDER VERIFICATION
 ===================================================== */
 
-Route::get('/admin/dashboard', function () {
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+    ->name('admin.dashboard');
 
-    if (
-        !session('demo_logged_in') ||
-        session('demo_role') !== 'admin'
-    ) {
+Route::get('/admin/provider-verification/{provider}', [AdminDashboardController::class, 'reviewVerification'])
+    ->name('admin.provider.verification.review');
 
-        return redirect()->route('login');
+Route::post('/admin/provider-verification/{provider}/approve', [AdminDashboardController::class, 'approveVerification'])
+    ->name('admin.provider.approve');
 
-    }
-
-
-    /*
-     * Newly registered provider applications
-     */
-
-    $providerApplications =
-        session(
-            'provider_applications',
-            []
-        );
-
-
-    return view(
-        'admin.dashboard',
-        [
-
-            'providerApplications' =>
-                $providerApplications,
-
-        ]
-    );
-
-})->name('admin.dashboard');
+Route::post('/admin/provider-verification/{provider}/reject', [AdminDashboardController::class, 'rejectVerification'])
+    ->name('admin.provider.reject');
 
 
 
 /* =====================================================
-   ADMIN PROVIDER VERIFICATION REVIEW
+   EMERGENCY FORM & RESULT
 ===================================================== */
 
-Route::get(
-    '/admin/provider-verification/{provider}',
-    function ($provider) {
+Route::get('/emergency-form', [EmergencyRequestController::class, 'create'])
+    ->name('emergency.form');
 
-        if (
-            !session('demo_logged_in') ||
-            session('demo_role') !== 'admin'
-        ) {
+Route::post('/emergency-form', [EmergencyRequestController::class, 'store'])
+    ->name('emergency.form.submit');
 
-            return redirect()
-                ->route('login');
-
-        }
-
-
-        /*
-         * Demo Provider Applications
-         */
-
-        $demoProviders = [
-
-            'PRV-1052' => [
-
-                'id' =>
-                    'PRV-1052',
-
-                'name' =>
-                    'Nurse Farzana Akter',
-
-                'category' =>
-                    'Home Nurse',
-
-                'phone' =>
-                    '+880 1712-345678',
-
-                'email' =>
-                    'farzana.akter@seh.com.bd',
-
-                'experience' =>
-                    '6 Years',
-
-                'area' =>
-                    'Dhanmondi',
-
-                'address' =>
-                    'Dhanmondi, Dhaka',
-
-                'created' =>
-                    '12 Aug 2026',
-
-                'submitted' =>
-                    'Today · 10:42 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-
-            'PRV-1053' => [
-
-                'id' =>
-                    'PRV-1053',
-
-                'name' =>
-                    'VoltFix Electricals',
-
-                'category' =>
-                    'Electrician',
-
-                'phone' =>
-                    '+880 1812-456789',
-
-                'email' =>
-                    'voltfix@seh.com.bd',
-
-                'experience' =>
-                    '9 Years',
-
-                'area' =>
-                    'Mirpur',
-
-                'address' =>
-                    'Mirpur, Dhaka',
-
-                'created' =>
-                    '13 Aug 2026',
-
-                'submitted' =>
-                    'Today · 11:15 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-
-            'PRV-1054' => [
-
-                'id' =>
-                    'PRV-1054',
-
-                'name' =>
-                    'Dhaka Emergency Ambulance',
-
-                'category' =>
-                    'Ambulance',
-
-                'phone' =>
-                    '+880 1912-567890',
-
-                'email' =>
-                    'dhaka.ambulance@seh.com.bd',
-
-                'experience' =>
-                    '8 Years',
-
-                'area' =>
-                    'Uttara',
-
-                'address' =>
-                    'Uttara, Dhaka',
-
-                'created' =>
-                    '14 Aug 2026',
-
-                'submitted' =>
-                    'Today · 11:48 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-        ];
-
-
-        /*
-         * Registered applications
-         */
-
-        $registeredApplications =
-            session(
-                'provider_applications',
-                []
-            );
-
-
-        /*
-         * Merge Demo + Registered
-         */
-
-        $allProviders =
-            array_merge(
-                $demoProviders,
-                $registeredApplications
-            );
-
-
-        /*
-         * Invalid Provider ID → 404
-         */
-
-        abort_unless(
-            isset($allProviders[$provider]),
-            404
-        );
-
-
-        return view(
-            'admin.provider-verification-review',
-            [
-
-                'providerId' =>
-                    $provider,
-
-                'provider' =>
-                    $allProviders[$provider],
-
-            ]
-        );
-
-    }
-)->name(
-    'admin.provider.verification.review'
-);
-
-
-
-/* =====================================================
-   EMERGENCY FORM
-===================================================== */
-
-Route::get('/emergency-form', function () {
-
-    return view('customer.emergency-form');
-
-})->name('emergency.form');
-
-
-Route::post('/emergency-form', function (Request $request) {
-
-    $data = $request->validate([
-
-        'service_group' => [
-            'required',
-            'in:Emergency,Technical,Home',
-        ],
-
-        'service_type' => [
-            'required',
-            'string',
-        ],
-
-        'priority' => [
-            'required',
-            'in:Critical,High,Medium,Normal',
-        ],
-
-        'area' => [
-            'required',
-            'string',
-        ],
-
-        'address' => [
-            'required',
-            'string',
-            'max:255',
-        ],
-
-        'description' => [
-            'required',
-            'string',
-            'max:1000',
-        ],
-
-    ]);
-
-
-    $providerPools = [
-
-        'Ambulance' => [
-            'Rapid Care Ambulance',
-            'Dhaka Emergency Ambulance',
-            'City Rescue Ambulance',
-        ],
-
-        'Blood Donor' => [
-            'LifeLine Blood Network',
-            'Dhaka Blood Support',
-            'Red Drop Donor Service',
-        ],
-
-        'Home Nurse' => [
-            'CarePlus Home Nursing',
-            'MediHome Nurse Service',
-            'SafeCare Nursing',
-        ],
-
-        'Electrician' => [
-            'VoltFix Electricals',
-            'PowerCare Electric',
-            'SparkPro Electrical Service',
-        ],
-
-        'Plumber' => [
-            'Dhaka Plumbing Care',
-            'PipeFix Services',
-            'AquaWorks Plumbing',
-        ],
-
-        'AC Technician' => [
-            'CoolCare AC Service',
-            'FrostFix Solutions',
-            'AirPro Technical',
-        ],
-
-        'Locksmith' => [
-            'QuickLock Dhaka',
-            'SecureKey Service',
-            'LockCare 24/7',
-        ],
-
-        'Cleaner' => [
-            'CleanNest Services',
-            'Dhaka Home Clean',
-            'SparkleCare Cleaning',
-        ],
-
-        'Carpenter' => [
-            'WoodCraft Home Service',
-            'Dhaka Carpenter Hub',
-            'FixWood Services',
-        ],
-
-    ];
-
-
-    $providers =
-        $providerPools[$data['service_type']]
-        ?? [
-            'Verified Provider One',
-            'Verified Provider Two',
-            'Verified Provider Three',
-        ];
-
-
-    $reference =
-        'REQ-' . random_int(100000, 999999);
-
-
-    $attempts = [
-
-        [
-            'provider' => $providers[0],
-            'status' => 'DECLINED',
-        ],
-
-        [
-            'provider' => $providers[1],
-            'status' => 'EXPIRED',
-        ],
-
-        [
-            'provider' => $providers[2],
-            'status' => 'ACCEPTED',
-        ],
-
-    ];
-
-
-    $emergency = [
-
-        'reference' =>
-            $reference,
-
-        'group' =>
-            $data['service_group'],
-
-        'service' =>
-            $data['service_type'],
-
-        'priority' =>
-            $data['priority'],
-
-        'area' =>
-            $data['area'],
-
-        'address' =>
-            $data['address'],
-
-        'description' =>
-            $data['description'],
-
-        'assigned_provider' =>
-            $providers[2],
-
-        'attempts' =>
-            $attempts,
-
-    ];
-
-
-    session([
-        'demo_emergency_request' =>
-            $emergency,
-    ]);
-
-
-    return redirect()->route(
-        'emergency.result'
-    );
-
-})->name('emergency.form.submit');
-
-
-/* =====================================================
-   EMERGENCY RESULT
-===================================================== */
-
-Route::get('/emergency-result', function () {
-
-    $emergency =
-        session('demo_emergency_request');
-
-
-    if (!$emergency) {
-
-        return redirect()->route(
-            'emergency.form'
-        );
-
-    }
-
-
-    return view(
-        'customer.emergency-result',
-        [
-            'emergency' =>
-                $emergency,
-        ]
-    );
-
-})->name('emergency.result');
+Route::get('/emergency-result', [EmergencyRequestController::class, 'showResult'])
+    ->name('emergency.result');
 
 /* =====================================================
    LOGOUT

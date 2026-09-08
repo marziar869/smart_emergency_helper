@@ -21,4 +21,12 @@ class ServiceCategory extends Model
             'is_active' => 'boolean',
         ];
     }
+
+    public function providerProfiles()
+    {
+        return $this->hasMany(
+            ProviderProfile::class,
+            'service_category_id'
+        );
+    }
 }

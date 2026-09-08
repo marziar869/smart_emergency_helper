@@ -34,22 +34,22 @@
             <div class="admin-live-stats">
 
                 <div class="admin-live-stat">
-                    <strong>42</strong>
+                    <strong>{{ $activeJobsCount ?? 0 }}</strong>
                     <span>ACTIVE JOBS</span>
                 </div>
 
                 <div class="admin-live-stat">
-                    <strong>128</strong>
+                    <strong>{{ $providersOnlineCount ?? 0 }}</strong>
                     <span>PROVIDERS ONLINE</span>
                 </div>
 
                 <div class="admin-live-stat">
-                    <strong>3,401</strong>
+                    <strong>{{ $completed30DCount ?? 0 }}</strong>
                     <span>COMPLETED (30D)</span>
                 </div>
 
                 <div class="admin-live-stat">
-                    <strong>7</strong>
+                    <strong>{{ $pendingVerifyCount ?? 0 }}</strong>
                     <span>PENDING VERIFY</span>
                 </div>
 
@@ -67,26 +67,26 @@
 
             <article class="admin-kpi-card">
                 <span>TOTAL USERS</span>
-                <strong>12,481</strong>
-                <small>+184 WK</small>
+                <strong>{{ $totalUsersCount ?? 0 }}</strong>
+                <small>REALTIME</small>
             </article>
 
             <article class="admin-kpi-card">
                 <span>TOTAL PROVIDERS</span>
-                <strong>1,208</strong>
-                <small>+22 WK</small>
+                <strong>{{ $totalProvidersCount ?? 0 }}</strong>
+                <small>REALTIME</small>
             </article>
 
             <article class="admin-kpi-card">
                 <span>COMPLETED REQUESTS</span>
-                <strong>48,209</strong>
-                <small>98.2% OK</small>
+                <strong>{{ $completedRequestsCount ?? 0 }}</strong>
+                <small>REALTIME</small>
             </article>
 
             <article class="admin-kpi-card">
                 <span>PENDING REQUESTS</span>
-                <strong>14</strong>
-                <small>CRITICAL: 3</small>
+                <strong>{{ $pendingRequestsCount ?? 0 }}</strong>
+                <small>REALTIME</small>
             </article>
 
         </section>
@@ -543,85 +543,23 @@
 
 
                 <div class="verify-list">
-
-    <div class="verify-row">
-
-        <div>
-            <strong>
-                Nurse Farzana Akter
-            </strong>
-
-            <p>
-                Home Nurse · Dhanmondi · 6 Years · Phone OTP Verified · Pending Admin Review
-            </p>
-
-            <small>
-                PRV-1052
-            </small>
-        </div>
-
-        <a
-            href="{{ route('admin.provider.verification.review', 'PRV-1052') }}"
-            class="admin-light-btn"
-        >
-            REVIEW
-        </a>
-
-    </div>
-
-
-    <div class="verify-row">
-
-        <div>
-            <strong>
-                VoltFix Electricals
-            </strong>
-
-            <p>
-                Electrician · Mirpur · 9 Years · Phone OTP Verified · Pending Admin Review
-            </p>
-
-            <small>
-                PRV-1053
-            </small>
-        </div>
-
-        <a
-            href="{{ route('admin.provider.verification.review', 'PRV-1053') }}"
-            class="admin-light-btn"
-        >
-            REVIEW
-        </a>
-
-    </div>
-
-
-    <div class="verify-row">
-
-        <div>
-            <strong>
-                Dhaka Emergency Ambulance
-            </strong>
-
-            <p>
-                Ambulance · Under Review
-            </p>
-
-            <small>
-                PRV-1054
-            </small>
-        </div>
-
-        <a
-            href="{{ route('admin.provider.verification.review', 'PRV-1054') }}"
-            class="admin-light-btn"
-        >
-            REVIEW
-        </a>
-
-    </div>
-
-</div>
+                    @forelse($providerApplications as $app)
+                        <div class="verify-row">
+                            <div>
+                                <strong>{{ $app->user->name ?? 'Provider' }}</strong>
+                                <p>
+                                    {{ $app->serviceCategory->name ?? 'Category' }} · {{ $app->area }} · {{ $app->experience_years }} Years · {{ $app->phone_verified ? 'Phone Verified' : 'Unverified' }} · Pending Admin Review
+                                </p>
+                                <small>PRV-{{ 1000 + $app->id }}</small>
+                            </div>
+                            <a href="{{ route('admin.provider.verification.review', $app->id) }}" class="admin-light-btn">
+                                REVIEW
+                            </a>
+                        </div>
+                    @empty
+                        <p style="padding: 15px; color: #888;">No pending provider verification applications at this time.</p>
+                    @endforelse
+                </div>
 
             </article>
 

@@ -76,28 +76,21 @@ class ProviderRequestController extends Controller
     */
 
     public function reject($id)
-{
+    {
+        if (auth()->user()->role !== 'provider') {
+            abort(403);
+        }
 
-    if(auth()->user()->role !== 'provider'){
-        abort(403);
+        $request = EmergencyRequest::findOrFail($id);
+
+        $request->status = 'rejected';
+        $request->save();
+
+        return back()->with(
+            'success',
+            'Request rejected.'
+        );
     }
-
-
-    $request = EmergencyRequest::findOrFail($id);
-
-    dd($request, auth()->id());
-
-    $request->status = 'rejected';
-
-    $request->save();
-
-
-    return back()->with(
-        'success',
-        'Request rejected.'
-    );
-
-}
 
 
 
