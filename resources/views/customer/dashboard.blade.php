@@ -92,13 +92,9 @@
     @endif
 
 
-    <form
-        method="POST"
-        action="{{ route('customer.emergency.store') }}"
-        id="customerEmergencyForm"
-    >
+    <form method="POST" action="{{ route('request.store') }}">
 
-        @csrf
+@csrf
 
 
         <!-- CATEGORY -->

@@ -51,22 +51,21 @@ class ProviderRequestController extends Controller
  public function accept($id)
 {
 
-    $request = EmergencyRequest::find($id);
+    $request = EmergencyRequest::findOrFail($id);
 
 
-    if(!$request){
-        return "Request not found";
-    }
+$request->update([
+
+'status'=>'accepted',
+
+'accepted_at'=>now(),
+
+'arrival_pin'=>random_int(1000,9999)
+
+]);
 
 
-    $request->assigned_provider_id = auth()->id();
-
-    $request->status = 'accepted';
-
-    $request->save();
-
-
-    return back();
+return back();
 
 }
     /*

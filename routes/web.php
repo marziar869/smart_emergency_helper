@@ -9,8 +9,7 @@ use App\Models\ServiceCategory;
 use App\Models\EmergencyRequest;
 use App\Http\Controllers\ProviderRegistrationController;
 use App\Http\Controllers\ProviderRequestController;
-
-
+use App\Http\Controllers\CustomerRequestController;
 
 
 
@@ -23,9 +22,7 @@ Route::get(
 )
 ->name('provider.requests');
 
-
-
-Route::post('/provider/request/accept/{id}',
+Route::post('/provider/request/{id}/accept',
 [
     ProviderRequestController::class,'accept'
 ])
@@ -38,6 +35,15 @@ Route::post(
 )
 ->name('provider.request.reject');
 
+Route::post('/request-emergency',
+[EmergencyRequestController::class,'store'])
+->name('request.store');
+
+
+Route::get(
+    '/customer/request/{id}',
+    [CustomerRequestController::class,'show']
+)->name('customer.request.show');
 
 
 Route::post(
@@ -55,12 +61,6 @@ Route::get('/register/provider', [ProviderRegistrationController::class, 'create
 Route::post('/register/provider', [ProviderRegistrationController::class, 'store'])
     ->name('provider.register.submit');
 
-
-/*
-|--------------------------------------------------------------------------
-| ADD THIS HERE
-|--------------------------------------------------------------------------
-*/
 
 /* =====================================================
    PROVIDER OTP VERIFICATION SUBMIT
@@ -264,6 +264,7 @@ Route::get('/customer/profile', function () {
     return view('customer.profile');
 
 })->name('customer.profile');
+
 Route::post(
     '/customer/emergency-request',
     [EmergencyRequestController::class, 'store']

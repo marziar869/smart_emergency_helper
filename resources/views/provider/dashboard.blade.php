@@ -181,21 +181,12 @@ PENDING ALERTS
 <div class="provider-alert-actions">
 
 
-<form method="POST"
-action="{{ route('provider.request.accept',$request->id) }}">
+<form method="POST" action="{{route('provider.accept',$request->id)}}">
 
 @csrf
 
-<p>
-Route:
-{{ route('provider.request.accept',$request->id) }}
-</p>
-
-<button type="submit"
-class="provider-accept-btn">
-
+<button type="submit">
 ACCEPT
-
 </button>
 
 </form>
