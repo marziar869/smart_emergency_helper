@@ -10,6 +10,9 @@ use App\Models\EmergencyRequest;
 use App\Http\Controllers\ProviderRegistrationController;
 use App\Http\Controllers\ProviderRequestController;
 use App\Http\Controllers\CustomerRequestController;
+use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\CustomerRequestStatusController;
+use App\Http\Controllers\EmergencyStatusController;
 
 
 
@@ -162,6 +165,26 @@ Route::get('/about', fn() => view('about'))
 Route::get('/contact', fn() => view('contact'))
     ->name('contact');
 
+    Route::get('/request-emergency', function () {
+
+    if(!auth()->check()){
+        return redirect()->route('login');
+    }
+
+    if(auth()->user()->role !== 'customer'){
+        abort(403,'Customer access only.');
+    }
+
+    $serviceCategories = ServiceCategory::where('is_active', true)
+        ->orderBy('group_name')
+        ->orderBy('name')
+        ->get();
+
+    return view('customer.emergency-form', [
+        'serviceCategories'=>$serviceCategories
+    ]);
+
+})->name('request.emergency');
 
 
 /* =====================================================
@@ -218,38 +241,23 @@ Route::post('/register/provider',
    CUSTOMER DASHBOARD
 ===================================================== */
 
-Route::get('/customer/dashboard', function () {
+Route::get('/customer/dashboard',
+[
+    CustomerDashboardController::class,'index'
+])
+->name('customer.dashboard');
 
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
+Route::post(
+'/customer/request/{id}/advance',
+[EmergencyStatusController::class,'advance']
+)
+->name('customer.request.advance');
 
-    if (auth()->user()->role !== 'customer') {
-        abort(403, 'Customer access only.');
-    }
-
-    $serviceCategories = ServiceCategory::where('is_active', true)
-        ->orderBy('group_name')
-        ->orderBy('name')
-        ->get();
-
-    $activeRequest = EmergencyRequest::where(
-        'customer_id',
-        auth()->id()
-    )
-        ->whereNotIn('status', [
-            'completed',
-            'cancelled'
-        ])
-        ->latest()
-        ->first();
-
-    return view('customer.dashboard', [
-        'serviceCategories' => $serviceCategories,
-        'activeRequest' => $activeRequest,
-    ]);
-
-})->name('customer.dashboard');
+Route::post(
+'/customer/request/{id}/reset',
+[EmergencyStatusController::class,'reset']
+)
+->name('customer.request.reset');
 
 Route::get('/customer/profile', function () {
 
@@ -269,7 +277,15 @@ Route::post(
     '/customer/emergency-request',
     [EmergencyRequestController::class, 'store']
 )->name('customer.emergency.store');
+Route::post('/customer/request/{id}/reset',
+[CustomerRequestStatusController::class,'reset']
+)->name('customer.request.reset');
 
+
+Route::post(
+'/customer/request/{id}/advance',
+[CustomerRequestStatusController::class,'advance']
+)->name('customer.request.advance');
 /* =====================================================
    PROVIDER DASHBOARD
 ===================================================== */
@@ -289,7 +305,6 @@ Route::get('/provider/dashboard', function () {
     $requests = EmergencyRequest::where('status','pending')
         ->whereNull('assigned_provider_id')
         ->get();
-
 
 
     // Accepted active job
@@ -603,7 +618,7 @@ Route::get(
    EMERGENCY FORM
 ===================================================== */
 
-Route::get('/emergency-form', function () {
+/*Route::get('/emergency-form', function () {
 
     return view('customer.emergency-form');
 
@@ -784,7 +799,7 @@ Route::post('/emergency-form', function (Request $request) {
     );
 
 })->name('emergency.form.submit');
-
+*/
 
 /* =====================================================
    EMERGENCY RESULT

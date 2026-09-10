@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ServicePhoto;
+
 
 class EmergencyRequest extends Model
 {
@@ -55,6 +57,10 @@ class EmergencyRequest extends Model
         'completion_pin_verified_at' => 'datetime',
     ];
 
+    public function photos()
+{
+    return $this->hasMany(ServicePhoto::class);
+}
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id');

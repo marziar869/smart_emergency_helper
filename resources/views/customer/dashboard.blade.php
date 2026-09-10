@@ -388,190 +388,6 @@
 
                 </section>
 
-
-
-                <!-- =============================================
-                     RECOMMENDED
-                ============================================== -->
-
-                <section class="customer-section recommended-section">
-
-                    <div class="customer-section-heading">
-
-                        <h2>
-                            RECOMMENDED
-                        </h2>
-
-                        <span>
-                            RULE-BASED RANKING
-                        </span>
-
-                    </div>
-
-
-                    <p class="ranking-rule">
-                        DISTANCE 40% · AVAILABILITY 25% · RATING 20% · EXPERIENCE 15%
-                    </p>
-
-
-
-                    <!-- PROVIDER 1 -->
-
-                    <div class="recommended-provider best">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                01 Rapid Care Ambulance
-                            </strong>
-
-                            <span class="best-match">
-                                BEST MATCH
-                            </span>
-
-                            <b>
-                                91
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-
-                        <p class="provider-service-type">
-                            AMBULANCE / CRITICAL CARE
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:91%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>1.2 km</span>
-                            <span>★ 4.9</span>
-                            <span>11y exp</span>
-
-                            <strong class="provider-available">
-                                Available
-                            </strong>
-
-                        </div>
-
-
-                        <p class="broadcast-note">
-                            BROADCAST ESCALATES TO NEXT PROVIDER ON DECLINE
-                        </p>
-
-                    </div>
-
-
-
-                    <!-- PROVIDER 2 -->
-
-                    <div class="recommended-provider">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                02 Dhaka Emergency Ambulance
-                            </strong>
-
-                            <b>
-                                84
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-                        <p class="provider-service-type">
-                            AMBULANCE / TRANSPORT
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:84%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>3.4 km</span>
-                            <span>★ 4.7</span>
-                            <span>8y exp</span>
-
-                            <strong class="provider-available">
-                                Available
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- PROVIDER 3 -->
-
-                    <div class="recommended-provider">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                03 City Rescue Ambulance
-                            </strong>
-
-                            <b>
-                                78
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-                        <p class="provider-service-type">
-                            AMBULANCE / TRANSPORT
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:78%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>5.1 km</span>
-                            <span>★ 4.6</span>
-                            <span>6y exp</span>
-
-                            <strong class="provider-busy">
-                                Busy
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
             </aside>
 
 
@@ -640,18 +456,15 @@
 
     <div class="request-progress">
 
-        <div class="request-step active">
-            <i></i>
+<div class="request-step {{ $current >= 0 ? 'active':'' }}">            <i></i>
             <span>PENDING</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 1 ? 'active':'' }}">            <i></i>
             <span>ACCEPTED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 2 ? 'active':'' }}">            <i></i>
             <span>ON THE WAY</span>
         </div>
 
@@ -660,8 +473,7 @@
             <span>ARRIVAL PIN REQUIRED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 3 ? 'active':'' }}">            <i></i>
             <span>ARRIVED</span>
         </div>
 
@@ -685,8 +497,7 @@
             <span>COMPLETION PIN REQUIRED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 4 ? 'active':'' }}">            <i></i>
             <span>COMPLETED</span>
         </div>
 
@@ -705,19 +516,43 @@
 
     <div class="request-status-bottom">
 
-        <div>
+    <div>
+        <span>
+            CURRENT STATUS
+        </span>
 
-            <span>
-                CURRENT STATUS
-            </span>
+        <strong id="customerCurrentStatus">
+            {{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
+        </strong>
+    </div>
 
-            <strong id="customerCurrentStatus">
-                {{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
-            </strong>
 
-        </div>
+    <div class="status-actions">
+        <form method="POST"
+action="{{ route('customer.request.advance',$activeRequest->id) }}">
+
+@csrf
+
+<button type="submit">
+ADVANCE DEMO STATE
+</button>
+
+</form>
+
+        <form method="POST"
+        action="{{ route('customer.request.reset',$activeRequest->id) }}">
+            @csrf
+
+            <button type="submit">
+                RESET STEP
+            </button>
+
+        </form>
 
     </div>
+
+
+</div>
 
 </section>
 

@@ -444,10 +444,14 @@
                 <form
     id="emergencyForm"
     method="POST"
-    action="{{ route('emergency.form.submit') }}"
+    action="{{ route('customer.emergency.store') }}"
 >
 
     @csrf
+
+    <input type="hidden" 
+       name="service_category_id" 
+       value="1">
 
                     {{-- hidden values --}}
 
@@ -925,10 +929,6 @@
                         DEMONSTRATION ONLY
                     </strong>
 
-                    <p>
-                        No backend is connected. Submitting creates a local
-                        request reference so you can preview the dispatch flow.
-                    </p>
 
                 </div>
 
@@ -1249,115 +1249,9 @@ document.addEventListener('DOMContentLoaded', function () {
     emergencyForm.addEventListener(
         'submit',
         function (event) {
-            
-/*FORM VALIDATION*/
-
-const emergencyForm =
-    document.getElementById(
-        'emergencyForm'
-    );
-
-const errorBox =
-    document.getElementById(
-        'emergencyFormError'
-    );
-
-
-emergencyForm.addEventListener(
-    'submit',
-    function (event) {
-
-        errorBox.style.display =
-            'none';
-
-
-        const address =
-            document
-                .getElementById(
-                    'detailedAddress'
-                )
-                .value
-                .trim();
-
-
-        const description =
-            document
-                .getElementById(
-                    'problemDescription'
-                )
-                .value
-                .trim();
-
-
-        if (!address) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please enter your detailed address.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-
-        if (!description) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please describe what happened.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-    }
+            }
 );
 
-            if (!description) {
-
-                errorBox.textContent =
-                    'Please describe what happened.';
-
-                errorBox.style.display =
-                    'block';
-
-                return;
-
-            }
-
-
-            const requestReference =
-                'REQ-' +
-                Date.now()
-                    .toString()
-                    .slice(-6);
-
-
-            successBox.innerHTML =
-                '<strong>Request Created</strong><br>' +
-                'Reference: ' +
-                requestReference +
-                '<br>' +
-                currentService.textContent +
-                ' · ' +
-                currentPriority.textContent +
-                ' · ' +
-                currentArea.textContent;
-
-
-            successBox.style.display =
-                'block';
-
-        }
-    );
-
 });
-</script>
-
+            
 @endsection

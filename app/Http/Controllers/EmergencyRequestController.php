@@ -103,13 +103,10 @@ class EmergencyRequestController extends Controller
 
 
         return redirect()
-    ->route(
-        'customer.request.show',
-        $emergencyRequest->id
-    )
-    ->with(
-        'success',
-        'Request ' . $emergencyRequest->reference . ' created successfully.'
-    );
+->route('customer.dashboard')
+->with(
+    'success',
+    'Emergency request created successfully.'
+);
     }
 }

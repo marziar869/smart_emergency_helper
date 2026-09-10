@@ -44,14 +44,13 @@
         <div class="hero-buttons">
 
 
-           <a href="{{ route('emergency.form') }}" class="btn-primary">
-    REQUEST EMERGENCY
-</a>
+          <a href="{{ route('request.emergency') }}" class="btn-primary">
+        REQUEST EMERGENCY
+    </a>
 
-
-            <a href="{{ route('provider.register') }}" class="btn-secondary">
-    REGISTER AS PROVIDER
-</a>
+    <a href="{{ route('provider.register') }}" class="btn-secondary">
+        REGISTER AS PROVIDER
+    </a>
 
         </div>
 
