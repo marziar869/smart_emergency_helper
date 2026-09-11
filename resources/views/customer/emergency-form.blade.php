@@ -450,11 +450,11 @@
     @csrf
 
     <input type="hidden" 
-       name="service_category_id" 
-       value="1">
+name="service_category_id" 
+id="serviceCategoryInput"
+value="1">
 
-                    {{-- hidden values --}}
-
+                   
                     <input
                         type="hidden"
                         name="service_group"
@@ -994,6 +994,11 @@ document.addEventListener('DOMContentLoaded', function () {
             'serviceGroupInput'
         );
 
+    const serviceCategoryInput =
+    document.getElementById(
+        'serviceCategoryInput'
+    );
+
     const currentGroup =
         document.getElementById(
             'currentGroup'
@@ -1010,6 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener(
             'click',
             function () {
+                console.log("clicked");
 
                 groupButtons.forEach(
                     function (btn) {
@@ -1033,7 +1039,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 groupInput.value =
                     selectedGroup;
+        if(selectedGroup === 'Emergency'){
+            serviceCategoryInput.value = 1;
+        }
 
+        if(selectedGroup === 'Technical'){
+            serviceCategoryInput.value = 2;
+        }
+
+        if(selectedGroup === 'Home'){
+            serviceCategoryInput.value = 3;
+        }
 
                 currentGroup.textContent =
                     selectedGroup;
@@ -1224,34 +1240,40 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
 
-    /*
-    ===================================
-    FORM
-    ===================================
-    */
+   /*
+===================================
+FORM
+===================================
+*/
 
-    const emergencyForm =
-        document.getElementById(
-            'emergencyForm'
-        );
+const emergencyForm =
+    document.getElementById('emergencyForm');
 
-    const errorBox =
-        document.getElementById(
-            'emergencyFormError'
-        );
 
-    const successBox =
-        document.getElementById(
-            'emergencyFormSuccess'
-        );
+const errorBox =
+    document.getElementById('emergencyFormError');
 
+
+const successBox =
+    document.getElementById('emergencyFormSuccess');
+
+
+if(emergencyForm){
 
     emergencyForm.addEventListener(
         'submit',
-        function (event) {
-            }
-);
+        function(event){
+
+            errorBox.style.display = 'none';
+            successBox.style.display = 'none';
+
+        }
+    );
+
+}
 
 });
-            
+
+</script>
+
 @endsection

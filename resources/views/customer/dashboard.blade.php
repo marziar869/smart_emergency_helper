@@ -42,27 +42,19 @@
 
 
         <!-- =========================================
-             MAIN GRID
+             MAIN GRID left side 
         ========================================== -->
+    <div class="customer-main-grid">
 
-        <div class="customer-main-grid">
+        <div class="customer-left-panel">
 
+                <section class="customer-section">
 
-            <!-- =================================================
-                 LEFT SIDE
-            ================================================== -->
+                <h2>NEW REQUEST</h2>
 
-            <aside class="customer-left-panel">
+        {{-- SUCCESS MESSAGE --}}
+        @if (session('success'))
 
-
-                <!-- NEW REQUEST -->
-
-<section class="customer-section">
-
-    <h2>NEW REQUEST</h2>
-
-    {{-- SUCCESS MESSAGE --}}
-    @if (session('success'))
         <div style="
             margin-bottom:15px;
             padding:12px;
@@ -76,6 +68,7 @@
 
     {{-- VALIDATION ERRORS --}}
     @if ($errors->any())
+
         <div style="
             margin-bottom:15px;
             padding:12px;
@@ -92,7 +85,7 @@
     @endif
 
 
-    <form method="POST" action="{{ route('request.store') }}">
+    <form method="POST" action="{{ route('customer.emergency.store') }}">
 
 @csrf
 
@@ -311,131 +304,10 @@
     </form>
 
 </section>
+</div>
 
-                <!-- =============================================
-                     EMERGENCY CONTACTS
-                ============================================== -->
-
-                <section class="customer-section emergency-contact-section">
-
-                    <div class="customer-section-heading">
-
-                        <h2>
-                            EMERGENCY CONTACTS
-                        </h2>
-
-                        <span>
-                            EMAIL ON CRITICAL
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-contact-card">
-
-                        <div>
-
-                            <strong>
-                                Nusrat Jahan
-                            </strong>
-
-                            <span>
-                                Spouse · nusrat.jahan@mail.com
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="notify-toggle active"
-                        >
-                            NOTIFY ON
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="emergency-contact-card">
-
-                        <div>
-
-                            <strong>
-                                Dr. Farzana Akter
-                            </strong>
-
-                            <span>
-                                Family Doctor · farzana.akter@clinic.bd
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="notify-toggle"
-                        >
-                            NOTIFY OFF
-                        </button>
-
-                    </div>
-
-
-                    <p class="critical-email-note">
-                        CRITICAL PRIORITY REQUESTS AUTO-EMAIL ENABLED CONTACTS
-                    </p>
-
-                </section>
-
-            </aside>
-
-
-
-            <!-- =================================================
-                 RIGHT SIDE
-            ================================================== -->
-
-            <main class="customer-right-panel">
-
-
-               <!-- =============================================
-     ACTIVE REQUEST
-============================================== -->
-
-@if($activeRequest)
-
-<section class="active-request-card">
-
-    <div class="active-request-header">
-
-        <div>
-
-            <span class="critical-tag">
-                {{ strtoupper($activeRequest->priority) }}
-            </span>
-
-            <h2>
-                {{ $activeRequest->reference }}:
-                {{ $activeRequest->serviceCategory->name ?? 'Emergency Service' }} Dispatch
-            </h2>
-
-            <p>
-                @if($activeRequest->assignedProvider)
-
-                    Provider: {{ $activeRequest->assignedProvider->name }}
-                    · {{ $activeRequest->area }}, Dhaka
-
-                @else
-
-                    Searching for provider
-                    · {{ $activeRequest->area }}, Dhaka
-
-                @endif
-            </p>
-
-        </div>
-
+                
+           <main class="customer-right-panel">
 
         <div class="active-request-time">
 
@@ -526,32 +398,33 @@
         </strong>
     </div>
 
+<div class="status-actions">
 
-    <div class="status-actions">
-        <form method="POST"
-action="{{ route('customer.request.advance',$activeRequest->id) }}">
+    <form method="POST" action="{{ route('customer.request.advance',$activeRequest->id) }}">
 
-@csrf
+        @csrf
 
-<button type="submit">
-ADVANCE DEMO STATE
-</button>
+        <button type="submit">
+            ADVANCE STATE
+        </button>
 
-</form>
-
-        <form method="POST"
-        action="{{ route('customer.request.reset',$activeRequest->id) }}">
-            @csrf
-
-            <button type="submit">
-                RESET STEP
-            </button>
-
-        </form>
-
-    </div>
+    </form>
 
 
+    <form method="POST"
+    action="{{ route('customer.request.reset',$activeRequest->id) }}">
+
+        @csrf
+
+        <button type="submit">
+            RESET STEP
+        </button>
+
+    </form>
+
+</div>
+
+        
 </div>
 
 </section>
@@ -942,6 +815,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
 </script>
 
 @endsection

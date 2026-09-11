@@ -72,13 +72,15 @@ if($activeRequest){
 
 
         $flow = [
-            'pending',
-            'accepted',
-            'on_the_way',
-            'arrived',
-            'working',
-            'completed'
-        ];
+                    'pending',
+                    'searching_provider',
+                    'provider_assigned',
+                    'provider_on_way',
+                    'arrived',
+                    'working',
+                    'completion_pending',
+                    'completed'
+                    ];
 
 
         $current = array_search(

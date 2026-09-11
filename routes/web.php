@@ -38,11 +38,6 @@ Route::post(
 )
 ->name('provider.request.reject');
 
-Route::post('/request-emergency',
-[EmergencyRequestController::class,'store'])
-->name('request.store');
-
-
 Route::get(
     '/customer/request/{id}',
     [CustomerRequestController::class,'show']
@@ -259,6 +254,12 @@ Route::post(
 )
 ->name('customer.request.reset');
 
+
+Route::post(
+    '/customer/emergency-request',
+    [EmergencyRequestController::class,'store']
+)->name('customer.emergency.store');
+
 Route::get('/customer/profile', function () {
 
     if (!auth()->check()) {
@@ -273,19 +274,6 @@ Route::get('/customer/profile', function () {
 
 })->name('customer.profile');
 
-Route::post(
-    '/customer/emergency-request',
-    [EmergencyRequestController::class, 'store']
-)->name('customer.emergency.store');
-Route::post('/customer/request/{id}/reset',
-[CustomerRequestStatusController::class,'reset']
-)->name('customer.request.reset');
-
-
-Route::post(
-'/customer/request/{id}/advance',
-[CustomerRequestStatusController::class,'advance']
-)->name('customer.request.advance');
 /* =====================================================
    PROVIDER DASHBOARD
 ===================================================== */
