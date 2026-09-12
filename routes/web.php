@@ -46,6 +46,23 @@ Route::post(
 )
 ->name('provider.request.status');
 
+Route::post(
+'/provider/availability',
+[ProviderRequestController::class, 'updateAvailability']
+)
+->name('provider.availability.update');
+
+Route::post(
+'/provider/request/{id}/upload-photo',
+[ProviderRequestController::class, 'uploadPhoto']
+)
+->name('provider.request.upload_photo');
+
+Route::get(
+'/provider/api/pending-alerts',
+[ProviderRequestController::class, 'pendingAlertsApi']
+)
+->name('provider.api.pending_alerts');
 
 });
 
@@ -270,43 +287,51 @@ Route::post(
 
 Route::get('/provider/dashboard', function () {
 
-
     if (!Auth::check() || Auth::user()->role !== 'provider') {
-
         return redirect()->route('login');
-
     }
 
-
+    $providerProfile = Auth::user()->providerProfile;
 
     // Pending requests
-    $requests = EmergencyRequest::where('status','pending')
-        ->whereNull('assigned_provider_id')
+    $requests = EmergencyRequest::where('status', 'pending')
+        ->where(function($query) use ($providerProfile) {
+            $query->whereNull('assigned_provider_id');
+            if ($providerProfile && $providerProfile->service_category_id) {
+                $query->orWhere('service_category_id', $providerProfile->service_category_id);
+            }
+        })
+        ->latest()
         ->get();
 
+    // Accepted / Active job across all active phases
+    $activeJob = EmergencyRequest::where('assigned_provider_id', Auth::id())
+        ->whereIn('status', [
+            'accepted',
+            'provider_assigned',
+            'provider_on_way',
+            'arrival_pending',
+            'arrived',
+            'working',
+            'completion_pending'
+        ])
+        ->latest()
+        ->first();
 
+    // Provider performance stats
+    $stats = [
+        'completed_today' => EmergencyRequest::where('assigned_provider_id', Auth::id())
+            ->where('status', 'completed')
+            ->whereDate('updated_at', now()->today())
+            ->count(),
+        'total_completed' => EmergencyRequest::where('assigned_provider_id', Auth::id())
+            ->where('status', 'completed')
+            ->count(),
+        'rating' => $providerProfile->rating ?? 4.9,
+        'pending_count' => $requests->count(),
+    ];
 
-    // Accepted active job
-    $activeJob = EmergencyRequest::where(
-        'assigned_provider_id',
-        auth()->id()
-    )
-    ->where(
-        'status',
-        'accepted'
-    )
-    ->first();
-
-
-
-    return view(
-        'provider.dashboard',
-        compact(
-            'requests',
-            'activeJob'
-        )
-    );
-
+    return view('provider.dashboard', compact('requests', 'activeJob', 'providerProfile', 'stats'));
 
 })->name('provider.dashboard');
 /* =====================================================

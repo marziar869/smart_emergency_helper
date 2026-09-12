@@ -17,6 +17,10 @@ class EmergencyRequest extends Model
         'area',
         'address',
         'description',
+        'before_photo',
+        'after_photo',
+        'arrival_pin',
+        'completion_pin',
         'assigned_provider_id',
         'status',
     ];
