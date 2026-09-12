@@ -16,15 +16,15 @@
             <div class="public-provider-hero-left">
 
                 <p class="public-provider-eyebrow">
-                    PROVIDER PROFILE · {{ $provider['id'] }}
+                    PROVIDER PROFILE · PRV-{{ 1000 + $provider->id }}
                 </p>
 
                 <h1>
-                    {{ strtoupper($provider['name']) }}
+                    {{ strtoupper($provider->user->name ?? 'Verified Provider') }}
                 </h1>
 
                 <p class="public-provider-description">
-                    {{ $provider['description'] }}
+                    Professional {{ $provider->serviceCategory->name ?? 'Service' }} provider operating in {{ $provider->area }}, Dhaka with {{ $provider->experience_years }} years of verified experience.
                 </p>
 
             </div>
@@ -33,7 +33,7 @@
             <div class="public-provider-hero-actions">
 
                 <a
-                    href="{{ route('emergency.request') }}"
+                    href="{{ route('emergency.form') }}"
                     class="public-provider-request-btn"
                 >
                     REQUEST THIS SERVICE
@@ -59,19 +59,21 @@
         <div class="public-provider-badges">
 
             <span class="pp-available">
-                {{ strtoupper($provider['availability']) }}
+                {{ $provider->is_available ? 'AVAILABLE' : 'OFFLINE' }}
             </span>
 
+            @if($provider->phone_verified)
             <span class="pp-verified">
                 VERIFIED PROVIDER
             </span>
+            @endif
 
             <span class="pp-category">
-                {{ strtoupper($provider['category']) }}
+                {{ strtoupper($provider->serviceCategory->name ?? 'Service') }}
             </span>
 
             <span class="pp-trusted">
-                {{ strtoupper($provider['trust_level']) }}
+                HIGHLY TRUSTED
             </span>
 
         </div>
@@ -92,7 +94,7 @@
                 </span>
 
                 <strong class="pp-red">
-                    {{ $provider['score'] }}
+                    {{ min(99, 70 + ($provider->rating * 5) + min($provider->experience_years, 10)) }}
                 </strong>
 
                 <p>
@@ -110,29 +112,28 @@
                 </span>
 
                 <strong>
-                    {{ $provider['rating'] }}
+                    ★ {{ number_format($provider->rating, 1) }}
                 </strong>
 
                 <p>
-                    {{ $provider['completed_jobs'] }} completed services
+                    {{ $completedJobsCount ?? $provider->total_reviews }} completed services
                 </p>
 
             </div>
 
 
-
             <div class="public-provider-metric">
 
                 <span>
-                    DISTANCE
+                    LOCATION / ZONE
                 </span>
 
                 <strong class="pp-blue">
-                    {{ $provider['distance'] }}
+                    {{ $provider->area }}
                 </strong>
 
                 <p>
-                    Zone: {{ $provider['area'] }}
+                    Zone: {{ $provider->area }}, Dhaka
                 </p>
 
             </div>
@@ -146,11 +147,11 @@
                 </span>
 
                 <strong>
-                    {{ $provider['experience'] }}
+                    {{ $provider->experience_years }} Years
                 </strong>
 
                 <p>
-                    On platform since {{ $provider['platform_since'] }}
+                    On platform since {{ $provider->created_at->format('M Y') }}
                 </p>
 
             </div>
@@ -164,11 +165,11 @@
                 </span>
 
                 <strong>
-                    {{ $provider['completed_jobs'] }}
+                    {{ $provider->total_reviews }}
                 </strong>
 
                 <p>
-                    Frontend demo data
+                    Verified platform services
                 </p>
 
             </div>
@@ -182,11 +183,11 @@
                 </span>
 
                 <strong class="pp-blue">
-                    {{ $provider['trust_score'] }} / 100
+                    95 / 100
                 </strong>
 
                 <p>
-                    {{ $provider['trust_level'] }}
+                    HIGHLY TRUSTED
                 </p>
 
             </div>
@@ -233,7 +234,7 @@
                             </span>
 
                             <strong>
-                                {{ $provider['category'] }}
+                                {{ $provider->serviceCategory->name ?? 'Service' }}
                             </strong>
 
                         </div>
@@ -246,7 +247,7 @@
                             </span>
 
                             <strong>
-                                {{ $provider['area'] }}, Dhaka
+                                {{ $provider->area }}, Dhaka
                             </strong>
 
                         </div>
@@ -259,7 +260,7 @@
                             </span>
 
                             <strong>
-                                {{ $provider['phone'] }}
+                                {{ $provider->user->phone ?? 'Verified Phone' }}
                             </strong>
 
                         </div>
@@ -272,7 +273,7 @@
                             </span>
 
                             <strong>
-                                {{ $provider['trust_level'] }}
+                                HIGHLY TRUSTED
                             </strong>
 
                         </div>
@@ -300,233 +301,9 @@
 
                 </section>
 
-
-
-                <!-- VERIFICATION -->
-
-                <section class="public-provider-section">
-
-                    <p class="public-provider-label">
-                        TRUST VERIFICATION
-                    </p>
-
-                    <h2>
-                        MULTI-STEP CHECKS PASSED
-                    </h2>
-
-
-                    <div class="public-provider-check-grid">
-
-
-                        <div class="public-provider-check">
-
-                            <span>✓</span>
-
-                            <strong>
-                                Phone Ownership Verified
-                            </strong>
-
-                        </div>
-
-
-                        <div class="public-provider-check">
-
-                            <span>✓</span>
-
-                            <strong>
-                                Admin Approved
-                            </strong>
-
-                        </div>
-
-
-                        <div class="public-provider-check">
-
-                            <span>✓</span>
-
-                            <strong>
-                                Service Category Approved
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- SAFETY -->
-
-                <section class="public-provider-section">
-
-                    <p class="public-provider-label">
-                        SERVICE SAFETY
-                    </p>
-
-                    <h2>
-                        ARRIVAL TO COMPLETION CHAIN
-                    </h2>
-
-
-                    <div class="public-provider-safety-list">
-
-
-                        <div class="public-provider-safety-row">
-
-                            <span>01</span>
-
-                            <div>
-
-                                <strong>
-                                    Arrival PIN
-                                </strong>
-
-                                <p>
-                                    Shared only when the provider physically reaches you.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="public-provider-safety-row">
-
-                            <span>02</span>
-
-                            <div>
-
-                                <strong>
-                                    Before Photo
-                                </strong>
-
-                                <p>
-                                    Uploaded by the provider before the service begins.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="public-provider-safety-row">
-
-                            <span>03</span>
-
-                            <div>
-
-                                <strong>
-                                    Working
-                                </strong>
-
-                                <p>
-                                    The active service stage remains visible to the customer.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="public-provider-safety-row">
-
-                            <span>04</span>
-
-                            <div>
-
-                                <strong>
-                                    After Photo
-                                </strong>
-
-                                <p>
-                                    Uploaded once the provider completes the service.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="public-provider-safety-row">
-
-                            <span>05</span>
-
-                            <div>
-
-                                <strong>
-                                    Completion PIN
-                                </strong>
-
-                                <p>
-                                    Final customer confirmation before completion.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </section>
-
-
             </div>
 
-
-
-            <!-- =================================================
-                 RIGHT - FEEDBACK
-            ================================================== -->
-
-            <aside class="public-provider-feedback">
-
-                <p class="public-provider-label">
-                    RATINGS & REVIEWS
-                </p>
-
-                <h2>
-                    CUSTOMER FEEDBACK
-                </h2>
-
-
-
-                @foreach($provider['reviews'] as $review)
-
-                    <div class="public-provider-review">
-
-                        <div class="public-provider-review-head">
-
-                            <strong>
-                                {{ $review['name'] }}
-                            </strong>
-
-                            <span>
-                                {{ $review['stars'] }}
-                            </span>
-
-                        </div>
-
-                        <p>
-                            {{ $review['text'] }}
-                        </p>
-
-                    </div>
-
-                @endforeach
-
-
-            </aside>
-
-
         </div>
-
 
     </div>
 

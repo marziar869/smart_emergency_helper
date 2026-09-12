@@ -293,38 +293,63 @@
 
         <!-- DISPATCH -->
 
-        <button
-            type="submit"
-            id="dispatchNowBtn"
-            class="customer-dispatch-btn"
-        >
+        <button type="submit" class="dispatch-btn">
             DISPATCH NOW
         </button>
 
-    </form>
-
-</section>
-</div>
-
-                
-           <main class="customer-right-panel">
-
-        <div class="active-request-time">
-
-            <strong>
-                {{ $activeRequest->created_at->format('H:i:s') }}
-            </strong>
-
-            <span>
-                ACTIVE SINCE
-            </span>
-
-        </div>
-
+    </section>
     </div>
 
 
+            <div class="active-request-time">
+
+    <div class="active-request-card">
+
+
+    <div class="active-card-top">
+
+
+    <div class="request-header">
+        <span class="priority-badge">
+            {{ strtoupper($activeRequest->priority) }}
+        </span>
+
+        <h2>
+            ER-{{ $activeRequest->id }} :
+            {{ $activeRequest->serviceCategory->name ?? 'Emergency Service' }}
+        </h2>
+
+        <p>
+            Provider:
+            @if($activeRequest->assignedProvider)
+                {{ $activeRequest->assignedProvider->name }}
+            @else
+                Waiting for Provider
+            @endif
+
+            • {{ $activeRequest->area }}, Dhaka
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="active-time">
+
+<strong>
+{{ $activeRequest->created_at->format('H:i:s') }}
+</strong>
+
+<span>
+ACTIVE SINCE
+</span>
+
+</div>
+<div class="card-body">
+
     <!-- REQUEST PROGRESS -->
+<div class="request-progress-wrapper">
 
     <div class="request-progress">
 
@@ -381,53 +406,55 @@
     </div>
 
 
-    <div class="customer-request-scroll">
-        <div></div>
-    </div>
+<div class="request-status-bottom">
 
+<div class="current-status">
 
-    <div class="request-status-bottom">
+<span>
+CURRENT STATUS
+</span>
 
-    <div>
-        <span>
-            CURRENT STATUS
-        </span>
+<strong id="customerCurrentStatus">
+{{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
+</strong>
 
-        <strong id="customerCurrentStatus">
-            {{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
-        </strong>
-    </div>
+</div>
 
 <div class="status-actions">
 
-    <form method="POST" action="{{ route('customer.request.advance',$activeRequest->id) }}">
 
-        @csrf
+<form method="POST" 
+action="{{ route('customer.request.reset',$activeRequest->id) }}">
 
-        <button type="submit">
-            ADVANCE STATE
-        </button>
+@csrf
 
-    </form>
+<button 
+type="submit"
+class="reset-btn">
+RESET STEP
+</button>
+
+</form>
 
 
-    <form method="POST"
-    action="{{ route('customer.request.reset',$activeRequest->id) }}">
 
-        @csrf
+<form method="POST"
+action="{{ route('customer.request.advance',$activeRequest->id) }}">
 
-        <button type="submit">
-            RESET STEP
-        </button>
+@csrf
 
-    </form>
+<button 
+type="submit"
+class="advance-btn">
+ADVANCE STATE
+</button>
+</form>
+
 
 </div>
-
         
 </div>
 
-</section>
 
 
 <!-- =============================================
@@ -490,245 +517,10 @@
         </p>
 
     </section>
-
 </div>
-
-
-@else
-
-
-<!-- =============================================
-     NO ACTIVE REQUEST
-============================================== -->
-
-<section class="active-request-card">
-
-    <div style="
-        padding: 50px 30px;
-        text-align: center;
-    ">
-
-        <strong style="
-            display:block;
-            font-size:20px;
-            margin-bottom:10px;
-        ">
-            NO ACTIVE REQUEST
-        </strong>
-
-        <p>
-            You currently have no active emergency request.
-        </p>
-
-    </div>
-
-</section>
-
-
-@endif
-
-                <!-- =============================================
-                     REQUEST HISTORY
-                ============================================== -->
-
-                <section class="request-history-card">
-
-
-                    <div class="request-history-heading">
-
-                        <h2>
-                            REQUEST HISTORY
-                        </h2>
-
-                        <span>
-                            42 TOTAL
-                        </span>
-
-                    </div>
-
-
-                    <div class="request-history-table-wrap">
-
-                        <table class="request-history-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>ID</th>
-                                    <th>SERVICE</th>
-                                    <th>DATE</th>
-                                    <th>COST</th>
-                                    <th>ACTIONS</th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2447
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Ambulance Service
-                                        </strong>
-
-                                        <small>
-                                            COMPLETED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 21, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳1,500
-                                    </td>
-
-                                    <td class="history-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            class="complain-link"
-                                        >
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2419
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Home Nurse Visit
-                                        </strong>
-
-                                        <small>
-                                            COMPLETED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 14, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳2,500
-                                    </td>
-
-                                    <td class="history-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            class="complain-link"
-                                        >
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2402
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Emergency Blood Donor
-                                        </strong>
-
-                                        <small>
-                                            CANCELLED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 09, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳2,800
-                                    </td>
-
-                                    <td class="history-actions disabled-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button type="button">
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </section>
-
-
-            </main>
-
-        </div>
-
-    </div>
-
 </div>
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const categoryButtons = document.querySelectorAll('.customer-category-btn');

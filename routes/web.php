@@ -244,13 +244,13 @@ Route::get('/customer/dashboard',
 
 Route::post(
 '/customer/request/{id}/advance',
-[EmergencyStatusController::class,'advance']
+[CustomerDashboardController::class,'advance']
 )
 ->name('customer.request.advance');
 
 Route::post(
 '/customer/request/{id}/reset',
-[EmergencyStatusController::class,'reset']
+[CustomerDashboardController::class,'reset']
 )
 ->name('customer.request.reset');
 
@@ -822,7 +822,6 @@ Route::get('/emergency-result', function () {
    LOGOUT
 ===================================================== */
 
-Route::post(
-    '/demo-logout',
-    [CustomerAuthController::class, 'logout']
+
+Route::post('/logout', [CustomerAuthController::class, 'logout']
 )->name('demo.logout');

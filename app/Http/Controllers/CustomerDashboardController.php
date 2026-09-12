@@ -9,98 +9,138 @@ use App\Models\ServiceCategory;
 class CustomerDashboardController extends Controller
 {
 
-    public function index()
-    {
+    private $flow = [
 
-        $activeRequest = EmergencyRequest::where(
-            'customer_id',
-            auth()->id()
-        )
-        ->whereNotIn('status',[
-            'completed',
-            'cancelled'
-        ])
-        ->latest()
-        ->first();
+        'pending',
+        'accepted',
+        'on_the_way',
+        'arrival_pin_required',
+        'arrived',
+        'before_photo',
+        'working',
+        'after_photo',
+        'completion_pin_required',
+        'completed',
+        'rating_review'
+
+    ];
 
 
-        $requests = EmergencyRequest::where(
-            'customer_id',
-            auth()->id()
-        )
-        ->latest()
-        ->get();
-        $current = 0;
-
-if($activeRequest){
+   public function index()
+{
 
     $flow = [
         'pending',
         'accepted',
         'on_the_way',
+        'arrival_pin_required',
         'arrived',
+        'before_photo',
         'working',
-        'completed'
+        'after_photo',
+        'completion_pin_required',
+        'completed',
+        'rating_review'
     ];
 
 
-    $current = array_search(
-        $activeRequest->status,
-        $flow
+    $activeRequest = EmergencyRequest::where(
+        'customer_id',
+        auth()->id()
+    )
+    ->whereNotIn('status',[
+        'completed',
+        'cancelled'
+    ])
+    ->latest()
+    ->first();
+
+
+
+    $requests = EmergencyRequest::where(
+        'customer_id',
+        auth()->id()
+    )
+    ->latest()
+    ->get();
+
+
+
+    $current = 0;
+
+
+    if($activeRequest){
+
+        $current = array_search(
+            $activeRequest->status,
+            $flow
+        );
+
+        if($current === false){
+            $current = 0;
+        }
+
+    }
+
+
+
+    return view(
+        'customer.dashboard',
+        [
+            'activeRequest'=>$activeRequest,
+            'requests'=>$requests,
+            'serviceCategories'=>ServiceCategory::all(),
+            'current'=>$current,
+            'flow'=>$flow
+        ]
     );
 
 }
 
 
-        return view( 
-    'customer.dashboard',
-    [
-        'activeRequest'=>$activeRequest,
-        'requests'=>$requests,
-        'serviceCategories'=>ServiceCategory::all(),
-        'current'=>$current
-    ]
-);
-
-    }
-
 
     public function advance($id)
     {
 
-        $request = EmergencyRequest::findOrFail($id);
+       $request = EmergencyRequest::findOrFail($id);
 
 
-        $flow = [
-                    'pending',
-                    'searching_provider',
-                    'provider_assigned',
-                    'provider_on_way',
-                    'arrived',
-                    'working',
-                    'completion_pending',
-                    'completed'
-                    ];
+$flow = [
+    'pending',
+    'accepted',
+    'on_the_way',
+    'arrival_pin_required',
+    'arrived',
+    'before_photo',
+    'working',
+    'after_photo',
+    'completion_pin_required',
+    'completed',
+    'rating_review'
+];
 
 
-        $current = array_search(
-            $request->status,
-            $flow
-        );
+    $current = array_search(
+        $request->status,
+        $flow
+    );
 
 
-        if($current < count($flow)-1)
-        {
-            $request->status =
-            $flow[$current+1];
+    if($current !== false && $current < count($flow)-1)
+    {
 
-            $request->save();
-        }
+        $request->status = $flow[$current + 1];
 
-
-        return back();
+        $request->save();
 
     }
+
+
+    return back();
+
+    }
+
+
 
 
     public function reset($id)
@@ -110,6 +150,7 @@ if($activeRequest){
 
 
         $request->status = 'pending';
+
 
         $request->save();
 
