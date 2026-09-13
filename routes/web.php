@@ -9,8 +9,10 @@ use App\Models\ServiceCategory;
 use App\Models\EmergencyRequest;
 use App\Http\Controllers\ProviderRegistrationController;
 use App\Http\Controllers\ProviderRequestController;
-
-
+use App\Http\Controllers\CustomerRequestController;
+use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\CustomerRequestStatusController;
+use App\Http\Controllers\EmergencyStatusController;
 
 
 
@@ -23,9 +25,7 @@ Route::get(
 )
 ->name('provider.requests');
 
-
-
-Route::post('/provider/request/accept/{id}',
+Route::post('/provider/request/{id}/accept',
 [
     ProviderRequestController::class,'accept'
 ])
@@ -38,6 +38,10 @@ Route::post(
 )
 ->name('provider.request.reject');
 
+Route::get(
+    '/customer/request/{id}',
+    [CustomerRequestController::class,'show']
+)->name('customer.request.show');
 
 
 Route::post(
@@ -72,12 +76,6 @@ Route::get('/register/provider', [ProviderRegistrationController::class, 'create
 Route::post('/register/provider', [ProviderRegistrationController::class, 'store'])
     ->name('provider.register.submit');
 
-
-/*
-|--------------------------------------------------------------------------
-| ADD THIS HERE
-|--------------------------------------------------------------------------
-*/
 
 /* =====================================================
    PROVIDER OTP VERIFICATION SUBMIT
@@ -174,6 +172,26 @@ Route::get('/about', fn() => view('about'))
 Route::get('/contact', fn() => view('contact'))
     ->name('contact');
 
+    Route::get('/request-emergency', function () {
+
+    if(!auth()->check()){
+        return redirect()->route('login');
+    }
+
+    if(auth()->user()->role !== 'customer'){
+        abort(403,'Customer access only.');
+    }
+
+    $serviceCategories = ServiceCategory::where('is_active', true)
+        ->orderBy('group_name')
+        ->orderBy('name')
+        ->get();
+
+    return view('customer.emergency-form', [
+        'serviceCategories'=>$serviceCategories
+    ]);
+
+})->name('request.emergency');
 
 
 /* =====================================================
@@ -230,38 +248,29 @@ Route::post('/register/provider',
    CUSTOMER DASHBOARD
 ===================================================== */
 
-Route::get('/customer/dashboard', function () {
+Route::get('/customer/dashboard',
+[
+    CustomerDashboardController::class,'index'
+])
+->name('customer.dashboard');
 
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
+Route::post(
+'/customer/request/{id}/advance',
+[CustomerDashboardController::class,'advance']
+)
+->name('customer.request.advance');
 
-    if (auth()->user()->role !== 'customer') {
-        abort(403, 'Customer access only.');
-    }
+Route::post(
+'/customer/request/{id}/reset',
+[CustomerDashboardController::class,'reset']
+)
+->name('customer.request.reset');
 
-    $serviceCategories = ServiceCategory::where('is_active', true)
-        ->orderBy('group_name')
-        ->orderBy('name')
-        ->get();
 
-    $activeRequest = EmergencyRequest::where(
-        'customer_id',
-        auth()->id()
-    )
-        ->whereNotIn('status', [
-            'completed',
-            'cancelled'
-        ])
-        ->latest()
-        ->first();
-
-    return view('customer.dashboard', [
-        'serviceCategories' => $serviceCategories,
-        'activeRequest' => $activeRequest,
-    ]);
-
-})->name('customer.dashboard');
+Route::post(
+    '/customer/emergency-request',
+    [EmergencyRequestController::class,'store']
+)->name('customer.emergency.store');
 
 Route::get('/customer/profile', function () {
 
@@ -276,10 +285,6 @@ Route::get('/customer/profile', function () {
     return view('customer.profile');
 
 })->name('customer.profile');
-Route::post(
-    '/customer/emergency-request',
-    [EmergencyRequestController::class, 'store']
-)->name('customer.emergency.store');
 
 /* =====================================================
    PROVIDER DASHBOARD
@@ -412,7 +417,6 @@ Route::get('/emergency-result', [EmergencyRequestController::class, 'showResult'
    LOGOUT
 ===================================================== */
 
-Route::post(
-    '/demo-logout',
-    [CustomerAuthController::class, 'logout']
+
+Route::post('/logout', [CustomerAuthController::class, 'logout']
 )->name('demo.logout');

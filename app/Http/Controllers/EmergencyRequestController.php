@@ -128,6 +128,7 @@ class EmergencyRequestController extends Controller
 
         // Save EmergencyRequest to Database
         $emergencyRequest = EmergencyRequest::create([
+
             'reference' => $reference,
             'customer_id' => $customerId,
             'service_category_id' => $serviceCategory->id,

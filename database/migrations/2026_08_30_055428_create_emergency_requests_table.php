@@ -50,19 +50,21 @@ return new class extends Migration
                 ->nullOnDelete();
 
             // Complete request lifecycle
-            $table->enum('status', [
-                'pending',
-                'searching_provider',
-                'provider_assigned',
-                'provider_on_way',
-                'arrival_pending',
-                'arrived',
-                'working',
-                'completion_pending',
-                'completed',
-                'cancelled'
-            ])->default('pending');
-
+           $table->enum('status', [
+    'pending',
+    'accepted',
+    'on_the_way',
+    'arrival_pin_required',
+    'arrived',
+    'before_photo',
+    'working',
+    'after_photo',
+    'completion_pin_required',
+    'completed',
+    'rating_review',
+    'cancelled'
+])
+    ->default('pending');
             // Important timestamps
             $table->timestamp('assigned_at')->nullable();
 

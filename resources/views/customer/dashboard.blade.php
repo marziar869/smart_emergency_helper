@@ -42,27 +42,19 @@
 
 
         <!-- =========================================
-             MAIN GRID
+             MAIN GRID left side 
         ========================================== -->
+    <div class="customer-main-grid">
 
-        <div class="customer-main-grid">
+        <div class="customer-left-panel">
 
+                <section class="customer-section">
 
-            <!-- =================================================
-                 LEFT SIDE
-            ================================================== -->
+                <h2>NEW REQUEST</h2>
 
-            <aside class="customer-left-panel">
+        {{-- SUCCESS MESSAGE --}}
+        @if (session('success'))
 
-
-                <!-- NEW REQUEST -->
-
-<section class="customer-section">
-
-    <h2>NEW REQUEST</h2>
-
-    {{-- SUCCESS MESSAGE --}}
-    @if (session('success'))
         <div style="
             margin-bottom:15px;
             padding:12px;
@@ -76,6 +68,7 @@
 
     {{-- VALIDATION ERRORS --}}
     @if ($errors->any())
+
         <div style="
             margin-bottom:15px;
             padding:12px;
@@ -92,13 +85,9 @@
     @endif
 
 
-    <form
-        method="POST"
-        action="{{ route('customer.emergency.store') }}"
-        id="customerEmergencyForm"
-    >
+    <form method="POST" action="{{ route('customer.emergency.store') }}">
 
-        @csrf
+@csrf
 
 
         <!-- CATEGORY -->
@@ -304,358 +293,75 @@
 
         <!-- DISPATCH -->
 
-        <button
-            type="submit"
-            id="dispatchNowBtn"
-            class="customer-dispatch-btn"
-        >
+        <button type="submit" class="dispatch-btn">
             DISPATCH NOW
         </button>
 
-    </form>
-
-</section>
-
-                <!-- =============================================
-                     EMERGENCY CONTACTS
-                ============================================== -->
-
-                <section class="customer-section emergency-contact-section">
-
-                    <div class="customer-section-heading">
-
-                        <h2>
-                            EMERGENCY CONTACTS
-                        </h2>
-
-                        <span>
-                            EMAIL ON CRITICAL
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-contact-card">
-
-                        <div>
-
-                            <strong>
-                                Nusrat Jahan
-                            </strong>
-
-                            <span>
-                                Spouse · nusrat.jahan@mail.com
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="notify-toggle active"
-                        >
-                            NOTIFY ON
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="emergency-contact-card">
-
-                        <div>
-
-                            <strong>
-                                Dr. Farzana Akter
-                            </strong>
-
-                            <span>
-                                Family Doctor · farzana.akter@clinic.bd
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="notify-toggle"
-                        >
-                            NOTIFY OFF
-                        </button>
-
-                    </div>
-
-
-                    <p class="critical-email-note">
-                        CRITICAL PRIORITY REQUESTS AUTO-EMAIL ENABLED CONTACTS
-                    </p>
-
-                </section>
-
-
-
-                <!-- =============================================
-                     RECOMMENDED
-                ============================================== -->
-
-                <section class="customer-section recommended-section">
-
-                    <div class="customer-section-heading">
-
-                        <h2>
-                            RECOMMENDED
-                        </h2>
-
-                        <span>
-                            RULE-BASED RANKING
-                        </span>
-
-                    </div>
-
-
-                    <p class="ranking-rule">
-                        DISTANCE 40% · AVAILABILITY 25% · RATING 20% · EXPERIENCE 15%
-                    </p>
-
-
-
-                    <!-- PROVIDER 1 -->
-
-                    <div class="recommended-provider best">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                01 Rapid Care Ambulance
-                            </strong>
-
-                            <span class="best-match">
-                                BEST MATCH
-                            </span>
-
-                            <b>
-                                91
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-
-                        <p class="provider-service-type">
-                            AMBULANCE / CRITICAL CARE
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:91%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>1.2 km</span>
-                            <span>★ 4.9</span>
-                            <span>11y exp</span>
-
-                            <strong class="provider-available">
-                                Available
-                            </strong>
-
-                        </div>
-
-
-                        <p class="broadcast-note">
-                            BROADCAST ESCALATES TO NEXT PROVIDER ON DECLINE
-                        </p>
-
-                    </div>
-
-
-
-                    <!-- PROVIDER 2 -->
-
-                    <div class="recommended-provider">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                02 Dhaka Emergency Ambulance
-                            </strong>
-
-                            <b>
-                                84
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-                        <p class="provider-service-type">
-                            AMBULANCE / TRANSPORT
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:84%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>3.4 km</span>
-                            <span>★ 4.7</span>
-                            <span>8y exp</span>
-
-                            <strong class="provider-available">
-                                Available
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- PROVIDER 3 -->
-
-                    <div class="recommended-provider">
-
-                        <div class="recommended-provider-top">
-
-                            <strong>
-                                03 City Rescue Ambulance
-                            </strong>
-
-                            <b>
-                                78
-                            </b>
-
-                        </div>
-
-
-                        <span class="verified-tag">
-                            VERIFIED
-                        </span>
-
-                        <p class="provider-service-type">
-                            AMBULANCE / TRANSPORT
-                        </p>
-
-
-                        <div class="provider-score-bar">
-
-                            <div style="width:78%"></div>
-
-                        </div>
-
-
-                        <div class="recommended-provider-meta">
-
-                            <span>5.1 km</span>
-                            <span>★ 4.6</span>
-                            <span>6y exp</span>
-
-                            <strong class="provider-busy">
-                                Busy
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </aside>
-
-
-
-            <!-- =================================================
-                 RIGHT SIDE
-            ================================================== -->
-
-            <main class="customer-right-panel">
-
-
-               <!-- =============================================
-     ACTIVE REQUEST
-============================================== -->
-
-@if($activeRequest)
-
-<section class="active-request-card">
-
-    <div class="active-request-header">
-
-        <div>
-
-            <span class="critical-tag">
-                {{ strtoupper($activeRequest->priority) }}
-            </span>
-
-            <h2>
-                {{ $activeRequest->reference }}:
-                {{ $activeRequest->serviceCategory->name ?? 'Emergency Service' }} Dispatch
-            </h2>
-
-            <p>
-                @if($activeRequest->assignedProvider)
-
-                    Provider: {{ $activeRequest->assignedProvider->name }}
-                    · {{ $activeRequest->area }}, Dhaka
-
-                @else
-
-                    Searching for provider
-                    · {{ $activeRequest->area }}, Dhaka
-
-                @endif
-            </p>
-
-        </div>
-
-
-        <div class="active-request-time">
-
-            <strong>
-                {{ $activeRequest->created_at->format('H:i:s') }}
-            </strong>
-
-            <span>
-                ACTIVE SINCE
-            </span>
-
-        </div>
-
+    </section>
     </div>
 
 
+            <div class="active-request-time">
+
+    <div class="active-request-card">
+
+
+    <div class="active-card-top">
+
+
+    <div class="request-header">
+        <span class="priority-badge">
+            {{ strtoupper($activeRequest->priority) }}
+        </span>
+
+        <h2>
+            ER-{{ $activeRequest->id }} :
+            {{ $activeRequest->serviceCategory->name ?? 'Emergency Service' }}
+        </h2>
+
+        <p>
+            Provider:
+            @if($activeRequest->assignedProvider)
+                {{ $activeRequest->assignedProvider->name }}
+            @else
+                Waiting for Provider
+            @endif
+
+            • {{ $activeRequest->area }}, Dhaka
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="active-time">
+
+<strong>
+{{ $activeRequest->created_at->format('H:i:s') }}
+</strong>
+
+<span>
+ACTIVE SINCE
+</span>
+
+</div>
+<div class="card-body">
+
     <!-- REQUEST PROGRESS -->
+<div class="request-progress-wrapper">
 
     <div class="request-progress">
 
-        <div class="request-step active">
-            <i></i>
+<div class="request-step {{ $current >= 0 ? 'active':'' }}">            <i></i>
             <span>PENDING</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 1 ? 'active':'' }}">            <i></i>
             <span>ACCEPTED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 2 ? 'active':'' }}">            <i></i>
             <span>ON THE WAY</span>
         </div>
 
@@ -664,8 +370,7 @@
             <span>ARRIVAL PIN REQUIRED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 3 ? 'active':'' }}">            <i></i>
             <span>ARRIVED</span>
         </div>
 
@@ -689,8 +394,7 @@
             <span>COMPLETION PIN REQUIRED</span>
         </div>
 
-        <div class="request-step">
-            <i></i>
+<div class="request-step {{ $current >= 4 ? 'active':'' }}">            <i></i>
             <span>COMPLETED</span>
         </div>
 
@@ -702,28 +406,55 @@
     </div>
 
 
-    <div class="customer-request-scroll">
-        <div></div>
-    </div>
+<div class="request-status-bottom">
+
+<div class="current-status">
+
+<span>
+CURRENT STATUS
+</span>
+
+<strong id="customerCurrentStatus">
+{{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
+</strong>
+
+</div>
+
+<div class="status-actions">
 
 
-    <div class="request-status-bottom">
+<form method="POST" 
+action="{{ route('customer.request.reset',$activeRequest->id) }}">
 
-        <div>
+@csrf
 
-            <span>
-                CURRENT STATUS
-            </span>
+<button 
+type="submit"
+class="reset-btn">
+RESET STEP
+</button>
 
-            <strong id="customerCurrentStatus">
-                {{ strtoupper(str_replace('_', ' ', $activeRequest->status)) }}
-            </strong>
+</form>
 
-        </div>
 
-    </div>
 
-</section>
+<form method="POST"
+action="{{ route('customer.request.advance',$activeRequest->id) }}">
+
+@csrf
+
+<button 
+type="submit"
+class="advance-btn">
+ADVANCE STATE
+</button>
+</form>
+
+
+</div>
+        
+</div>
+
 
 
 <!-- =============================================
@@ -786,245 +517,10 @@
         </p>
 
     </section>
-
 </div>
-
-
-@else
-
-
-<!-- =============================================
-     NO ACTIVE REQUEST
-============================================== -->
-
-<section class="active-request-card">
-
-    <div style="
-        padding: 50px 30px;
-        text-align: center;
-    ">
-
-        <strong style="
-            display:block;
-            font-size:20px;
-            margin-bottom:10px;
-        ">
-            NO ACTIVE REQUEST
-        </strong>
-
-        <p>
-            You currently have no active emergency request.
-        </p>
-
-    </div>
-
-</section>
-
-
-@endif
-
-                <!-- =============================================
-                     REQUEST HISTORY
-                ============================================== -->
-
-                <section class="request-history-card">
-
-
-                    <div class="request-history-heading">
-
-                        <h2>
-                            REQUEST HISTORY
-                        </h2>
-
-                        <span>
-                            42 TOTAL
-                        </span>
-
-                    </div>
-
-
-                    <div class="request-history-table-wrap">
-
-                        <table class="request-history-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>ID</th>
-                                    <th>SERVICE</th>
-                                    <th>DATE</th>
-                                    <th>COST</th>
-                                    <th>ACTIONS</th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2447
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Ambulance Service
-                                        </strong>
-
-                                        <small>
-                                            COMPLETED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 21, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳1,500
-                                    </td>
-
-                                    <td class="history-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            class="complain-link"
-                                        >
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2419
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Home Nurse Visit
-                                        </strong>
-
-                                        <small>
-                                            COMPLETED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 14, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳2,500
-                                    </td>
-
-                                    <td class="history-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            class="complain-link"
-                                        >
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-
-                                <tr>
-
-                                    <td>
-                                        ER-2402
-                                    </td>
-
-                                    <td>
-
-                                        <strong>
-                                            Emergency Blood Donor
-                                        </strong>
-
-                                        <small>
-                                            CANCELLED
-                                        </small>
-
-                                    </td>
-
-                                    <td>
-                                        Mar 09, 2026
-                                    </td>
-
-                                    <td>
-                                        ৳2,800
-                                    </td>
-
-                                    <td class="history-actions disabled-actions">
-
-                                        <button type="button">
-                                            RATE
-                                        </button>
-
-                                        <button type="button">
-                                            PDF
-                                        </button>
-
-                                        <button type="button">
-                                            COMPLAINT
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </section>
-
-
-            </main>
-
-        </div>
-
-    </div>
-
 </div>
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const categoryButtons = document.querySelectorAll('.customer-category-btn');
@@ -1111,6 +607,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
 </script>
 
 @endsection

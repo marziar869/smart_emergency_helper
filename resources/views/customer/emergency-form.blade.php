@@ -444,13 +444,17 @@
                 <form
     id="emergencyForm"
     method="POST"
-    action="{{ route('emergency.form.submit') }}"
+    action="{{ route('customer.emergency.store') }}"
 >
 
     @csrf
 
-                    {{-- hidden values --}}
+    <input type="hidden" 
+name="service_category_id" 
+id="serviceCategoryInput"
+value="1">
 
+                   
                     <input
                         type="hidden"
                         name="service_group"
@@ -925,10 +929,6 @@
                         DEMONSTRATION ONLY
                     </strong>
 
-                    <p>
-                        No backend is connected. Submitting creates a local
-                        request reference so you can preview the dispatch flow.
-                    </p>
 
                 </div>
 
@@ -994,6 +994,11 @@ document.addEventListener('DOMContentLoaded', function () {
             'serviceGroupInput'
         );
 
+    const serviceCategoryInput =
+    document.getElementById(
+        'serviceCategoryInput'
+    );
+
     const currentGroup =
         document.getElementById(
             'currentGroup'
@@ -1010,6 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener(
             'click',
             function () {
+                console.log("clicked");
 
                 groupButtons.forEach(
                     function (btn) {
@@ -1033,7 +1039,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 groupInput.value =
                     selectedGroup;
+        if(selectedGroup === 'Emergency'){
+            serviceCategoryInput.value = 1;
+        }
 
+        if(selectedGroup === 'Technical'){
+            serviceCategoryInput.value = 2;
+        }
+
+        if(selectedGroup === 'Home'){
+            serviceCategoryInput.value = 3;
+        }
 
                 currentGroup.textContent =
                     selectedGroup;
@@ -1224,140 +1240,40 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
 
-    /*
-    ===================================
-    FORM
-    ===================================
-    */
+   /*
+===================================
+FORM
+===================================
+*/
 
-    const emergencyForm =
-        document.getElementById(
-            'emergencyForm'
-        );
+const emergencyForm =
+    document.getElementById('emergencyForm');
 
-    const errorBox =
-        document.getElementById(
-            'emergencyFormError'
-        );
 
-    const successBox =
-        document.getElementById(
-            'emergencyFormSuccess'
-        );
+const errorBox =
+    document.getElementById('emergencyFormError');
 
+
+const successBox =
+    document.getElementById('emergencyFormSuccess');
+
+
+if(emergencyForm){
 
     emergencyForm.addEventListener(
         'submit',
-        function (event) {
-            
-/*FORM VALIDATION*/
+        function(event){
 
-const emergencyForm =
-    document.getElementById(
-        'emergencyForm'
-    );
-
-const errorBox =
-    document.getElementById(
-        'emergencyFormError'
-    );
-
-
-emergencyForm.addEventListener(
-    'submit',
-    function (event) {
-
-        errorBox.style.display =
-            'none';
-
-
-        const address =
-            document
-                .getElementById(
-                    'detailedAddress'
-                )
-                .value
-                .trim();
-
-
-        const description =
-            document
-                .getElementById(
-                    'problemDescription'
-                )
-                .value
-                .trim();
-
-
-        if (!address) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please enter your detailed address.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-
-        if (!description) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please describe what happened.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-    }
-);
-
-            if (!description) {
-
-                errorBox.textContent =
-                    'Please describe what happened.';
-
-                errorBox.style.display =
-                    'block';
-
-                return;
-
-            }
-
-
-            const requestReference =
-                'REQ-' +
-                Date.now()
-                    .toString()
-                    .slice(-6);
-
-
-            successBox.innerHTML =
-                '<strong>Request Created</strong><br>' +
-                'Reference: ' +
-                requestReference +
-                '<br>' +
-                currentService.textContent +
-                ' · ' +
-                currentPriority.textContent +
-                ' · ' +
-                currentArea.textContent;
-
-
-            successBox.style.display =
-                'block';
+            errorBox.style.display = 'none';
+            successBox.style.display = 'none';
 
         }
     );
+
+}
 
 });
+
 </script>
 
 @endsection

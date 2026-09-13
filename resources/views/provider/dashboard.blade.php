@@ -664,6 +664,11 @@
     </button>
 </form>
 
+
+
+
+
+
 <form method="POST" action="{{ route('provider.availability.update') }}" style="display:inline;">
     @csrf
     <input type="hidden" name="availability" value="busy">

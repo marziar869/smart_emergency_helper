@@ -36,11 +36,7 @@ class ProviderRequestController extends Controller
             abort(403);
         }
 
-        $request = EmergencyRequest::find($id);
-
-        if (!$request) {
-            return back()->with('error', 'Request not found.');
-        }
+        $request = EmergencyRequest::findOrFail($id);
 
         $request->assigned_provider_id = auth()->id();
         $request->status = 'accepted';
