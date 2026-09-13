@@ -10396,25 +10396,24 @@ textarea{
 /* SMALL CRITICAL BADGE */
 
 .priority-badge{
-
-
-    display:inline-block;
-
-    width:auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
 
     background:#ef233c;
-
     color:white;
 
-    padding:6px 14px;
+    width:90px;
+    height:32px;
+
+    padding:0;
 
     font-size:10px;
-
     font-weight:900;
+    letter-spacing:1px;
 
-
+    text-align:center;
 }
-
 
 
 
