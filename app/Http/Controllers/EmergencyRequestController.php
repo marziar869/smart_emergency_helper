@@ -128,7 +128,6 @@ class EmergencyRequestController extends Controller
 
         // Save EmergencyRequest to Database
         $emergencyRequest = EmergencyRequest::create([
-
             'reference' => $reference,
             'customer_id' => $customerId,
             'service_category_id' => $serviceCategory->id,
@@ -138,6 +137,8 @@ class EmergencyRequestController extends Controller
             'description' => $validated['description'],
             'assigned_provider_id' => $assignedProviderId,
             'status' => $assignedProviderId ? 'accepted' : 'pending',
+            'arrival_pin' => sprintf('%04d', rand(1000, 9999)),
+            'completion_pin' => sprintf('%04d', rand(1000, 9999)),
         ]);
 
         $sessionData = [
@@ -154,6 +155,11 @@ class EmergencyRequestController extends Controller
         ];
 
         session(['demo_emergency_request' => $sessionData]);
+
+        if (Auth::check()) {
+            return redirect()->route('customer.dashboard')
+                ->with('success', "Emergency request dispatched successfully! Reference: {$emergencyRequest->reference}");
+        }
 
         return redirect()->route('emergency.result');
     }

@@ -59,26 +59,32 @@
         <!-- RIGHT BUTTON -->
 
         <div class="nav-actions">
-
-
-            <a href="/login" class="nav-login">
-
-                SIGN IN
-
-            </a>
-
-
-
-
-
-            <a href="/request-emergency" class="nav-emergency">
-
-                REQUEST EMERGENCY
-
-            </a>
-
-
-
+            @auth
+                @php
+                    $role = auth()->user()->role;
+                    $dashRoute = match($role) {
+                        'provider' => route('provider.dashboard'),
+                        'admin' => route('admin.dashboard'),
+                        default => route('customer.dashboard'),
+                    };
+                @endphp
+                <a href="{{ $dashRoute }}" class="nav-login">
+                    DASHBOARD
+                </a>
+                <form method="POST" action="{{ route('demo.logout') }}" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="nav-emergency" style="border: none; cursor: pointer; background: #e11d48;">
+                        LOGOUT
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="nav-login">
+                    SIGN IN
+                </a>
+                <a href="{{ route('request.emergency') }}" class="nav-emergency">
+                    REQUEST EMERGENCY
+                </a>
+            @endauth
         </div>
 
 

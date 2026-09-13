@@ -9,18 +9,30 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('emergency_requests', function (Blueprint $table) {
-
-            $table->string('arrival_pin', 4)->nullable();
-            $table->timestamp('arrival_pin_verified_at')->nullable();
-
-            $table->string('before_photo_path')->nullable();
-            $table->timestamp('before_photo_uploaded_at')->nullable();
-
-            $table->string('after_photo_path')->nullable();
-            $table->timestamp('after_photo_uploaded_at')->nullable();
-
-            $table->string('completion_pin', 4)->nullable();
-            $table->timestamp('completion_pin_verified_at')->nullable();
+            if (!Schema::hasColumn('emergency_requests', 'arrival_pin')) {
+                $table->string('arrival_pin', 4)->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'arrival_pin_verified_at')) {
+                $table->timestamp('arrival_pin_verified_at')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'before_photo_path')) {
+                $table->string('before_photo_path')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'before_photo_uploaded_at')) {
+                $table->timestamp('before_photo_uploaded_at')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'after_photo_path')) {
+                $table->string('after_photo_path')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'after_photo_uploaded_at')) {
+                $table->timestamp('after_photo_uploaded_at')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'completion_pin')) {
+                $table->string('completion_pin', 4)->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'completion_pin_verified_at')) {
+                $table->timestamp('completion_pin_verified_at')->nullable();
+            }
         });
     }
 

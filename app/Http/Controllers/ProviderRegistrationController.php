@@ -56,19 +56,12 @@ class ProviderRegistrationController extends Controller
             // Create Provider User
 
             $user = User::create([
-
                 'name' => $validated['name'],
-
                 'phone' => $validated['phone'],
-
                 'email' => $validated['email'],
-
-                'password' => $validated['password'],
-
+                'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
                 'role' => 'provider',
-
                 'is_active' => true,
-
             ]);
 
 

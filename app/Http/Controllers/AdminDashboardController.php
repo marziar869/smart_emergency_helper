@@ -33,7 +33,7 @@ class AdminDashboardController extends Controller
             return redirect()->route('login');
         }
 
-        $activeJobsCount = EmergencyRequest::whereIn('status', ['accepted', 'working'])->count();
+        $activeJobsCount = EmergencyRequest::whereIn('status', ['accepted', 'provider_assigned', 'provider_on_way', 'arrived', 'working'])->count();
         $providersOnlineCount = ProviderProfile::where('is_available', true)->where('approval_status', 'approved')->count();
         $completed30DCount = EmergencyRequest::where('status', 'completed')->where('created_at', '>=', now()->subDays(30))->count();
         $pendingVerifyCount = ProviderProfile::where('approval_status', 'pending')->count();
@@ -48,9 +48,13 @@ class AdminDashboardController extends Controller
             ->latest()
             ->get();
 
+        $users = User::latest()->get();
+
+        $serviceCategories = ServiceCategory::orderBy('group_name')->orderBy('name')->get();
+
         $recentRequests = EmergencyRequest::with(['customer', 'assignedProvider', 'serviceCategory'])
             ->latest()
-            ->take(10)
+            ->take(15)
             ->get();
 
         return view('admin.dashboard', compact(
@@ -63,6 +67,8 @@ class AdminDashboardController extends Controller
             'completedRequestsCount',
             'pendingRequestsCount',
             'providerApplications',
+            'users',
+            'serviceCategories',
             'recentRequests'
         ));
     }
@@ -106,7 +112,7 @@ class AdminDashboardController extends Controller
 
         return redirect()
             ->route('admin.dashboard')
-            ->with('success', 'Provider ' . ($provider->user->name ?? '') . ' application has been approved.');
+            ->with('success', 'Provider application approved.');
     }
 
     /**
@@ -131,5 +137,62 @@ class AdminDashboardController extends Controller
         return redirect()
             ->route('admin.dashboard')
             ->with('success', 'Provider application rejected.');
+    }
+
+    /**
+     * Toggle User Account Status (Suspend / Reinstate)
+     */
+    public function toggleUserStatus($id)
+    {
+        if (!$this->checkAdmin()) {
+            return redirect()->route('login');
+        }
+
+        $user = User::findOrFail($id);
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $statusText = $user->is_active ? 'reinstated' : 'suspended';
+        return redirect()->route('admin.dashboard')->with('success', "User '{$user->name}' has been {$statusText}.");
+    }
+
+    /**
+     * Toggle Service Category Enabled/Disabled
+     */
+    public function toggleCategoryStatus($id)
+    {
+        if (!$this->checkAdmin()) {
+            return redirect()->route('login');
+        }
+
+        $category = ServiceCategory::findOrFail($id);
+        $category->is_active = !$category->is_active;
+        $category->save();
+
+        $statusText = $category->is_active ? 'enabled' : 'disabled';
+        return redirect()->route('admin.dashboard')->with('success', "Service category '{$category->name}' has been {$statusText}.");
+    }
+
+    /**
+     * Create New Service Category
+     */
+    public function storeCategory(Request $request)
+    {
+        if (!$this->checkAdmin()) {
+            return redirect()->route('login');
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:service_categories,name'],
+            'group_name' => ['required', 'string', 'in:Emergency,Technical,Home'],
+        ]);
+
+        ServiceCategory::create([
+            'name' => $validated['name'],
+            'group_name' => $validated['group_name'],
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', "New category '{$validated['name']}' added successfully.");
     }
 }

@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('emergency_requests', function (Blueprint $table) {
-            $table->string('arrival_pin')->nullable()->after('after_photo');
-            $table->string('completion_pin')->nullable()->after('arrival_pin');
+            if (!Schema::hasColumn('emergency_requests', 'arrival_pin')) {
+                $table->string('arrival_pin')->nullable();
+            }
+            if (!Schema::hasColumn('emergency_requests', 'completion_pin')) {
+                $table->string('completion_pin')->nullable();
+            }
         });
     }
 

@@ -114,143 +114,71 @@ class CustomerAuthController extends Controller
 
     public function login(Request $request)
     {
-
-
         $validated = $request->validate([
-
-
             'email' => [
                 'required',
                 'email'
             ],
-
-
             'password' => [
                 'required'
             ],
-
-
             'role' => [
                 'required',
                 'in:customer,provider,admin'
             ],
-
-
         ]);
 
-
-
-
         $credentials = [
-
             'email' => $validated['email'],
-
             'password' => $validated['password'],
-
-            'is_active' => true,
-
         ];
 
-
-
-
-        if(!Auth::attempt($credentials)){
-
-
+        if (!Auth::attempt($credentials)) {
             return back()
-
                 ->withInput()
-
                 ->withErrors([
-
-                    'email' =>
-                    'Invalid email or password.'
-
+                    'email' => 'Invalid email or password. Please check your credentials.'
                 ]);
-
         }
-
-
-
-
-
-        $request->session()->regenerate();
-
-
 
         $user = Auth::user();
 
-
-
-
+        if (isset($user->is_active) && !$user->is_active) {
+            Auth::logout();
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'email' => 'Your account is currently inactive. Please contact system support.'
+                ]);
+        }
 
         // Role checking
-
-        if($user->role !== $validated['role']){
-
-
+        if ($user->role !== $validated['role']) {
+            $actualRole = strtoupper($user->role);
             Auth::logout();
-
-
             return back()
-
+                ->withInput()
                 ->withErrors([
-
-                    'email' =>
-                    'Wrong account type selected.'
-
+                    'email' => "Account found, but it is registered as {$actualRole}. Please select the {$actualRole} role."
                 ]);
-
         }
 
+        $request->session()->regenerate();
 
-
-
-
-        if($user->role === 'customer'){
-
-
-            return redirect()
-
-                ->route('customer.dashboard');
-
+        if ($user->role === 'customer') {
+            return redirect()->route('customer.dashboard');
         }
 
-
-
-
-
-        if($user->role === 'provider'){
-
-
-            return redirect()
-
-                ->route('provider.dashboard');
-
+        if ($user->role === 'provider') {
+            return redirect()->route('provider.dashboard');
         }
 
-
-
-
-        if($user->role === 'admin'){
-
-
-            return redirect()
-
-                ->route('admin.dashboard');
-
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
-
-
 
         Auth::logout();
-
-
-        return redirect()
-
-            ->route('login');
-
-
+        return redirect()->route('login');
     }
 
 

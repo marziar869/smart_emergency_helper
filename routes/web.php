@@ -18,55 +18,42 @@ use App\Http\Controllers\EmergencyStatusController;
 
 Route::middleware('auth')->group(function(){
 
+    Route::get('/provider/requests', [ProviderRequestController::class, 'index'])
+        ->name('provider.requests');
 
-Route::get(
-'/provider/requests',
-[ProviderRequestController::class,'index']
-)
-->name('provider.requests');
+    Route::post('/provider/request/{id}/accept', [ProviderRequestController::class, 'accept'])
+        ->name('provider.request.accept');
 
-Route::post('/provider/request/{id}/accept',
-[
-    ProviderRequestController::class,'accept'
-])
-->name('provider.request.accept');
+    Route::post('/provider/request/{id}/reject', [ProviderRequestController::class, 'reject'])
+        ->name('provider.request.reject');
 
+    Route::get('/customer/request/{id}', [CustomerRequestController::class, 'show'])
+        ->name('customer.request.show');
 
-Route::post(
-'/provider/request/{id}/reject',
-[ProviderRequestController::class,'reject']
-)
-->name('provider.request.reject');
+    Route::post('/provider/request/{id}/status', [ProviderRequestController::class, 'updateStatus'])
+        ->name('provider.request.status');
 
-Route::get(
-    '/customer/request/{id}',
-    [CustomerRequestController::class,'show']
-)->name('customer.request.show');
+    Route::post('/provider/availability', [ProviderRequestController::class, 'updateAvailability'])
+        ->name('provider.availability.update');
 
+    Route::post('/provider/request/{id}/upload-photo', [ProviderRequestController::class, 'uploadPhoto'])
+        ->name('provider.request.upload_photo');
 
-Route::post(
-'/provider/request/{id}/status',
-[ProviderRequestController::class,'updateStatus']
-)
-->name('provider.request.status');
+    Route::get('/provider/api/pending-alerts', [ProviderRequestController::class, 'pendingAlertsApi'])
+        ->name('provider.api.pending_alerts');
 
-Route::post(
-'/provider/availability',
-[ProviderRequestController::class, 'updateAvailability']
-)
-->name('provider.availability.update');
+    /* Customer Auth Routes */
+    Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])
+        ->name('customer.dashboard');
 
-Route::post(
-'/provider/request/{id}/upload-photo',
-[ProviderRequestController::class, 'uploadPhoto']
-)
-->name('provider.request.upload_photo');
+    Route::post('/customer/request/{id}/advance', [CustomerDashboardController::class, 'advance'])
+        ->name('customer.request.advance');
 
-Route::get(
-'/provider/api/pending-alerts',
-[ProviderRequestController::class, 'pendingAlertsApi']
-)
-->name('provider.api.pending_alerts');
+    Route::post('/customer/request/{id}/reset', [CustomerDashboardController::class, 'reset'])
+        ->name('customer.request.reset');
+
+    Route::post('/customer/emergency-request', [EmergencyRequestController::class, 'store'])
+        ->name('customer.emergency.store');
 
 });
 
@@ -248,29 +235,7 @@ Route::post('/register/provider',
    CUSTOMER DASHBOARD
 ===================================================== */
 
-Route::get('/customer/dashboard',
-[
-    CustomerDashboardController::class,'index'
-])
-->name('customer.dashboard');
 
-Route::post(
-'/customer/request/{id}/advance',
-[CustomerDashboardController::class,'advance']
-)
-->name('customer.request.advance');
-
-Route::post(
-'/customer/request/{id}/reset',
-[CustomerDashboardController::class,'reset']
-)
-->name('customer.request.reset');
-
-
-Route::post(
-    '/customer/emergency-request',
-    [EmergencyRequestController::class,'store']
-)->name('customer.emergency.store');
 
 Route::get('/customer/profile', function () {
 
@@ -397,6 +362,15 @@ Route::post('/admin/provider-verification/{provider}/approve', [AdminDashboardCo
 
 Route::post('/admin/provider-verification/{provider}/reject', [AdminDashboardController::class, 'rejectVerification'])
     ->name('admin.provider.reject');
+
+Route::post('/admin/user/{id}/toggle-status', [AdminDashboardController::class, 'toggleUserStatus'])
+    ->name('admin.user.toggle_status');
+
+Route::post('/admin/category/{id}/toggle-status', [AdminDashboardController::class, 'toggleCategoryStatus'])
+    ->name('admin.category.toggle');
+
+Route::post('/admin/category/store', [AdminDashboardController::class, 'storeCategory'])
+    ->name('admin.category.store');
 
 
 

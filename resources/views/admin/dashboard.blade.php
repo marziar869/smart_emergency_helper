@@ -6,33 +6,36 @@
 
     <div class="admin-container">
 
+        {{-- FLASH ALERTS --}}
+        @if(session('success'))
+            <div style="background: #d1fae5; border: 1px solid #10b981; color: #065f46; padding: 14px 20px; border-radius: 12px; margin-bottom: 24px; font-weight: 700; font-size: 0.95rem;">
+                ✓ {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div style="background: #fee2e2; border: 1px solid #ef4444; color: #991b1b; padding: 14px 20px; border-radius: 12px; margin-bottom: 24px; font-weight: 700; font-size: 0.95rem;">
+                ⚠️ {{ session('error') }}
+            </div>
+        @endif
 
         <!-- =====================================================
-             HERO
+             HERO & LIVE STATS
         ====================================================== -->
-
         <section class="admin-hero">
-
             <div class="admin-hero-copy">
-
                 <div class="admin-eyebrow">
                     ADMINISTRATOR
                 </div>
-
                 <h1>
                     GLOBAL OPS CONTROL
                 </h1>
-
                 <p>
-                    Real-time network oversight
+                    Real-time network oversight & system operations
                 </p>
-
             </div>
 
-
-
             <div class="admin-live-stats">
-
                 <div class="admin-live-stat">
                     <strong>{{ $activeJobsCount ?? 0 }}</strong>
                     <span>ACTIVE JOBS</span>
@@ -52,21 +55,15 @@
                     <strong>{{ $pendingVerifyCount ?? 0 }}</strong>
                     <span>PENDING VERIFY</span>
                 </div>
-
             </div>
-
         </section>
-
-
 
         <!-- =====================================================
              KPI CARDS
         ====================================================== -->
-
         <section class="admin-kpi-grid">
-
             <article class="admin-kpi-card">
-                <span>TOTAL USERS</span>
+                <span>TOTAL CUSTOMERS</span>
                 <strong>{{ $totalUsersCount ?? 0 }}</strong>
                 <small>REALTIME</small>
             </article>
@@ -88,1252 +85,208 @@
                 <strong>{{ $pendingRequestsCount ?? 0 }}</strong>
                 <small>REALTIME</small>
             </article>
-
         </section>
 
-
-
         <!-- =====================================================
-             ROW 1
-             TOP SERVICE CATEGORIES + PRIORITY MIX
+             PROVIDER VERIFICATION QUEUE
         ====================================================== -->
+        <section class="admin-panel" style="margin-bottom: 30px;">
+            <h2 class="admin-panel-title">
+                🛡️ PROVIDER VERIFICATION QUEUE
+            </h2>
 
-        <section class="admin-two-column">
-
-
-            <!-- TOP SERVICE CATEGORIES -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    TOP SERVICE CATEGORIES
-                </h2>
-
-
-                <div class="admin-service-chart">
-
-
-                    <div class="service-row">
-
-                        <span>Ambulance</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Ambulance"
-                            data-value="412"
-                        >
-                            <div class="service-fill" style="width:92%"></div>
+            <div class="verify-list">
+                @forelse($providerApplications as $app)
+                    <div class="verify-row" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #334155; gap: 16px; flex-wrap: wrap;">
+                        <div>
+                            <strong style="font-size: 16px; color: #f8fafc;">{{ $app->user->name ?? 'Provider' }}</strong>
+                            <p style="margin: 4px 0; font-size: 13px; color: #94a3b8;">
+                                <strong>Category:</strong> {{ $app->serviceCategory->name ?? 'Category' }} · 
+                                <strong>Area:</strong> {{ $app->area }} · 
+                                <strong>Experience:</strong> {{ $app->experience_years }} Years · 
+                                <strong>Phone:</strong> {{ $app->phone_verified ? 'Verified' : 'Unverified' }}
+                            </p>
+                            <small style="color: #64748b; font-weight: 700;">REG ID: PRV-{{ 1000 + $app->id }} ({{ $app->user->email ?? 'N/A' }})</small>
                         </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>Electrician</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Electrician"
-                            data-value="338"
-                        >
-                            <div class="service-fill" style="width:76%"></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>Plumber</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Plumber"
-                            data-value="302"
-                        >
-                            <div class="service-fill" style="width:68%"></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>AC Technician</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="AC Technician"
-                            data-value="251"
-                        >
-                            <div class="service-fill" style="width:56%"></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>Blood Donor</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Blood Donor"
-                            data-value="191"
-                        >
-                            <div class="service-fill" style="width:43%"></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>Locksmith</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Locksmith"
-                            data-value="148"
-                        >
-                            <div class="service-fill" style="width:33%"></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-row">
-
-                        <span>Home Nurse</span>
-
-                        <div
-                            class="service-track service-tooltip"
-                            data-label="Home Nurse"
-                            data-value="110"
-                        >
-                            <div class="service-fill" style="width:24%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="chart-axis">
-
-                        <span>0</span>
-                        <span>50</span>
-                        <span>100</span>
-                        <span>150</span>
-                        <span>200</span>
-                        <span>250</span>
-                        <span>300</span>
-                        <span>350</span>
-                        <span>400</span>
-                        <span>450</span>
-
-                    </div>
-
-
-                </div>
-
-            </article>
-
-
-
-            <!-- PRIORITY MIX -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    PRIORITY MIX
-                </h2>
-
-
-                <div
-                    class="priority-donut"
-                    data-critical="48"
-                    data-high="72"
-                    data-medium="126"
-                    data-normal="155"
-                ></div>
-
-
-                <div class="priority-legend">
-
-                    <span>
-                        <i class="legend-critical"></i>
-                        Critical
-                    </span>
-
-                    <span>
-                        <i class="legend-high"></i>
-                        High
-                    </span>
-
-                    <span>
-                        <i class="legend-medium"></i>
-                        Medium
-                    </span>
-
-                    <span>
-                        <i class="legend-normal"></i>
-                        Normal
-                    </span>
-
-                </div>
-
-            </article>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             ROW 2
-             REQUEST VOLUME + DHAKA AREA
-        ====================================================== -->
-
-        <section class="admin-two-column">
-
-
-            <!-- REQUEST VOLUME -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    REQUEST VOLUME — LAST 14 DAYS
-                </h2>
-
-
-                <div class="request-chart">
-
-                    <svg
-                        viewBox="0 0 600 230"
-                        preserveAspectRatio="none"
-                        class="request-svg"
-                    >
-
-                        <defs>
-
-                            <linearGradient
-                                id="requestFill"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                            >
-
-                                <stop
-                                    offset="0%"
-                                    stop-color="#2d86ec"
-                                    stop-opacity=".30"
-                                />
-
-                                <stop
-                                    offset="100%"
-                                    stop-color="#2d86ec"
-                                    stop-opacity=".04"
-                                />
-
-                            </linearGradient>
-
-                        </defs>
-
-
-                        <path
-                            d="
-                                M 0 200
-                                L 45 175
-                                L 90 190
-                                L 135 135
-                                L 180 100
-                                L 225 150
-                                L 270 125
-                                L 315 85
-                                L 360 60
-                                L 405 110
-                                L 450 55
-                                L 495 25
-                                L 540 45
-                                L 600 5
-                                L 600 230
-                                L 0 230
-                                Z
-                            "
-                            fill="url(#requestFill)"
-                        />
-
-
-                        <path
-                            d="
-                                M 0 200
-                                L 45 175
-                                L 90 190
-                                L 135 135
-                                L 180 100
-                                L 225 150
-                                L 270 125
-                                L 315 85
-                                L 360 60
-                                L 405 110
-                                L 450 55
-                                L 495 25
-                                L 540 45
-                                L 600 5
-                            "
-                            fill="none"
-                            stroke="#2d86ec"
-                            stroke-width="3"
-                        />
-
-                    </svg>
-
-
-
-                    <div class="request-days">
-
-                        <span>D1</span>
-                        <span>D2</span>
-                        <span>D3</span>
-                        <span>D4</span>
-                        <span>D5</span>
-                        <span>D6</span>
-                        <span>D7</span>
-                        <span>D8</span>
-                        <span>D9</span>
-                        <span>D10</span>
-                        <span>D11</span>
-                        <span>D12</span>
-                        <span>D13</span>
-                        <span>D14</span>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- REQUESTS BY DHAKA AREA -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    REQUESTS BY DHAKA AREA
-                </h2>
-
-
-                <div class="area-stats">
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Dhanmondi</strong>
-                            <span>42</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:100%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Mirpur</strong>
-                            <span>37</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:88%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Uttara</strong>
-                            <span>31</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:74%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Gulshan</strong>
-                            <span>28</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:67%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Mohammadpur</strong>
-                            <span>25</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:60%"></div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="area-row">
-
-                        <div class="area-meta">
-                            <strong>Banani</strong>
-                            <span>19</span>
-                        </div>
-
-                        <div class="area-track">
-                            <div style="width:46%"></div>
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </article>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             ROW 3
-             VERIFICATION QUEUE + COMPLAINTS
-        ====================================================== -->
-
-        <section class="admin-two-column">
-
-
-            <!-- VERIFICATION QUEUE -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    VERIFICATION QUEUE
-                </h2>
-
-
-                <div class="verify-list">
-                    @forelse($providerApplications as $app)
-                        <div class="verify-row">
-                            <div>
-                                <strong>{{ $app->user->name ?? 'Provider' }}</strong>
-                                <p>
-                                    {{ $app->serviceCategory->name ?? 'Category' }} · {{ $app->area }} · {{ $app->experience_years }} Years · {{ $app->phone_verified ? 'Phone Verified' : 'Unverified' }} · Pending Admin Review
-                                </p>
-                                <small>PRV-{{ 1000 + $app->id }}</small>
-                            </div>
-                            <a href="{{ route('admin.provider.verification.review', $app->id) }}" class="admin-light-btn">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <a href="{{ route('admin.provider.verification.review', $app->id) }}" class="admin-light-btn" style="padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 12px; text-decoration: none;">
                                 REVIEW
                             </a>
+                            <form method="POST" action="{{ route('admin.provider.approve', $app->id) }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" style="background: #059669; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer;">
+                                    APPROVE
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('admin.provider.reject', $app->id) }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" style="background: #dc2626; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer;">
+                                    REJECT
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <p style="padding: 20px; color: #94a3b8; font-size: 13px; margin: 0; text-align: center;">No pending provider applications requiring verification.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <!-- =====================================================
+             MANAGE USERS & SERVICE CATEGORIES
+        ====================================================== -->
+        <section class="admin-two-column">
+
+            <!-- MANAGE USERS -->
+            <article class="admin-panel">
+                <h2 class="admin-panel-title">
+                    👥 MANAGE USER ACCOUNTS
+                </h2>
+
+                <div style="max-height: 400px; overflow-y: auto;">
+                    @forelse($users as $usr)
+                        <div class="manage-user-row" style="display: grid; grid-template-columns: 1fr 100px 100px; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px solid #334155;">
+                            <div class="manage-user-info" style="min-width: 0;">
+                                <strong style="color: #f8fafc; font-size: 14px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $usr->name }}</strong>
+                                <span style="display: block; font-size: 12px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $usr->email }} · <strong style="color: #38bdf8; text-transform: uppercase;">{{ $usr->role }}</strong>
+                                </span>
+                            </div>
+
+                            <div style="text-align: center;">
+                                <span class="{{ $usr->is_active ? 'user-active' : 'user-suspended' }}" style="display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; {{ $usr->is_active ? 'background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);' : 'background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);' }}">
+                                    {{ $usr->is_active ? 'ACTIVE' : 'SUSPENDED' }}
+                                </span>
+                            </div>
+
+                            <div style="text-align: right;">
+                                @if($usr->id !== auth()->id())
+                                    <form method="POST" action="{{ route('admin.user.toggle_status', $usr->id) }}" style="display:inline;">
+                                        @csrf
+                                        <button type="submit" class="admin-outline-btn user-action-btn" style="padding: 6px 14px; font-size: 11px; font-weight: 800; border-radius: 6px; cursor: pointer;">
+                                            {{ $usr->is_active ? 'SUSPEND' : 'REINSTATE' }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <span style="font-size: 11px; color: #64748b; font-weight: 700; padding-right: 8px;">YOU</span>
+                                @endif
+                            </div>
                         </div>
                     @empty
-                        <p style="padding: 15px; color: #888;">No pending provider verification applications at this time.</p>
+                        <p style="color: #94a3b8; font-size: 13px;">No registered users found.</p>
                     @endforelse
                 </div>
 
-            </article>
-
-
-
-            <!-- COMPLAINTS -->
-
-<article class="admin-panel complaint-panel">
-
-    <h2 class="admin-panel-title">
-        COMPLAINTS
-    </h2>
-
-
-    <div class="complaint-list">
-
-
-        <!-- CP-114 -->
-
-        <div
-            class="complaint-item"
-            data-complaint-id="CP-114"
-            data-status="OPEN"
-        >
-
-            <span class="complaint-state state-open">
-                OPEN
-            </span>
-
-            <strong>
-                #CP-114
-            </strong>
-
-            <h4>
-                Sadia Rahman vs
-                <b>VoltFix Electricals</b>
-            </h4>
-
-            <p>
-                Arrived 40m late
-            </p>
-
-            <small>
-                Service TK-9018 · ৳1,200
-            </small>
-
-
-            <div class="complaint-actions">
-
-                <button
-                    type="button"
-                    class="complaint-review-btn"
-                >
-                    REVIEW
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-resolve-btn"
-                >
-                    RESOLVE
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-escalate-btn"
-                >
-                    ESCALATE
-                </button>
-
-                <button
-                    type="button"
-                    class="danger-btn complaint-suspend-btn"
-                >
-                    SUSPEND PROVIDER
-                </button>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- CP-113 -->
-
-        <div
-            class="complaint-item"
-            data-complaint-id="CP-113"
-            data-status="REVIEWING"
-        >
-
-            <span class="complaint-state state-review">
-                REVIEWING
-            </span>
-
-            <strong>
-                #CP-113
-            </strong>
-
-            <h4>
-                Tanvir Ahmed vs
-                <b>Dhaka Emergency Ambulance</b>
-            </h4>
-
-            <p>
-                Billing dispute
-            </p>
-
-            <small>
-                Service ER-2409 · ৳3,500
-            </small>
-
-
-            <div class="complaint-actions">
-
-                <button
-                    type="button"
-                    class="complaint-review-btn"
-                >
-                    REVIEW
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-resolve-btn"
-                >
-                    RESOLVE
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-escalate-btn"
-                >
-                    ESCALATE
-                </button>
-
-                <button
-                    type="button"
-                    class="danger-btn complaint-suspend-btn"
-                >
-                    SUSPEND PROVIDER
-                </button>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- CP-112 -->
-
-        <div
-            class="complaint-item"
-            data-complaint-id="CP-112"
-            data-status="ESCALATED"
-        >
-
-            <span class="complaint-state state-escalated">
-                ESCALATED
-            </span>
-
-            <strong>
-                #CP-112
-            </strong>
-
-            <h4>
-                Mehedi Hasan vs
-                <b>CoolAir Service Point</b>
-            </h4>
-
-            <p>
-                Incomplete repair, technician left early
-            </p>
-
-            <small>
-                Service TK-8991 · ৳2,800
-            </small>
-
-
-            <div class="complaint-actions">
-
-                <button
-                    type="button"
-                    class="complaint-review-btn"
-                >
-                    REVIEW
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-resolve-btn"
-                >
-                    RESOLVE
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-escalate-btn"
-                >
-                    ESCALATE
-                </button>
-
-                <button
-                    type="button"
-                    class="danger-btn complaint-suspend-btn"
-                >
-                    SUSPEND PROVIDER
-                </button>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- CP-111 -->
-
-        <div
-            class="complaint-item"
-            data-complaint-id="CP-111"
-            data-status="RESOLVED"
-        >
-
-            <span class="complaint-state state-resolved">
-                RESOLVED
-            </span>
-
-            <strong>
-                #CP-111
-            </strong>
-
-            <h4>
-                Nusrat Jahan vs
-                <b>AquaLine Plumbing</b>
-            </h4>
-
-            <p>
-                Resolved after refund
-            </p>
-
-            <small>
-                Service TK-8877 · ৳900
-            </small>
-
-
-            <div class="complaint-actions">
-
-                <button
-                    type="button"
-                    class="complaint-review-btn"
-                >
-                    REVIEW
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-resolve-btn"
-                >
-                    RESOLVE
-                </button>
-
-                <button
-                    type="button"
-                    class="complaint-escalate-btn"
-                >
-                    ESCALATE
-                </button>
-
-                <button
-                    type="button"
-                    class="danger-btn complaint-suspend-btn"
-                >
-                    SUSPEND PROVIDER
-                </button>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-</article>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             ROW 4
-             MANAGE USERS + SERVICE CATEGORIES
-        ====================================================== -->
-
-        <section class="admin-two-column">
-
-
-            <!-- MANAGE USERS -->
-
-            <article class="admin-panel">
-
-                <h2 class="admin-panel-title">
-                    MANAGE USERS
-                </h2>
-
-
-
-                <div class="manage-user-row">
-
-                    <div class="manage-user-info">
-
-                        <strong>
-                            Md. Arif Hossain
-                        </strong>
-
-                        <span>
-                            arif.hossain@seh.com.bd · Customer
-                        </span>
-
-                    </div>
-
-
-                    <span class="user-active">
-                        ACTIVE
-                    </span>
-
-
-                    <button
-                        class="admin-outline-btn user-action-btn"
-                        data-action="suspend"
-                        data-user="Md. Arif Hossain"
-                    >
-                        SUSPEND
-                    </button>
-
-                </div>
-
-
-
-                <div class="manage-user-row">
-
-                    <div class="manage-user-info">
-
-                        <strong>
-                            Saiful Islam
-                        </strong>
-
-                        <span>
-                            saiful.islam@seh.com.bd · Provider
-                        </span>
-
-                    </div>
-
-
-                    <span class="user-active">
-                        ACTIVE
-                    </span>
-
-
-                    <button
-                        class="admin-outline-btn user-action-btn"
-                        data-action="suspend"
-                        data-user="Saiful Islam"
-                    >
-                        SUSPEND
-                    </button>
-
-                </div>
-
-
-
-                <div class="manage-user-row">
-
-                    <div class="manage-user-info">
-
-                        <strong>
-                            Nusrat Jahan
-                        </strong>
-
-                        <span>
-                            nusrat.jahan@seh.com.bd · Provider
-                        </span>
-
-                    </div>
-
-
-                    <span class="user-pending">
-                        PENDING
-                    </span>
-
-
-                    <button
-                        class="admin-outline-btn user-action-btn"
-                        data-action="suspend"
-                        data-user="Nusrat Jahan"
-                    >
-                        SUSPEND
-                    </button>
-
-                </div>
-
-
-
-                <div class="manage-user-row">
-
-                    <div class="manage-user-info">
-
-                        <strong>
-                            Farzana Akter
-                        </strong>
-
-                        <span>
-                            farzana.akter@seh.com.bd · Customer
-                        </span>
-
-                    </div>
-
-
-                    <span class="user-suspended">
-                        SUSPENDED
-                    </span>
-
-
-                    <button
-                        class="admin-outline-btn user-action-btn"
-                        data-action="reinstate"
-                        data-user="Farzana Akter"
-                    >
-                        REINSTATE
-                    </button>
-
-                </div>
-
-
-
-                <p class="manage-note">
-
-                    Suspended providers are not eligible for dispatch
-                    and will not receive new service requests.
-
+                <p class="manage-note" style="margin-top: 14px; font-size: 11px; color: #64748b;">
+                    Suspended users/providers cannot log in or perform actions on the platform.
                 </p>
-
             </article>
 
-
-
-            <!-- SERVICE CATEGORIES -->
-
+            <!-- SERVICE CATEGORIES MANAGEMENT -->
             <article class="admin-panel">
-
                 <h2 class="admin-panel-title">
-                    SERVICE CATEGORIES
+                    ⚙️ SERVICE CATEGORIES MANAGEMENT
                 </h2>
 
-
-                <div class="service-category-grid">
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>AMBULANCE</strong>
-                        <span>Emergency · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>BLOOD DONOR</strong>
-                        <span>Emergency · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>HOME NURSE</strong>
-                        <span>Emergency · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>ELECTRICIAN</strong>
-                        <span>Technical · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>PLUMBER</strong>
-                        <span>Technical · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>AC TECHNICIAN</strong>
-                        <span>Technical · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle disabled-category"
-                        data-enabled="false"
-                    >
-                        <strong>LOCKSMITH</strong>
-                        <span>Technical · Disabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>CLEANER</strong>
-                        <span>Home · Enabled</span>
-                    </div>
-
-
-                    <div
-                        class="service-category-card category-toggle"
-                        data-enabled="true"
-                    >
-                        <strong>CARPENTER</strong>
-                        <span>Home · Enabled</span>
-                    </div>
-
-
+                <div class="service-category-grid" style="max-height: 320px; overflow-y: auto;">
+                    @foreach($serviceCategories as $cat)
+                        <div class="service-category-card {{ $cat->is_active ? '' : 'disabled-category' }}" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 10px; background: #1e293b; margin-bottom: 10px; border: 1px solid #334155;">
+                            <div>
+                                <strong style="display: block; color: #f8fafc; font-size: 13px; text-transform: uppercase;">{{ $cat->name }}</strong>
+                                <span style="font-size: 11px; color: #94a3b8;">Group: {{ $cat->group_name }} · {{ $cat->is_active ? 'Enabled' : 'Disabled' }}</span>
+                            </div>
+                            <form method="POST" action="{{ route('admin.category.toggle', $cat->id) }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" style="background: {{ $cat->is_active ? '#475569' : '#059669' }}; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer;">
+                                    {{ $cat->is_active ? 'DISABLE' : 'ENABLE' }}
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
                 </div>
 
-
-
-                <div class="category-add-row">
-
-                    <input
-                        type="text"
-                        placeholder="New category"
-                    >
-
-                    <select>
-
-                        <option>
-                            Emergency
-                        </option>
-
-                        <option>
-                            Technical
-                        </option>
-
-                        <option>
-                            Home
-                        </option>
-
+                <!-- ADD NEW CATEGORY FORM -->
+                <form method="POST" action="{{ route('admin.category.store') }}" class="category-add-row" style="margin-top: 16px; display: flex; gap: 8px;">
+                    @csrf
+                    <input type="text" name="name" placeholder="New category name" required style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 12px;">
+                    <select name="group_name" required style="padding: 8px 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 12px;">
+                        <option value="Emergency">Emergency</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Home">Home</option>
                     </select>
-
-
-                    <button class="admin-light-btn">
-                        ADD
+                    <button type="submit" class="admin-light-btn" style="padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer;">
+                        ADD CATEGORY
                     </button>
-
-                </div>
-
+                </form>
             </article>
 
         </section>
 
-
-
         <!-- =====================================================
-             RECENT REQUESTS FULL WIDTH
+             RECENT EMERGENCY REQUESTS LOG
         ====================================================== -->
-
-        <section class="admin-panel recent-requests-panel">
-
-
+        <section class="admin-panel recent-requests-panel" style="margin-top: 30px;">
             <div class="recent-heading">
-
                 <h2 class="admin-panel-title">
-                    RECENT REQUESTS
+                    📋 REAL-TIME EMERGENCY REQUEST LOG
                 </h2>
-
-                <span>
-                    PER-ROW PDF EXPORT
+                <span style="font-size: 12px; color: #94a3b8; font-weight: 700;">
+                    LIVE SYSTEM FEED
                 </span>
-
             </div>
-
-
 
             <div class="recent-table-wrap">
-
-
-                <table class="recent-table">
-
-
+                <table class="recent-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <thead>
-
-                        <tr>
-
-                            <th>ID</th>
-                            <th>CUSTOMER</th>
-                            <th>PROVIDER</th>
-                            <th>SERVICE</th>
-                            <th>PRIORITY</th>
-                            <th>STATUS</th>
-                            <th>REPORT</th>
-
+                        <tr style="border-bottom: 2px solid #334155; text-align: left; color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                            <th style="padding: 12px;">REF / ID</th>
+                            <th style="padding: 12px;">CUSTOMER</th>
+                            <th style="padding: 12px;">PROVIDER</th>
+                            <th style="padding: 12px;">SERVICE</th>
+                            <th style="padding: 12px;">AREA</th>
+                            <th style="padding: 12px;">PRIORITY</th>
+                            <th style="padding: 12px;">DATE</th>
+                            <th style="padding: 12px;">STATUS</th>
                         </tr>
-
                     </thead>
-
-
                     <tbody>
-
-
-                        <tr>
-
-                            <td>ER-2451</td>
-
-                            <td>
-                                Md. Arif Hossain
-                            </td>
-
-                            <td>
-                                Rapid Care Ambulance
-                            </td>
-
-                            <td>
-                                Ambulance
-                            </td>
-
-                            <td>
-                                <span class="priority-badge critical-badge">
-                                    CRITICAL
-                                </span>
-                            </td>
-
-                            <td>
-                                On the Way
-                            </td>
-
-                            <td>
-                                PDF
-                            </td>
-
-                        </tr>
-
-
-
-                        <tr>
-
-                            <td>
-                                TK-9024
-                            </td>
-
-                            <td>
-                                Mehedi Hasan
-                            </td>
-
-                            <td>
-                                CoolAir Service Point
-                            </td>
-
-                            <td>
-                                AC Technician
-                            </td>
-
-                            <td>
-                                <span class="priority-badge high-badge">
-                                    HIGH
-                                </span>
-                            </td>
-
-                            <td>
-                                Working
-                            </td>
-
-                            <td>
-                                PDF
-                            </td>
-
-                        </tr>
-
-
-
-                        <tr>
-
-                            <td>
-                                ER-2460
-                            </td>
-
-                            <td>
-                                Sadia Rahman
-                            </td>
-
-                            <td>
-                                —
-                            </td>
-
-                            <td>
-                                Ambulance
-                            </td>
-
-                            <td>
-                                <span class="priority-badge critical-badge">
-                                    CRITICAL
-                                </span>
-                            </td>
-
-                            <td>
-                                Pending
-                            </td>
-
-                            <td>
-                                PDF
-                            </td>
-
-                        </tr>
-
-
-
-                        <tr>
-
-                            <td>
-                                TK-9018
-                            </td>
-
-                            <td>
-                                Farzana Akter
-                            </td>
-
-                            <td>
-                                VoltFix Electricals
-                            </td>
-
-                            <td>
-                                Electrician
-                            </td>
-
-                            <td>
-                                <span class="priority-badge medium-badge">
-                                    MEDIUM
-                                </span>
-                            </td>
-
-                            <td>
-                                Completed
-                            </td>
-
-                            <td>
-                                PDF
-                            </td>
-
-                        </tr>
-
-
+                        @forelse($recentRequests as $req)
+                            <tr style="border-bottom: 1px solid #1e293b; color: #e2e8f0;">
+                                <td style="padding: 12px; font-weight: 800; color: #38bdf8;">#{{ $req->reference ?? ('REQ-'.$req->id) }}</td>
+                                <td style="padding: 12px; font-weight: 700;">
+                                    {{ $req->customer->name ?? 'Guest' }}
+                                    <small style="display: block; color: #64748b;">{{ $req->customer->phone ?? '' }}</small>
+                                </td>
+                                <td style="padding: 12px;">
+                                    @if($req->assignedProvider)
+                                        <strong style="color: #10b981;">{{ $req->assignedProvider->name }}</strong>
+                                    @else
+                                        <span style="color: #f59e0b;">Waiting...</span>
+                                    @endif
+                                </td>
+                                <td style="padding: 12px; font-weight: 700;">{{ $req->serviceCategory->name ?? 'Emergency' }}</td>
+                                <td style="padding: 12px;">{{ $req->area }}</td>
+                                <td style="padding: 12px;">
+                                    <span style="font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 4px; color: #fff; background: {{ strtolower($req->priority) === 'critical' ? '#ef4444' : (strtolower($req->priority) === 'high' ? '#f59e0b' : '#3b82f6') }};">
+                                        {{ strtoupper($req->priority) }}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px; color: #94a3b8;">{{ $req->created_at->format('d M, h:i A') }}</td>
+                                <td style="padding: 12px;">
+                                    <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; background: {{ $req->status === 'completed' ? '#065f46; color: #6ee7b7;' : ($req->status === 'accepted' || $req->status === 'working' ? '#1e40af; color: #93c5fd;' : '#78350f; color: #fde68a;') }}">
+                                        {{ str_replace('_', ' ', $req->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" style="padding: 20px; text-align: center; color: #94a3b8;">No emergency requests logged yet.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
-
                 </table>
-
             </div>
-
         </section>
-
 
     </div>
 
