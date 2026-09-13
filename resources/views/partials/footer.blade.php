@@ -53,40 +53,4 @@ GET STARTED
 </div>
 
 
-
-
-
-<div class="footer-column">
-
-<div class="footer-title">
-SUPPORT
-</div>
-
-
-<a href="#">EMERGENCY ASSISTANCE</a>
-<a href="#">SAFETY INFORMATION</a>
-<a href="#">PRIVACY</a>
-<a href="#">TERMS</a>
-
-</div>
-
-
-
-</div>
-
-
-
-
-<div class="footer-bottom">
-
-
-<div>
-© 2026 SMART EMERGENCY HELPER
-</div>
-
-
-
-</div>
-
-
 </footer>

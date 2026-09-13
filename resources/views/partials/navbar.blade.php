@@ -3,8 +3,6 @@
 
     <div class="navbar-container">
 
-
-
         <!-- LOGO -->
 
         <div class="brand-logo">
@@ -13,50 +11,24 @@
 
         </div>
 
-
-
-
-
-        <!-- MENU -->
-
         <div class="nav-menu">
 
+            <a href="/">HOME</a>
 
-            <a href="/">
-                HOME
-            </a>
-
-
-            <a href="/services">
-                SERVICES
-            </a>
+            <a href="/services">SERVICES</a>
 
 
-            <a href="/providers">
-                PROVIDERS
-            </a>
+            <a href="/providers">PROVIDERS</a>
 
 
-            <a href="/about">
-                ABOUT
-            </a>
+            <a href="/about">ABOUT</a>
 
 
-            <a href="/contact">
-                CONTACT
-            </a>
+            <a href="/contact">CONTACT</a>
 
 
 
         </div>
-
-
-
-
-
-
-
-        <!-- RIGHT BUTTON -->
 
         <div class="nav-actions">
 
@@ -67,17 +39,7 @@
 
             </a>
 
-
-
-
-
-            <a href="/request-emergency" class="nav-emergency">
-
-                REQUEST EMERGENCY
-
-            </a>
-
-
+            <a href="/request-emergency" class="nav-emergency">REQUEST EMERGENCY </a>
 
         </div>
 

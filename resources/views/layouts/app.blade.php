@@ -19,7 +19,6 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
 
-
     <!-- Main CSS -->
     <link 
         rel="stylesheet" 
@@ -28,20 +27,14 @@
 
 </head>
 
-
 <body>
 
 
     <!-- Navigation -->
     @include('partials.navbar')
 
-
     <!-- Page Content -->
-    <main>
-
-        @yield('content')
-
-    </main>
+    <main>@yield('content')</main>
 
 
     <!-- Footer -->
