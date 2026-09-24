@@ -1,366 +1,238 @@
 @extends('layouts.app')
 
+@section('title', 'Customer Profile — Smart Emergency Helper')
+
 @section('content')
 
-<div class="customer-profile-page">
+<style>
+/* =========================================================
+   CUSTOMER PROFILE STYLES (EMBEDDED IN BLADE)
+   ========================================================= */
 
+.customer-profile-page {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding: 20px 0 32px;
+}
+.customer-profile-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.customer-profile-header {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.customer-profile-eyebrow {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #dc2626;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.customer-profile-header h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.customer-profile-name {
+    font-size: 11.5px;
+    color: #64748b;
+}
+.customer-profile-id {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 800;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #bae6fd;
+}
+
+.customer-profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.customer-profile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+}
+.customer-profile-card h2 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+.customer-profile-field {
+    margin-bottom: 10px;
+}
+.customer-profile-field label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.customer-profile-field input,
+.customer-profile-field select {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #f8fafc;
+    color: #0f172a;
+    box-sizing: border-box;
+}
+
+.customer-account-meta {
+    display: flex;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-top: 12px;
+}
+.customer-account-meta span {
+    display: block;
+    font-size: 9px;
+    font-weight: 800;
+    color: #64748b;
+}
+.customer-account-active {
+    color: #166534;
+    font-size: 11.5px;
+    font-weight: 800;
+}
+
+.btn-nav-link {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-nav-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    text-decoration: none;
+}
+.customer-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+    .customer-profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="customer-profile-page">
     <div class="customer-profile-container">
 
-
-        <!-- =========================================
-             PAGE HEADER
-        ========================================== -->
-
+        <!-- HEADER -->
         <div class="customer-profile-header">
-
             <div>
-
-                <p class="customer-profile-eyebrow">
-                    CLIENT PORTAL
-                </p>
-
-                <h1>
-                    CUSTOMER PROFILE
-                </h1>
-
-                <strong class="customer-profile-name">{{ auth()->user()->name }}</strong>
-
+                <p class="customer-profile-eyebrow">CLIENT PORTAL · ACCOUNT SETTINGS</p>
+                <h1>CUSTOMER PROFILE</h1>
+                <p class="customer-profile-name">Name: <strong>{{ auth()->user()->name }}</strong></p>
             </div>
-
-
-            <div class="customer-profile-id">
-                CUSTOMER ID: SEH-{{ str_pad(auth()->user()->id, 4, '0', STR_PAD_LEFT) }}-C
-</div>
-
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div class="customer-profile-id">ID: {{ sprintf('%02d', auth()->user()->id) }}</div>
+                <a href="{{ route('customer.dashboard') }}" class="btn-nav-link">← My Dashboard</a>
+            </div>
         </div>
 
-
-
-        <!-- =========================================
-             ROW 1
-        ========================================== -->
-
         <div class="customer-profile-grid">
-
-
             <!-- ACCOUNT INFORMATION -->
-
             <section class="customer-profile-card">
-
-                <h2>
-                    ACCOUNT INFORMATION
-                </h2>
-
+                <h2>ACCOUNT INFORMATION</h2>
 
                 <div class="customer-profile-field">
-
-                    <label for="customerProfileName">
-                        FULL NAME
-                    </label>
-
-                    <input
-                            id="customerProfileName"
-                            type="text"
-                            value="{{ auth()->user()->name }}"
-                            disabled
->
-
+                    <label for="customerProfileName">FULL NAME</label>
+                    <input id="customerProfileName" type="text" value="{{ auth()->user()->name }}" readonly>
                 </div>
-
 
                 <div class="customer-profile-field">
-
-                    <label for="customerProfileEmail">
-                        EMAIL
-                    </label>
-
-                    <input
-                        id="customerProfileEmail"
-                        type="email"
-                        value="{{ auth()->user()->email }}"
-                        disabled
->
-
+                    <label for="customerProfileEmail">EMAIL</label>
+                    <input id="customerProfileEmail" type="email" value="{{ auth()->user()->email }}" readonly>
                 </div>
-
 
                 <div class="customer-profile-field">
-
-                    <label for="customerProfilePhone">
-                        PHONE NUMBER
-                    </label>
-
-                    <input
-                        id="customerProfilePhone"
-                        type="text"
-                        value="{{ auth()->user()->phone }}"
-                        disabled
-                    >
-
+                    <label for="customerProfilePhone">PHONE NUMBER</label>
+                    <input id="customerProfilePhone" type="text" value="{{ auth()->user()->phone ?? '+880 1711-000000' }}" readonly>
                 </div>
-
 
                 <div class="customer-account-meta">
-
                     <div>
-
-                        <span>
-                            ACCOUNT STATUS
-                        </span>
-
-                        <strong class="customer-account-active">
-    {{ auth()->user()->is_active ? 'ACTIVE' : 'INACTIVE' }}
-</strong>
-
+                        <span>ACCOUNT STATUS</span>
+                        <strong class="customer-account-active">{{ auth()->user()->is_active ? 'ACTIVE' : 'INACTIVE' }}</strong>
                     </div>
-
-
                     <div>
-
-                        <span>
-                            MEMBER SINCE
-                        </span>
-
-                        <strong>{{ auth()->user()->created_at->format('F Y') }}</strong>
-
+                        <span>MEMBER SINCE</span>
+                        <strong style="color:#0f172a; font-size:11.5px;">{{ auth()->user()->created_at->format('F Y') }}</strong>
                     </div>
-
                 </div>
-
             </section>
-
-
 
             <!-- LOCATION -->
-
             <section class="customer-profile-card">
-
-                <h2>
-                    LOCATION
-                </h2>
-
+                <h2>PRIMARY LOCATION</h2>
 
                 <div class="customer-profile-field">
-
-                    <label for="customerDefaultAddress">
-                        DEFAULT ADDRESS
-                    </label>
-
-                   <input
-                    id="customerDefaultAddress"
-                    type="text"
-                    value="{{ auth()->user()->address }}"
-                    disabled
-                >
-
+                    <label for="customerDefaultAddress">DEFAULT ADDRESS</label>
+                    <input id="customerDefaultAddress" type="text" value="{{ auth()->user()->address ?? 'Road 8A, House 42' }}" readonly>
                 </div>
-
 
                 <div class="customer-profile-field">
-
-                    <label for="customerProfileArea">
-                        AREA
-                    </label>
-
-            <select
-                id="customerProfileArea"
-                disabled>
-            <option selected> {{ auth()->user()->area }}</option>
-            </select>
+                    <label for="customerProfileArea">AREA</label>
+                    <input id="customerProfileArea" type="text" value="{{ auth()->user()->area ?? 'Dhanmondi, Dhaka' }}" readonly>
                 </div>
 
-
-                <button
-                    type="button"
-                    id="updateLocationBtn"
-                    class="customer-profile-outline-btn"
-                    disabled
-                >
-                    UPDATE LOCATION
-                </button>
-
+                <div class="customer-account-meta" style="margin-top:20px;">
+                    <div>
+                        <span>PRIMARY DISPATCH HUB</span>
+                        <strong style="color:#0f172a; font-size:11px;">Dhaka Emergency Central</strong>
+                    </div>
+                </div>
             </section>
-
         </div>
-
-
-
-        <!-- =========================================
-             ROW 2
-        ========================================== -->
-
-        <div class="customer-profile-grid">
-
-
-            <!-- EMERGENCY SETTINGS -->
-
-            <section class="customer-profile-card emergency-settings-card">
-
-                <h2>
-                    EMERGENCY SETTINGS
-                </h2>
-
-
-                <div class="customer-profile-field">
-
-                    <label for="defaultEmergencyContact">
-                        DEFAULT EMERGENCY CONTACT
-                    </label>
-
-                   <select
-                            id="defaultEmergencyContact"
-                            disabled
-                        >
-                    <option selected>
-                        {{ auth()->user()->emergency_email ?: 'No emergency contact email added' }}
-                    </option>
-               </select>
-
-                </div>
-
-
-                <div class="critical-notification-box">
-
-                    <strong>
-                        CRITICAL CONTACT NOTIFICATION
-                    </strong>
-
-                    <p>
-                        Emails your emergency contact when a Critical request is dispatched.
-                    </p>
-
-
-                    <button
-                        type="button"
-                        id="criticalNotificationBtn"
-                        class="critical-notification-btn active"
-                        disabled
-                    >
-                        ENABLED
-                    </button>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- SECURITY -->
-
-            <section class="customer-profile-card security-card">
-
-                <h2>
-                    SECURITY
-                </h2>
-
-
-                <div class="customer-profile-field">
-
-                    <label for="currentPassword">
-                        CURRENT PASSWORD
-                    </label>
-
-                    <input
-                        id="currentPassword"
-                        type="password"
-                    >
-
-                </div>
-
-
-                <div class="customer-profile-field">
-
-                    <label for="newPassword">
-                        NEW PASSWORD
-                    </label>
-
-                    <input
-                        id="newPassword"
-                        type="password"
-                    >
-
-                </div>
-
-
-                <div class="customer-profile-field">
-
-                    <label for="confirmNewPassword">
-                        CONFIRM NEW PASSWORD
-                    </label>
-
-                    <input
-                        id="confirmNewPassword"
-                        type="password"
-                    >
-
-                </div>
-
-
-                <button
-                    type="button"
-                    id="changePasswordBtn"
-                    class="customer-profile-dark-btn"
-                >
-                    CHANGE PASSWORD
-                </button>
-
-
-                <div class="customer-session-box">
-
-                    <span>
-                        SESSION
-                    </span>
-
-                    <p>
-                        Signed in on this device · Dhaka · Last activity today
-                    </p>
-
-                </div>
-
-            </section>
-
-        </div>
-
-
-
-        <!-- =========================================
-             PAGE ACTIONS
-        ========================================== -->
 
         <div class="customer-profile-actions">
-
-
-            <button
-                type="button"
-                id="editCustomerProfileBtn"
-                class="customer-profile-outline-btn"
-            >
-                EDIT PROFILE
-            </button>
-
-
-            <button
-                type="button"
-                id="saveCustomerProfileBtn"
-                class="customer-profile-dark-btn"
-                disabled
-            >
-                SAVE CHANGES
-            </button>
-
-
-            <a
-                href="{{ route('customer.dashboard') }}"
-                class="customer-profile-back-link"
-            >
-                BACK TO CUSTOMER DASHBOARD
+            <a href="{{ route('customer.dashboard') }}" class="btn-nav-link" style="background:#dc2626; color:#ffffff; border-color:#dc2626;">
+                ← BACK TO CUSTOMER DASHBOARD
             </a>
-
         </div>
 
-
     </div>
-
 </div>
 
 @endsection

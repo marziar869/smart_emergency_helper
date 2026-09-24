@@ -11,7 +11,29 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'customer/request/*/verify-pin',
+            'customer/request/*/advance',
+            'customer/request/*/reset',
+            'customer/request/*/rate',
+            'customer/request/*/upload-photo',
+            'customer/emergency-request',
+            'provider/request/*/status',
+            'provider/request/*/advance',
+            'provider/request/*/verify-pin',
+            'provider/request/accept/*',
+            'provider/request/*/reject',
+            'provider/status',
+            'provider/verification',
+            'emergency-form',
+            'demo-login',
+            'logout',
+            'demo-logout',
+            'admin/provider/*/approve',
+            'admin/provider/*/reject',
+            'admin/user/*/toggle-status',
+            'admin/category/*/toggle',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

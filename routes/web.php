@@ -9,6 +9,7 @@ use App\Models\ServiceCategory;
 use App\Models\EmergencyRequest;
 use App\Http\Controllers\ProviderRegistrationController;
 use App\Http\Controllers\ProviderRequestController;
+use App\Http\Controllers\AdminController;
 
 
 
@@ -46,6 +47,11 @@ Route::post(
 )
 ->name('provider.request.status');
 
+Route::post(
+'/provider/status',
+[ProviderRequestController::class, 'updateAvailability']
+)
+->name('provider.status');
 
 });
 
@@ -62,75 +68,57 @@ Route::post('/register/provider', [ProviderRegistrationController::class, 'store
 |--------------------------------------------------------------------------
 */
 
-/* =====================================================
-   PROVIDER OTP VERIFICATION SUBMIT
-===================================================== */
-
-Route::post('/provider/verification', function (Request $request) {
-
-
-    if (!auth()->check() || auth()->user()->role !== 'provider') {
-
+Route::get('/provider/verification', function () {
+    if (!Auth::check() || Auth::user()->role !== 'provider') {
         return redirect()->route('login');
-
     }
 
+    if (!session()->has('provider_reg_otp')) {
+        session(['provider_reg_otp' => (string) random_int(100000, 999999)]);
+    }
+    $otp = session('provider_reg_otp');
+
+    return view('provider.verification', compact('otp'));
+})->name('provider.verification');
+
+Route::post('/provider/verification', function (Request $request) {
+    if (!auth()->check() || auth()->user()->role !== 'provider') {
+        return redirect()->route('login');
+    }
 
     $request->validate([
-
         'otp' => [
             'required',
             'digits:6'
         ]
-
     ]);
 
+    $validOtp = session('provider_reg_otp');
 
-
-    // Demo OTP
-
-    if ($request->otp != '482931') {
-
-
+    if (!$validOtp || trim($request->otp) !== (string) $validOtp) {
         return back()
             ->withErrors([
-                'otp' => 'Invalid OTP code.'
+                'otp' => 'Invalid OTP code. Please enter the dynamic OTP code shown below.'
             ]);
-
     }
-
-
 
     $provider = auth()->user()->providerProfile;
 
-
-
     if ($provider) {
-
-
         $provider->update([
-
             'phone_verified' => true,
-
             'phone_verified_at' => now(),
-
         ]);
-
-
     }
 
-
+    session()->forget('provider_reg_otp');
 
     return redirect()
-
         ->route('provider.dashboard')
-
         ->with(
             'success',
             'Phone verified successfully. Waiting for admin approval.'
         );
-
-
 })->name('provider.verification.submit');
 
 /* =====================================================
@@ -145,8 +133,24 @@ Route::get('/services', fn() => view('services'))
     ->name('services');
 
 
-Route::get('/providers', fn() => view('providers'))
-    ->name('providers');
+Route::get('/providers', function (Request $request) {
+    $category = $request->query('category');
+    $query = \App\Models\User::where('role', 'provider')
+        ->with(['providerProfile.serviceCategory']);
+
+    if ($category && strtolower($category) !== 'all') {
+        $query->whereHas('providerProfile.serviceCategory', function($q) use ($category) {
+            $catLower = strtolower($category);
+            $q->whereRaw('LOWER(group_name) LIKE ?', ["%{$catLower}%"])
+              ->orWhereRaw('LOWER(name) LIKE ?', ["%{$catLower}%"]);
+        });
+    }
+
+    $providers = $query->latest()->get();
+    $categories = \App\Models\ServiceCategory::all();
+
+    return view('providers', compact('providers', 'categories', 'category'));
+})->name('providers');
 
 
 Route::get(
@@ -182,6 +186,43 @@ Route::post(
     [CustomerAuthController::class, 'login']
 )->name('demo.login');
 
+Route::post(
+    '/logout',
+    [CustomerAuthController::class, 'logout']
+)->name('demo.logout');
+
+Route::get(
+    '/logout',
+    [CustomerAuthController::class, 'logout']
+)->name('logout');
+
+/* =====================================================
+   ADMIN ROUTES
+===================================================== */
+Route::get('/admin', [AdminController::class, 'dashboard'])
+    ->name('admin');
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->name('admin.dashboard');
+
+Route::get('/admin-panel', [AdminController::class, 'dashboard'])
+    ->name('admin.panel');
+
+Route::get('/admin/provider-verification-review/{providerId}', [AdminController::class, 'reviewProvider'])
+    ->name('admin.provider.verification.review');
+
+Route::post('/admin/provider/{id}/approve', [AdminController::class, 'approveProvider'])
+    ->name('admin.provider.approve');
+
+Route::post('/admin/provider/{id}/reject', [AdminController::class, 'rejectProvider'])
+    ->name('admin.provider.reject');
+
+Route::post('/admin/user/{id}/toggle-status', [AdminController::class, 'toggleUserStatus'])
+    ->name('admin.user.toggle');
+
+Route::post('/admin/category/{id}/toggle', [AdminController::class, 'toggleCategory'])
+    ->name('admin.category.toggle');
+
 
 /* =====================================================
    CUSTOMER REGISTRATION
@@ -215,11 +256,10 @@ Route::post('/register/provider',
 
 
 /* =====================================================
-   CUSTOMER DASHBOARD
+   CUSTOMER DASHBOARD & LIFECYCLE ROUTES
 ===================================================== */
 
 Route::get('/customer/dashboard', function () {
-
     if (!auth()->check()) {
         return redirect()->route('login');
     }
@@ -233,26 +273,33 @@ Route::get('/customer/dashboard', function () {
         ->orderBy('name')
         ->get();
 
-    $activeRequest = EmergencyRequest::where(
-        'customer_id',
-        auth()->id()
-    )
-        ->whereNotIn('status', [
-            'completed',
-            'cancelled'
-        ])
+    // Active request is any un-cancelled request that is not yet rated/completed
+    $activeRequest = EmergencyRequest::where('customer_id', auth()->id())
+        ->whereNotIn('status', ['cancelled'])
+        ->where(function($query) {
+            $query->where('status', '!=', 'completed')
+                  ->orWhere('is_rated', false);
+        })
         ->latest()
         ->first();
+
+    $current = $activeRequest ? $activeRequest->current_step : 0;
+
+    $completedRequests = EmergencyRequest::where('customer_id', auth()->id())
+        ->where('status', 'completed')
+        ->where('is_rated', true)
+        ->latest()
+        ->get();
 
     return view('customer.dashboard', [
         'serviceCategories' => $serviceCategories,
         'activeRequest' => $activeRequest,
+        'current' => $current,
+        'completedRequests' => $completedRequests,
     ]);
-
 })->name('customer.dashboard');
 
 Route::get('/customer/profile', function () {
-
     if (!auth()->check()) {
         return redirect()->route('login');
     }
@@ -262,58 +309,82 @@ Route::get('/customer/profile', function () {
     }
 
     return view('customer.profile');
-
 })->name('customer.profile');
+
 Route::post(
     '/customer/emergency-request',
     [EmergencyRequestController::class, 'store']
 )->name('customer.emergency.store');
+
+Route::post(
+    '/customer/request/{id}/advance',
+    [EmergencyRequestController::class, 'advance']
+)->name('customer.request.advance');
+
+Route::post(
+    '/customer/request/{id}/reset',
+    [EmergencyRequestController::class, 'reset']
+)->name('customer.request.reset');
+
+Route::post(
+    '/customer/request/{id}/verify-pin',
+    [EmergencyRequestController::class, 'verifyPin']
+)->name('customer.request.verify_pin');
+
+Route::post(
+    '/customer/request/{id}/upload-photo',
+    [EmergencyRequestController::class, 'uploadPhoto']
+)->name('customer.request.upload_photo');
+
+Route::post(
+    '/customer/request/{id}/rate',
+    [EmergencyRequestController::class, 'rate']
+)->name('customer.request.rate');
 
 /* =====================================================
    PROVIDER DASHBOARD
 ===================================================== */
 
 Route::get('/provider/dashboard', function () {
-
-
     if (!Auth::check() || Auth::user()->role !== 'provider') {
-
         return redirect()->route('login');
-
     }
 
-
-
-    // Pending requests
-    $requests = EmergencyRequest::where('status','pending')
+    // Pending requests available to accept
+    $requests = EmergencyRequest::where('status', 'pending')
         ->whereNull('assigned_provider_id')
+        ->latest()
         ->get();
 
+    // Active accepted job
+    $activeJob = EmergencyRequest::where('assigned_provider_id', auth()->id())
+        ->whereNotIn('status', ['cancelled'])
+        ->where(function($query) {
+            $query->where('status', '!=', 'completed')
+                  ->orWhere('is_rated', false);
+        })
+        ->latest()
+        ->first();
 
+    $current = $activeJob ? $activeJob->current_step : 0;
 
-    // Accepted active job
-    $activeJob = EmergencyRequest::where(
-        'assigned_provider_id',
-        auth()->id()
-    )
-    ->where(
-        'status',
-        'accepted'
-    )
-    ->first();
+    $completedJobs = EmergencyRequest::where('assigned_provider_id', auth()->id())
+        ->where('status', 'completed')
+        ->latest()
+        ->get();
 
-
-
-    return view(
-        'provider.dashboard',
-        compact(
-            'requests',
-            'activeJob'
-        )
-    );
-
-
+    return view('provider.dashboard', compact('requests', 'activeJob', 'current', 'completedJobs'));
 })->name('provider.dashboard');
+
+Route::post(
+    '/provider/request/{id}/advance',
+    [ProviderRequestController::class, 'advance']
+)->name('provider.request.advance');
+
+Route::post(
+    '/provider/request/{id}/verify-pin',
+    [EmergencyRequestController::class, 'verifyPin']
+)->name('provider.request.verify_pin');
 /* =====================================================
    PROVIDER PROFILE
 ===================================================== */
@@ -332,269 +403,6 @@ Route::get('/provider/profile', function () {
 
 
 })->name('provider.profile');
-
-
-
-/* =====================================================
-   PROVIDER OTP VERIFICATION
-===================================================== */
-
-Route::get('/provider/verification', function () {
-
-
-    if (!Auth::check() || Auth::user()->role !== 'provider') {
-
-        return redirect()->route('login');
-
-    }
-
-
-    return view('provider.verification');
-
-
-})->name('provider.verification');
-
-
-/* =====================================================
-   ADMIN DASHBOARD
-===================================================== */
-
-Route::get('/admin/dashboard', function () {
-
-    if (
-        !session('demo_logged_in') ||
-        session('demo_role') !== 'admin'
-    ) {
-
-        return redirect()->route('login');
-
-    }
-
-
-    /*
-     * Newly registered provider applications
-     */
-
-    $providerApplications =
-        session(
-            'provider_applications',
-            []
-        );
-
-
-    return view(
-        'admin.dashboard',
-        [
-
-            'providerApplications' =>
-                $providerApplications,
-
-        ]
-    );
-
-})->name('admin.dashboard');
-
-
-
-/* =====================================================
-   ADMIN PROVIDER VERIFICATION REVIEW
-===================================================== */
-
-Route::get(
-    '/admin/provider-verification/{provider}',
-    function ($provider) {
-
-        if (
-            !session('demo_logged_in') ||
-            session('demo_role') !== 'admin'
-        ) {
-
-            return redirect()
-                ->route('login');
-
-        }
-
-
-        /*
-         * Demo Provider Applications
-         */
-
-        $demoProviders = [
-
-            'PRV-1052' => [
-
-                'id' =>
-                    'PRV-1052',
-
-                'name' =>
-                    'Nurse Farzana Akter',
-
-                'category' =>
-                    'Home Nurse',
-
-                'phone' =>
-                    '+880 1712-345678',
-
-                'email' =>
-                    'farzana.akter@seh.com.bd',
-
-                'experience' =>
-                    '6 Years',
-
-                'area' =>
-                    'Dhanmondi',
-
-                'address' =>
-                    'Dhanmondi, Dhaka',
-
-                'created' =>
-                    '12 Aug 2026',
-
-                'submitted' =>
-                    'Today · 10:42 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-
-            'PRV-1053' => [
-
-                'id' =>
-                    'PRV-1053',
-
-                'name' =>
-                    'VoltFix Electricals',
-
-                'category' =>
-                    'Electrician',
-
-                'phone' =>
-                    '+880 1812-456789',
-
-                'email' =>
-                    'voltfix@seh.com.bd',
-
-                'experience' =>
-                    '9 Years',
-
-                'area' =>
-                    'Mirpur',
-
-                'address' =>
-                    'Mirpur, Dhaka',
-
-                'created' =>
-                    '13 Aug 2026',
-
-                'submitted' =>
-                    'Today · 11:15 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-
-            'PRV-1054' => [
-
-                'id' =>
-                    'PRV-1054',
-
-                'name' =>
-                    'Dhaka Emergency Ambulance',
-
-                'category' =>
-                    'Ambulance',
-
-                'phone' =>
-                    '+880 1912-567890',
-
-                'email' =>
-                    'dhaka.ambulance@seh.com.bd',
-
-                'experience' =>
-                    '8 Years',
-
-                'area' =>
-                    'Uttara',
-
-                'address' =>
-                    'Uttara, Dhaka',
-
-                'created' =>
-                    '14 Aug 2026',
-
-                'submitted' =>
-                    'Today · 11:48 AM',
-
-                'phone_verified' =>
-                    true,
-
-                'status' =>
-                    'PENDING ADMIN REVIEW',
-
-            ],
-
-        ];
-
-
-        /*
-         * Registered applications
-         */
-
-        $registeredApplications =
-            session(
-                'provider_applications',
-                []
-            );
-
-
-        /*
-         * Merge Demo + Registered
-         */
-
-        $allProviders =
-            array_merge(
-                $demoProviders,
-                $registeredApplications
-            );
-
-
-        /*
-         * Invalid Provider ID → 404
-         */
-
-        abort_unless(
-            isset($allProviders[$provider]),
-            404
-        );
-
-
-        return view(
-            'admin.provider-verification-review',
-            [
-
-                'providerId' =>
-                    $provider,
-
-                'provider' =>
-                    $allProviders[$provider],
-
-            ]
-        );
-
-    }
-)->name(
-    'admin.provider.verification.review'
-);
 
 
 
@@ -684,12 +492,6 @@ Route::post('/emergency-form', function (Request $request) {
             'CoolCare AC Service',
             'FrostFix Solutions',
             'AirPro Technical',
-        ],
-
-        'Locksmith' => [
-            'QuickLock Dhaka',
-            'SecureKey Service',
-            'LockCare 24/7',
         ],
 
         'Cleaner' => [
