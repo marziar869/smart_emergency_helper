@@ -1,1362 +1,377 @@
 @extends('layouts.app')
 
+@section('title', 'Request Emergency Assistance — Smart Emergency Helper')
+
 @section('content')
 
 <style>
-    .emergency-form-page {
-        background: #f5f1e8;
-        padding: 64px 0 80px;
-        min-height: 700px;
+/* =========================================================
+   EMERGENCY FORM STYLES (EMBEDDED IN BLADE)
+   ========================================================= */
+
+.emergency-form-page {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding: 24px 0 40px;
+}
+.emergency-form-container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Header */
+.emergency-header-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.emergency-eyebrow {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #dc2626;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.emergency-header-box h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.emergency-subtitle {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.btn-nav-link {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-nav-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+/* Grid */
+.emergency-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+}
+
+/* Main Form Card */
+.emergency-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 20px;
+}
+.form-field-row {
+    margin-bottom: 14px;
+}
+.form-field-row label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+.form-field-row select,
+.form-field-row input,
+.form-field-row textarea {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+}
+.form-field-row select:focus,
+.form-field-row input:focus,
+.form-field-row textarea:focus {
+    outline: none;
+    border-color: #dc2626;
+}
+
+.category-toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+.cat-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 7px 4px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #475569;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+.cat-btn.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+.priority-toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+.p-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 6px 2px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #475569;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+.p-btn.active.p-crit { background: #dc2626; color: #ffffff; border-color: #dc2626; }
+.p-btn.active.p-high { background: #d97706; color: #ffffff; border-color: #d97706; }
+.p-btn.active.p-med  { background: #0284c7; color: #ffffff; border-color: #0284c7; }
+.p-btn.active.p-norm { background: #475569; color: #ffffff; border-color: #475569; }
+
+.two-col-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn-emergency-submit {
+    width: 100%;
+    background: #dc2626;
+    color: #ffffff;
+    border: none;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-weight: 800;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s;
+}
+.btn-emergency-submit:hover {
+    background: #b91c1c;
+}
+
+/* Sidebar */
+.sidebar-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+.sidebar-panel h3 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+.step-item-sm {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 11px;
+    color: #334155;
+    margin-bottom: 8px;
+}
+.step-num-sm {
+    font-size: 9px;
+    font-weight: 900;
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .emergency-form-grid,
+    .two-col-fields {
+        grid-template-columns: 1fr;
     }
-
-    .emergency-form-container {
-        width: min(1240px, calc(100% - 48px));
-        margin: 0 auto;
-    }
-
-    /* =========================
-       PAGE HEADER
-    ========================= */
-
-    .emergency-form-eyebrow {
-        margin-bottom: 15px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
-        color: #6b6b6b;
-    }
-
-    .emergency-form-title {
-        margin: 0;
-        font-size: 48px;
-        line-height: 1;
-        font-weight: 900;
-        letter-spacing: -2px;
-        color: #171717;
-    }
-
-    .emergency-form-subtitle {
-        max-width: 720px;
-        margin-top: 18px;
-        margin-bottom: 0;
-        font-size: 18px;
-        line-height: 1.55;
-        color: #666;
-    }
-
-    /* =========================
-       MAIN GRID
-    ========================= */
-
-    .emergency-form-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 320px;
-        gap: 24px;
-        margin-top: 42px;
-        align-items: start;
-    }
-
-    /* =========================
-       FORM CARD
-    ========================= */
-
-    .emergency-request-card {
-        background: #fff;
-        border: 1px solid #d9d9d9;
-        padding: 32px;
-    }
-
-    .emergency-field {
-        margin-bottom: 30px;
-    }
-
-    .emergency-label {
-        display: block;
-        margin-bottom: 11px;
-        font-family: monospace;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 1.3px;
-        color: #4c4c4c;
-    }
-
-    /* SERVICE GROUP */
-
-    .emergency-service-groups {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-
-    .emergency-group-btn {
-        height: 42px;
-        border: 1px solid #d9d9d9;
-        background: #fff;
-        color: #222;
-        cursor: pointer;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: .7px;
-        transition: .15s ease;
-    }
-
-    .emergency-group-btn.active {
-        background: #171717;
-        border-color: #171717;
-        color: #fff;
-    }
-
-    /* INPUT */
-
-    .emergency-request-card select,
-    .emergency-request-card input,
-    .emergency-request-card textarea {
-        width: 100%;
-        border: 1px solid #d5d0c5;
-        background: #f5f1e8;
-        color: #171717;
-        outline: none;
-        font-family: inherit;
-        font-size: 14px;
-    }
-
-    .emergency-request-card select,
-    .emergency-request-card input {
-        height: 46px;
-        padding: 0 16px;
-    }
-
-    .emergency-request-card textarea {
-        min-height: 125px;
-        padding: 15px;
-        resize: vertical;
-    }
-
-    .emergency-request-card input::placeholder,
-    .emergency-request-card textarea::placeholder {
-        color: #999;
-    }
-
-    .emergency-request-card select:focus,
-    .emergency-request-card input:focus,
-    .emergency-request-card textarea:focus {
-        border-color: #171717;
-    }
-
-    /* PRIORITY */
-
-    .emergency-priorities {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-    }
-
-    .emergency-priority-btn {
-        height: 42px;
-        border: 1px solid #ddd;
-        background: #fff;
-        color: #222;
-        cursor: pointer;
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: .6px;
-    }
-
-    .emergency-priority-btn.active {
-        background: #ed1c24;
-        border-color: #ed1c24;
-        color: #fff;
-    }
-
-    .emergency-priority-note {
-        margin-top: 10px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1px;
-        color: #ed1c24;
-    }
-
-    /* TWO COLUMNS */
-
-    .emergency-two-fields {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-
-    /* CREATE BUTTON */
-
-    .emergency-create-btn {
-        width: 100%;
-        height: 49px;
-        border: 0;
-        background: #ed1c24;
-        color: #fff;
-        cursor: pointer;
-        font-size: 11px;
-        font-weight: 900;
-        letter-spacing: .4px;
-        transition: .15s ease;
-    }
-
-    .emergency-create-btn:hover {
-        background: #d31820;
-    }
-
-    /* VALIDATION */
-
-    .emergency-form-error {
-        display: none;
-        margin-bottom: 18px;
-        padding: 13px 15px;
-        border-left: 3px solid #ed1c24;
-        background: #fff2f2;
-        color: #b5161c;
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .emergency-form-success {
-        display: none;
-        margin-bottom: 18px;
-        padding: 15px;
-        border-left: 3px solid #171717;
-        background: #f3f3f3;
-        color: #171717;
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    /* =========================
-       SIDEBAR
-    ========================= */
-
-    .emergency-sidebar-card {
-        margin-bottom: 24px;
-        padding: 25px;
-        border: 1px solid #dadada;
-        background: #fff;
-    }
-
-    .emergency-sidebar-title {
-        margin-bottom: 22px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        color: #777;
-    }
-
-    /* DISPATCH */
-
-    .emergency-dispatch-row {
-        display: grid;
-        grid-template-columns: 24px 1fr;
-        gap: 0;
-        margin-bottom: 17px;
-    }
-
-    .emergency-dispatch-row:last-child {
-        margin-bottom: 0;
-    }
-
-    .emergency-dispatch-number {
-        font-family: monospace;
-        font-size: 10px;
-        color: #888;
-    }
-
-    .emergency-dispatch-text {
-        font-size: 14px;
-        font-weight: 800;
-        line-height: 1.25;
-        color: #222;
-    }
-
-    /* CURRENT SELECTION */
-
-    .emergency-selection-row {
-        min-height: 47px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .emergency-selection-row:last-child {
-        border-bottom: 0;
-    }
-
-    .emergency-selection-label {
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1px;
-        color: #777;
-    }
-
-    .emergency-selection-value {
-        font-size: 14px;
-        font-weight: 800;
-        text-align: right;
-        color: #222;
-    }
-
-    .emergency-selection-priority {
-        padding: 7px 10px;
-        background: #ed1c24;
-        color: #fff;
-        font-size: 11px;
-    }
-
-    /* SAFETY */
-
-    .emergency-safety-item {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 12px;
-        font-size: 14px;
-        font-weight: 800;
-    }
-
-    .emergency-safety-item:last-child {
-        margin-bottom: 0;
-    }
-
-    .emergency-safety-dot {
-        width: 6px;
-        height: 6px;
-        background: #ed1c24;
-        flex-shrink: 0;
-    }
-
-    /* DEMO */
-
-    .emergency-demo-card {
-        border-left: 1px solid #1684ff;
-    }
-
-    .emergency-demo-card strong {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 12px;
-        letter-spacing: .5px;
-    }
-
-    .emergency-demo-card p {
-        margin: 0;
-        color: #777;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 950px) {
-
-        .emergency-form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .emergency-sidebar {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .emergency-sidebar-card {
-            margin-bottom: 0;
-        }
-    }
-
-    @media (max-width: 700px) {
-
-        .emergency-form-page {
-            padding: 40px 0 60px;
-        }
-
-        .emergency-form-container {
-            width: min(100% - 30px, 1240px);
-        }
-
-        .emergency-form-title {
-            font-size: 34px;
-            letter-spacing: -1px;
-        }
-
-        .emergency-form-subtitle {
-            font-size: 16px;
-        }
-
-        .emergency-request-card {
-            padding: 20px;
-        }
-
-        .emergency-service-groups {
-            grid-template-columns: 1fr;
-        }
-
-        .emergency-priorities {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .emergency-two-fields {
-            grid-template-columns: 1fr;
-        }
-
-        .emergency-sidebar {
-            grid-template-columns: 1fr;
-        }
-    }
+}
 </style>
 
-
-<section class="emergency-form-page">
-
+<div class="emergency-form-page">
     <div class="emergency-form-container">
 
-        {{-- PAGE HEADING --}}
-
-        <div class="emergency-form-eyebrow">
-            CUSTOMER CONSOLE · EMERGENCY DISPATCH
+        <!-- HEADER -->
+        <div class="emergency-header-box">
+            <div>
+                <div class="emergency-eyebrow">CUSTOMER CONSOLE · RAPID DISPATCH</div>
+                <h1>REQUEST EMERGENCY ASSISTANCE</h1>
+                <p class="emergency-subtitle">System will identify the nearest verified responder in Dhaka.</p>
+            </div>
+            <div>
+                <a href="{{ route('home') }}" class="btn-nav-link">Home</a>
+            </div>
         </div>
 
-        <h1 class="emergency-form-title">
-            REQUEST EMERGENCY ASSISTANCE
-        </h1>
-
-        <p class="emergency-form-subtitle">
-            Tell us what happened. The system will identify the most suitable
-            verified and available provider.
-        </p>
-
-
         <div class="emergency-form-grid">
+            <!-- MAIN FORM CARD -->
+            <div class="emergency-card">
+                <form method="POST" action="{{ route('emergency.form.submit') }}">
+                    @csrf
+                    <input type="hidden" name="service_group" id="serviceGroupInput" value="Emergency">
+                    <input type="hidden" name="priority" id="priorityInput" value="Critical">
 
-            {{-- =========================
-                 LEFT SIDE FORM
-            ========================= --}}
-
-            <div class="emergency-request-card">
-
-                <form
-    id="emergencyForm"
-    method="POST"
-    action="{{ route('emergency.form.submit') }}"
->
-
-    @csrf
-
-                    {{-- hidden values --}}
-
-                    <input
-                        type="hidden"
-                        name="service_group"
-                        id="serviceGroupInput"
-                        value="Emergency"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="priority"
-                        id="priorityInput"
-                        value="Critical"
-                    >
-
-
-                    {{-- SERVICE GROUP --}}
-
-                    <div class="emergency-field">
-
-                        <label class="emergency-label">
-                            SERVICE GROUP
-                        </label>
-
-                        <div class="emergency-service-groups">
-
-                            <button
-                                type="button"
-                                class="emergency-group-btn active"
-                                data-group="Emergency"
-                            >
-                                EMERGENCY
-                            </button>
-
-                            <button
-                                type="button"
-                                class="emergency-group-btn"
-                                data-group="Technical"
-                            >
-                                TECHNICAL
-                            </button>
-
-                            <button
-                                type="button"
-                                class="emergency-group-btn"
-                                data-group="Home"
-                            >
-                                HOME
-                            </button>
-
+                    <!-- SERVICE GROUP -->
+                    <div class="form-field-row">
+                        <label>Service Group</label>
+                        <div class="category-toggle-grid">
+                            <button type="button" class="cat-btn active" data-group="Emergency">EMERGENCY</button>
+                            <button type="button" class="cat-btn" data-group="Technical">TECHNICAL</button>
+                            <button type="button" class="cat-btn" data-group="Home">HOME</button>
                         </div>
-
                     </div>
 
-
-                    {{-- SERVICE TYPE --}}
-
-                    <div class="emergency-field">
-
-                        <label
-                            class="emergency-label"
-                            for="serviceType"
-                        >
-                            SERVICE TYPE
-                        </label>
-
-                        <select
-                            name="service_type"
-                            id="serviceType"
-                        >
-                            <option value="Ambulance">
-                                Ambulance
-                            </option>
-
-                            <option value="Blood Donor">
-                                Blood Donor
-                            </option>
-
-                            <option value="Home Nurse">
-                                Home Nurse
-                            </option>
+                    <!-- SERVICE TYPE -->
+                    <div class="form-field-row">
+                        <label for="serviceType">Service Type</label>
+                        <select name="service_type" id="serviceType" required>
+                            <option value="Ambulance">Ambulance</option>
+                            <option value="Blood Donor">Blood Donor</option>
+                            <option value="Home Nurse">Home Nurse</option>
                         </select>
-
                     </div>
 
-
-                    {{-- PRIORITY --}}
-
-                    <div class="emergency-field">
-
-                        <label class="emergency-label">
-                            PRIORITY
-                        </label>
-
-                        <div class="emergency-priorities">
-
-                            <button
-                                type="button"
-                                class="emergency-priority-btn active"
-                                data-priority="Critical"
-                            >
-                                CRITICAL
-                            </button>
-
-                            <button
-                                type="button"
-                                class="emergency-priority-btn"
-                                data-priority="High"
-                            >
-                                HIGH
-                            </button>
-
-                            <button
-                                type="button"
-                                class="emergency-priority-btn"
-                                data-priority="Medium"
-                            >
-                                MEDIUM
-                            </button>
-
-                            <button
-                                type="button"
-                                class="emergency-priority-btn"
-                                data-priority="Normal"
-                            >
-                                NORMAL
-                            </button>
-
+                    <!-- PRIORITY -->
+                    <div class="form-field-row">
+                        <label>Priority Level</label>
+                        <div class="priority-toggle-grid">
+                            <button type="button" class="p-btn p-crit active" data-priority="Critical">CRITICAL</button>
+                            <button type="button" class="p-btn p-high" data-priority="High">HIGH</button>
+                            <button type="button" class="p-btn p-med" data-priority="Medium">MEDIUM</button>
+                            <button type="button" class="p-btn p-norm" data-priority="Normal">NORMAL</button>
                         </div>
-
-                        <div
-                            class="emergency-priority-note"
-                            id="priorityNote"
-                        >
-                            CRITICAL REQUESTS ARE DISPATCHED FIRST AND BROADCAST FASTER.
-                        </div>
-
                     </div>
 
-
-                    {{-- AREA + ADDRESS --}}
-
-                    <div class="emergency-two-fields">
-
-                        <div class="emergency-field">
-
-                            <label
-                                class="emergency-label"
-                                for="emergencyArea"
-                            >
-                                DHAKA AREA
-                            </label>
-
-                            <select
-                                name="area"
-                                id="emergencyArea"
-                            >
-
-                                <option value="Dhanmondi">
-                                    Dhanmondi
-                                </option>
-
-                                <option value="Mirpur">
-                                    Mirpur
-                                </option>
-
-                                <option value="Uttara">
-                                    Uttara
-                                </option>
-
-                                <option value="Banani">
-                                    Banani
-                                </option>
-
-                                <option value="Mohammadpur">
-                                    Mohammadpur
-                                </option>
-
-                                <option value="Gulshan">
-                                    Gulshan
-                                </option>
-
-                                <option value="Badda">
-                                    Badda
-                                </option>
-
-                                <option value="Bashundhara">
-                                    Bashundhara
-                                </option>
-
-                                <option value="Farmgate">
-                                    Farmgate
-                                </option>
-
-                                <option value="Motijheel">
-                                    Motijheel
-                                </option>
-
+                    <!-- AREA & ADDRESS -->
+                    <div class="two-col-fields">
+                        <div class="form-field-row">
+                            <label for="emergencyArea">Dhaka Area</label>
+                            <select name="area" id="emergencyArea" required>
+                                <option value="Dhanmondi">Dhanmondi</option>
+                                <option value="Mirpur">Mirpur</option>
+                                <option value="Uttara">Uttara</option>
+                                <option value="Banani">Banani</option>
+                                <option value="Mohammadpur">Mohammadpur</option>
+                                <option value="Gulshan">Gulshan</option>
                             </select>
-
                         </div>
 
-
-                        <div class="emergency-field">
-
-                            <label
-                                class="emergency-label"
-                                for="detailedAddress"
-                            >
-                                DETAILED ADDRESS
-                            </label>
-
-                            <input
-                                type="text"
-                                id="detailedAddress"
-                                name="address"
-                                placeholder="e.g. Road 8A, House 42"
-                            >
-
+                        <div class="form-field-row">
+                            <label for="detailedAddress">Detailed Address</label>
+                            <input type="text" id="detailedAddress" name="address" placeholder="e.g. Road 8A, House 42" required>
                         </div>
-
                     </div>
 
-
-                    {{-- DESCRIPTION --}}
-
-                    <div class="emergency-field">
-
-                        <label
-                            class="emergency-label"
-                            for="problemDescription"
-                        >
-                            DESCRIPTION
-                        </label>
-
-                        <textarea
-                            id="problemDescription"
-                            name="description"
-                            placeholder="Briefly describe what happened..."
-                        ></textarea>
-
+                    <!-- DESCRIPTION -->
+                    <div class="form-field-row">
+                        <label for="problemDescription">Description</label>
+                        <textarea id="problemDescription" name="description" rows="3" placeholder="Briefly describe what happened..." required></textarea>
                     </div>
 
-
-                    {{-- ERROR --}}
-
-                    <div
-                        class="emergency-form-error"
-                        id="emergencyFormError"
-                    ></div>
-
-
-                    {{-- SUCCESS --}}
-
-                    <div
-                        class="emergency-form-success"
-                        id="emergencyFormSuccess"
-                    ></div>
-
-
-                    {{-- CREATE REQUEST --}}
-
-                    <button
-                        type="submit"
-                        class="emergency-create-btn"
-                    >
-                        CREATE REQUEST
+                    <button type="submit" class="btn-emergency-submit">
+                        CREATE REQUEST &amp; DISPATCH &rarr;
                     </button>
-
                 </form>
-
             </div>
 
-
-
-            {{-- =========================
-                 RIGHT SIDE
-            ========================= --}}
-
-            <aside class="emergency-sidebar">
-
-
-                {{-- HOW DISPATCH WORKS --}}
-
-                <div class="emergency-sidebar-card">
-
-                    <div class="emergency-sidebar-title">
-                        HOW DISPATCH WORKS
-                    </div>
-
-
-                    <div class="emergency-dispatch-row">
-
-                        <span class="emergency-dispatch-number">
-                            01
-                        </span>
-
-                        <span class="emergency-dispatch-text">
-                            Request Created
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-dispatch-row">
-
-                        <span class="emergency-dispatch-number">
-                            02
-                        </span>
-
-                        <span class="emergency-dispatch-text">
-                            Eligible Providers Filtered
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-dispatch-row">
-
-                        <span class="emergency-dispatch-number">
-                            03
-                        </span>
-
-                        <span class="emergency-dispatch-text">
-                            Recommendation Score Calculated
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-dispatch-row">
-
-                        <span class="emergency-dispatch-number">
-                            04
-                        </span>
-
-                        <span class="emergency-dispatch-text">
-                            Best Provider Contacted
-                        </span>
-
-                    </div>
-
-
-                    <div class="emergency-dispatch-row">
-
-                        <span class="emergency-dispatch-number">
-                            05
-                        </span>
-
-                        <span class="emergency-dispatch-text">
-                            Automatic Broadcast if Declined/Expired
-                        </span>
-
-                    </div>
-
+            <!-- SIDEBAR -->
+            <aside>
+                <div class="sidebar-panel">
+                    <h3>5 DISPATCH STEPS</h3>
+                    <div class="step-item-sm"><span class="step-num-sm">01</span> <span>Pending Request</span></div>
+                    <div class="step-item-sm"><span class="step-num-sm">02</span> <span>Accepted by Responder</span></div>
+                    <div class="step-item-sm"><span class="step-num-sm">03</span> <span>On The Way to Site</span></div>
+                    <div class="step-item-sm"><span class="step-num-sm">04</span> <span>Arrival PIN Verification</span></div>
+                    <div class="step-item-sm"><span class="step-num-sm">05</span> <span>Completion PIN & Cash Fee</span></div>
                 </div>
 
-
-                {{-- CURRENT SELECTION --}}
-
-                <div class="emergency-sidebar-card">
-
-                    <div class="emergency-sidebar-title">
-                        CURRENT SELECTION
+                <div class="sidebar-panel">
+                    <h3>SERVICE SAFETY</h3>
+                    <div style="font-size:11px; color:#475569; display:flex; flex-direction:column; gap:6px;">
+                        <div>✓ 4-Digit Arrival PIN</div>
+                        <div>✓ 4-Digit Completion PIN</div>
+                        <div>✓ Fixed BDT Cash Fee</div>
                     </div>
-
-
-                    <div class="emergency-selection-row">
-
-                        <span class="emergency-selection-label">
-                            GROUP
-                        </span>
-
-                        <strong
-                            class="emergency-selection-value"
-                            id="currentGroup"
-                        >
-                            Emergency
-                        </strong>
-
-                    </div>
-
-
-                    <div class="emergency-selection-row">
-
-                        <span class="emergency-selection-label">
-                            SERVICE
-                        </span>
-
-                        <strong
-                            class="emergency-selection-value"
-                            id="currentService"
-                        >
-                            Ambulance
-                        </strong>
-
-                    </div>
-
-
-                    <div class="emergency-selection-row">
-
-                        <span class="emergency-selection-label">
-                            PRIORITY
-                        </span>
-
-                        <strong
-                            class="emergency-selection-value emergency-selection-priority"
-                            id="currentPriority"
-                        >
-                            CRITICAL
-                        </strong>
-
-                    </div>
-
-
-                    <div class="emergency-selection-row">
-
-                        <span class="emergency-selection-label">
-                            AREA
-                        </span>
-
-                        <strong
-                            class="emergency-selection-value"
-                            id="currentArea"
-                        >
-                            Dhanmondi
-                        </strong>
-
-                    </div>
-
                 </div>
-
-
-                {{-- SERVICE SAFETY --}}
-
-                <div class="emergency-sidebar-card">
-
-                    <div class="emergency-sidebar-title">
-                        SERVICE SAFETY
-                    </div>
-
-
-                    <div class="emergency-safety-item">
-                        <span class="emergency-safety-dot"></span>
-                        Arrival PIN
-                    </div>
-
-                    <div class="emergency-safety-item">
-                        <span class="emergency-safety-dot"></span>
-                        Before Photo
-                    </div>
-
-                    <div class="emergency-safety-item">
-                        <span class="emergency-safety-dot"></span>
-                        After Photo
-                    </div>
-
-                    <div class="emergency-safety-item">
-                        <span class="emergency-safety-dot"></span>
-                        Completion PIN
-                    </div>
-
-                </div>
-
-
-                {{-- DEMONSTRATION --}}
-
-                <div
-                    class="emergency-sidebar-card emergency-demo-card"
-                >
-
-                    <strong>
-                        DEMONSTRATION ONLY
-                    </strong>
-
-                    <p>
-                        No backend is connected. Submitting creates a local
-                        request reference so you can preview the dispatch flow.
-                    </p>
-
-                </div>
-
             </aside>
-
         </div>
 
     </div>
-
-</section>
-
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const groupBtns = document.querySelectorAll('.cat-btn');
+    const groupInput = document.getElementById('serviceGroupInput');
+    const serviceSelect = document.getElementById('serviceType');
+    const priorityBtns = document.querySelectorAll('.p-btn');
+    const priorityInput = document.getElementById('priorityInput');
 
-    /*
-    ===================================
-    SERVICE DATA
-    ===================================
-    */
-
-    const serviceData = {
-
-        Emergency: [
-            'Ambulance',
-            'Blood Donor',
-            'Home Nurse'
-        ],
-
-        Technical: [
-            'Electrician',
-            'Plumber',
-            'AC Technician',
-            'Locksmith'
-        ],
-
-        Home: [
-            'Cleaner',
-            'Carpenter'
-        ]
-
+    const serviceMap = {
+        'Emergency': ['Ambulance', 'Blood Donor', 'Home Nurse'],
+        'Technical': ['Electrician', 'Plumber', 'AC Technician'],
+        'Home': ['Cleaner', 'Carpenter']
     };
 
+    groupBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            groupBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const grp = this.dataset.group;
+            groupInput.value = grp;
 
-    /*
-    ===================================
-    SERVICE GROUP
-    ===================================
-    */
-
-    const groupButtons =
-        document.querySelectorAll(
-            '.emergency-group-btn'
-        );
-
-    const serviceSelect =
-        document.getElementById(
-            'serviceType'
-        );
-
-    const groupInput =
-        document.getElementById(
-            'serviceGroupInput'
-        );
-
-    const currentGroup =
-        document.getElementById(
-            'currentGroup'
-        );
-
-    const currentService =
-        document.getElementById(
-            'currentService'
-        );
-
-
-    groupButtons.forEach(function (button) {
-
-        button.addEventListener(
-            'click',
-            function () {
-
-                groupButtons.forEach(
-                    function (btn) {
-
-                        btn.classList.remove(
-                            'active'
-                        );
-
-                    }
-                );
-
-
-                this.classList.add(
-                    'active'
-                );
-
-
-                const selectedGroup =
-                    this.dataset.group;
-
-
-                groupInput.value =
-                    selectedGroup;
-
-
-                currentGroup.textContent =
-                    selectedGroup;
-
-
-                serviceSelect.innerHTML =
-                    '';
-
-
-                serviceData[selectedGroup]
-                    .forEach(function (service) {
-
-                        const option =
-                            document.createElement(
-                                'option'
-                            );
-
-                        option.value =
-                            service;
-
-                        option.textContent =
-                            service;
-
-                        serviceSelect.appendChild(
-                            option
-                        );
-
-                    });
-
-
-                currentService.textContent =
-                    serviceData[selectedGroup][0];
-
-            }
-        );
-
+            serviceSelect.innerHTML = '';
+            (serviceMap[grp] || []).forEach(svc => {
+                const opt = document.createElement('option');
+                opt.value = svc;
+                opt.textContent = svc;
+                serviceSelect.appendChild(opt);
+            });
+        });
     });
 
-
-    /*
-    ===================================
-    SERVICE SELECT
-    ===================================
-    */
-
-    serviceSelect.addEventListener(
-        'change',
-        function () {
-
-            currentService.textContent =
-                this.value;
-
-        }
-    );
-
-
-    /*
-    ===================================
-    PRIORITY
-    ===================================
-    */
-
-    const priorityButtons =
-        document.querySelectorAll(
-            '.emergency-priority-btn'
-        );
-
-    const priorityInput =
-        document.getElementById(
-            'priorityInput'
-        );
-
-    const currentPriority =
-        document.getElementById(
-            'currentPriority'
-        );
-
-    const priorityNote =
-        document.getElementById(
-            'priorityNote'
-        );
-
-
-    priorityButtons.forEach(
-        function (button) {
-
-            button.addEventListener(
-                'click',
-                function () {
-
-                    priorityButtons.forEach(
-                        function (btn) {
-
-                            btn.classList.remove(
-                                'active'
-                            );
-
-                        }
-                    );
-
-
-                    this.classList.add(
-                        'active'
-                    );
-
-
-                    const selectedPriority =
-                        this.dataset.priority;
-
-
-                    priorityInput.value =
-                        selectedPriority;
-
-
-                    currentPriority.textContent =
-                        selectedPriority.toUpperCase();
-
-
-                    if (
-                        selectedPriority ===
-                        'Critical'
-                    ) {
-
-                        priorityNote.textContent =
-                            'CRITICAL REQUESTS ARE DISPATCHED FIRST AND BROADCAST FASTER.';
-
-                    }
-
-                    else if (
-                        selectedPriority ===
-                        'High'
-                    ) {
-
-                        priorityNote.textContent =
-                            'HIGH PRIORITY REQUESTS RECEIVE FASTER DISPATCH.';
-
-                    }
-
-                    else if (
-                        selectedPriority ===
-                        'Medium'
-                    ) {
-
-                        priorityNote.textContent =
-                            'MEDIUM PRIORITY REQUESTS FOLLOW STANDARD DISPATCH.';
-
-                    }
-
-                    else {
-
-                        priorityNote.textContent =
-                            'NORMAL REQUESTS ARE PROCESSED BASED ON PROVIDER AVAILABILITY.';
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /*
-    ===================================
-    AREA
-    ===================================
-    */
-
-    const areaSelect =
-        document.getElementById(
-            'emergencyArea'
-        );
-
-    const currentArea =
-        document.getElementById(
-            'currentArea'
-        );
-
-
-    areaSelect.addEventListener(
-        'change',
-        function () {
-
-            currentArea.textContent =
-                this.value;
-
-        }
-    );
-
-
-    /*
-    ===================================
-    FORM
-    ===================================
-    */
-
-    const emergencyForm =
-        document.getElementById(
-            'emergencyForm'
-        );
-
-    const errorBox =
-        document.getElementById(
-            'emergencyFormError'
-        );
-
-    const successBox =
-        document.getElementById(
-            'emergencyFormSuccess'
-        );
-
-
-    emergencyForm.addEventListener(
-        'submit',
-        function (event) {
-            
-/*FORM VALIDATION*/
-
-const emergencyForm =
-    document.getElementById(
-        'emergencyForm'
-    );
-
-const errorBox =
-    document.getElementById(
-        'emergencyFormError'
-    );
-
-
-emergencyForm.addEventListener(
-    'submit',
-    function (event) {
-
-        errorBox.style.display =
-            'none';
-
-
-        const address =
-            document
-                .getElementById(
-                    'detailedAddress'
-                )
-                .value
-                .trim();
-
-
-        const description =
-            document
-                .getElementById(
-                    'problemDescription'
-                )
-                .value
-                .trim();
-
-
-        if (!address) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please enter your detailed address.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-
-        if (!description) {
-
-            event.preventDefault();
-
-            errorBox.textContent =
-                'Please describe what happened.';
-
-            errorBox.style.display =
-                'block';
-
-            return;
-        }
-
-    }
-);
-
-            if (!description) {
-
-                errorBox.textContent =
-                    'Please describe what happened.';
-
-                errorBox.style.display =
-                    'block';
-
-                return;
-
-            }
-
-
-            const requestReference =
-                'REQ-' +
-                Date.now()
-                    .toString()
-                    .slice(-6);
-
-
-            successBox.innerHTML =
-                '<strong>Request Created</strong><br>' +
-                'Reference: ' +
-                requestReference +
-                '<br>' +
-                currentService.textContent +
-                ' · ' +
-                currentPriority.textContent +
-                ' · ' +
-                currentArea.textContent;
-
-
-            successBox.style.display =
-                'block';
-
-        }
-    );
-
+    priorityBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            priorityBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            priorityInput.value = this.dataset.priority;
+        });
+    });
 });
 </script>
 

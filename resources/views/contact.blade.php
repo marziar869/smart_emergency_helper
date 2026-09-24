@@ -1,342 +1,209 @@
 @extends('layouts.app')
 
+@section('title', 'Contact Dispatch — Smart Emergency Helper')
 
 @section('content')
 
+<style>
+/* =========================================================
+   CONTACT PAGE STYLES (EMBEDDED IN BLADE)
+   ========================================================= */
 
-<!-- HERO -->
+.contact-page {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding: 24px 0 40px;
+}
+.contact-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
 
-<section class="contact-hero">
+.contact-header-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.contact-eyebrow {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #dc2626;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.contact-header-box h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.contact-subtitle {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.btn-nav-link {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-nav-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    text-decoration: none;
+}
 
-<div class="services-container">
+.contact-cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.contact-card-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 18px;
+    transition: all 0.15s ease;
+}
+.contact-card-box:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.contact-card-box small {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #dc2626;
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.contact-card-box h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+}
+.contact-card-box p {
+    font-size: 11.5px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
 
+.contact-detail-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 22px;
+}
+.contact-detail-card h2 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+.contact-info-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+.contact-info-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px;
+}
+.contact-info-item strong {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+    margin-bottom: 4px;
+}
+.contact-info-item p {
+    font-size: 11px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.45;
+}
 
-<div class="section-label">
-CONTROL ROOM · ONLINE 24/7
+@media (max-width: 768px) {
+    .contact-cards-row,
+    .contact-info-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="contact-page">
+    <div class="contact-container">
+
+        <!-- HEADER -->
+        <div class="contact-header-box">
+            <div>
+                <div class="contact-eyebrow">CONTROL ROOM · 24/7 COORDINATION</div>
+                <h1>TALK TO DISPATCH</h1>
+                <p class="contact-subtitle">For urgent life-threatening emergencies, dial national 999 or 16263 directly.</p>
+            </div>
+            <div>
+                <a href="{{ route('home') }}" class="btn-nav-link">Home</a>
+            </div>
+        </div>
+
+        <!-- 3 CARDS -->
+        <div class="contact-cards-row">
+            <div class="contact-card-box">
+                <small>NATIONAL EMERGENCY</small>
+                <h3>999 · 16263</h3>
+                <p>Government emergency lines for immediate police, fire service, and national health support.</p>
+            </div>
+            <div class="contact-card-box">
+                <small>DISPATCH HELPDESK</small>
+                <h3>+880 1700-000000</h3>
+                <p>Smart Emergency Helper 24/7 central desk for live dispatch and rapid response assistance.</p>
+            </div>
+            <div class="contact-card-box">
+                <small>OPERATIONS EMAIL</small>
+                <h3>dispatch@seh.com.bd</h3>
+                <p>Provider verification inquiries, technical support, and coordination assistance.</p>
+            </div>
+        </div>
+
+        <!-- DISPATCH HEADQUARTERS & HOURS -->
+        <div class="contact-detail-card">
+            <h2>DISPATCH COORDINATION & SUPPORT</h2>
+            <div class="contact-info-list">
+                <div class="contact-info-item">
+                    <strong>Central Operations Room</strong>
+                    <p>Level 4, Dispatch Center, Panthapath, Dhaka-1205, Bangladesh. Active 24 hours a day, 7 days a week.</p>
+                </div>
+                <div class="contact-info-item">
+                    <strong>Response Protocol</strong>
+                    <p>Priority requests are automatically routed to the closest online verified responders across all Dhaka zones.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
-
-
-<h1>
-Talk to dispatch
-</h1>
-
-
-<p>
-For a life-threatening emergency, always call the official national emergency
-number 999 first. The form below is for enquiries, onboarding and follow-up.
-</p>
-
-
-
-<div class="contact-notice">
-
-Smart Emergency Helper coordinates emergency and home-assistance service
-providers and does not replace official national emergency services.
-
-</div>
-
-
-
-</div>
-
-</section>
-
-
-
-
-
-
-<!-- CONTACT INFO -->
-
-
-<section class="contact-info">
-
-
-<div class="services-container">
-
-
-<div class="contact-cards">
-
-
-
-<div class="contact-card">
-
-<small>
-OFFICIAL EMERGENCY NUMBERS
-</small>
-
-
-<h3>
-999 · 16263
-</h3>
-
-
-<p>
-Government-operated national emergency lines — not operated by Smart Emergency Helper.
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="contact-card">
-
-<small>
-COORDINATION DESK
-</small>
-
-
-<h3>
-+880 1700-000000
-</h3>
-
-
-<p>
-Ambulance, blood donor, home nurse, electrician, plumber, AC technician and locksmith coordination.
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="contact-card">
-
-<small>
-CONTROL ROOM EMAIL
-</small>
-
-
-<h3>
-dispatch@smartemergencyhelper.bd
-</h3>
-
-
-<p>
-Stalled requests, provider verification, complaint follow-up.
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-<!-- FORM AREA -->
-
-
-<section class="contact-main">
-
-
-<div class="services-container">
-
-
-
-<div class="contact-grid">
-
-
-
-<!-- FORM -->
-
-
-<div class="contact-form-box">
-
-
-<h2>
-SEND AN ENQUIRY
-</h2>
-
-
-
-<div class="form-row">
-
-
-<div>
-<label>FULL NAME</label>
-<input placeholder="Your name">
-</div>
-
-
-
-<div>
-<label>EMAIL</label>
-<input placeholder="you@example.com">
-</div>
-
-
-</div>
-
-
-
-<label>
-TOPIC
-</label>
-
-
-<div class="topic-grid">
-
-
-<button class="active">
-GENERAL ENQUIRY
-</button>
-
-
-<button>
-ESCALATE A REQUEST
-</button>
-
-
-<button>
-PROVIDER ONBOARDING
-</button>
-
-
-<button>
-COMPLAINT FOLLOW-UP
-</button>
-
-
-</div>
-
-
-
-
-<label>
-MESSAGE
-</label>
-
-
-<textarea placeholder="Describe your enquiry..."></textarea>
-
-
-
-<button class="submit-btn">
-SUBMIT ENQUIRY
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<!-- SIDE -->
-
-
-<div class="contact-side">
-
-
-
-<div class="side-box">
-
-
-<h3>
-COVERAGE ZONES
-</h3>
-
-
-<ul>
-
-<li>Dhanmondi <span>LIVE</span></li>
-<li>Gulshan · Banani <span>LIVE</span></li>
-<li>Uttara <span>LIVE</span></li>
-<li>Mirpur · Shyamoli <span>LIVE</span></li>
-<li>Bashundhara · Badda <span>LIVE</span></li>
-
-
-</ul>
-
-
-</div>
-
-
-
-
-
-<div class="side-box">
-
-
-<h3>
-RESPONSE TARGETS
-</h3>
-
-
-<p class="small-text">
-Internal service targets, not guaranteed response times.
-</p>
-
-
-
-<ul>
-
-<li>
-Critical dispatch
-<strong>Highest priority</strong>
-</li>
-
-
-<li>
-High priority
-<strong>Prioritised queue</strong>
-</li>
-
-
-<li>
-Enquiry reply
-<strong>Same working day</strong>
-</li>
-
-
-<li>
-Complaint review
-<strong>Within review cycle</strong>
-</li>
-
-
-</ul>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
 
 @endsection

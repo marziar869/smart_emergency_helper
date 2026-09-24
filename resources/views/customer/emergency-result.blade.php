@@ -1,754 +1,268 @@
 @extends('layouts.app')
 
+@section('title', 'Emergency Dispatch Result — Smart Emergency Helper')
+
 @section('content')
 
 <style>
-    .dispatch-result-page {
-        background: #f5f1e8;
-        padding: 64px 0 80px;
-        min-height: 700px;
-    }
+/* =========================================================
+   EMERGENCY RESULT STYLES (EMBEDDED IN BLADE)
+   ========================================================= */
 
-    .dispatch-result-container {
-        width: min(1240px, calc(100% - 48px));
-        margin: 0 auto;
-    }
+.dispatch-result-page {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding: 24px 0 40px;
+}
+.dispatch-result-container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
 
-    .dispatch-result-eyebrow {
-        margin-bottom: 15px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
-        color: #666;
-    }
+.dispatch-header-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.dispatch-eyebrow {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #dc2626;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.dispatch-header-box h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.btn-nav-link {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-nav-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    text-decoration: none;
+}
 
-    .dispatch-result-title {
-        margin: 0;
-        font-size: 48px;
-        line-height: 1;
-        font-weight: 900;
-        letter-spacing: -2px;
-        color: #171717;
-    }
+.dispatch-result-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+}
 
-    .dispatch-result-subtitle {
-        max-width: 720px;
-        margin-top: 18px;
-        font-size: 18px;
-        line-height: 1.55;
-        color: #666;
-    }
+.result-main-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 20px;
+}
+.result-ref-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+.result-desc {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.45;
+    margin-bottom: 16px;
+}
 
+.assigned-provider-box {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.assigned-provider-box strong {
+    font-size: 14px;
+    color: #166534;
+    display: block;
+}
+.badge-assigned {
+    background: #16a34a;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.attempt-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 11.5px;
+}
+.badge-att-status {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+.badge-att-status.accepted { background: #dcfce7; color: #166534; }
+.badge-att-status.declined { background: #fee2e2; color: #991b1b; }
+.badge-att-status.expired  { background: #fef3c7; color: #92400e; }
+
+.result-actions-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+.btn-action-main {
+    background: #dc2626;
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 11.5px;
+    font-weight: 800;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.btn-action-main:hover { background: #b91c1c; color: #ffffff; text-decoration: none; }
+
+.sidebar-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+.sidebar-card h3 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #f8fafc;
+}
+.summary-row span { color: #64748b; }
+.summary-row strong { color: #0f172a; }
+
+@media (max-width: 768px) {
     .dispatch-result-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 320px;
-        gap: 24px;
-        margin-top: 42px;
-        align-items: start;
+        grid-template-columns: 1fr;
     }
-
-    .result-main-card {
-        background: #fff;
-        border: 1px solid #d9d9d9;
-        padding: 32px;
-    }
-
-    .result-created-label {
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        color: #777;
-        margin-bottom: 12px;
-    }
-
-    .result-reference {
-        margin: 0 0 12px;
-        font-size: 30px;
-        font-weight: 900;
-        letter-spacing: -1px;
-    }
-
-    .result-description {
-        max-width: 780px;
-        margin: 0;
-        color: #555;
-        font-size: 14px;
-        line-height: 1.45;
-    }
-
-    .dispatch-box {
-        margin-top: 32px;
-        padding: 24px;
-        border: 1px solid #ddd;
-    }
-
-    .dispatch-box-label {
-        margin-bottom: 12px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        color: #777;
-    }
-
-    .dispatch-box h2 {
-        margin: 0 0 22px;
-        font-size: 21px;
-        font-weight: 900;
-    }
-
-    .dispatch-progress {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 24px;
-    }
-
-    .dispatch-progress-item {
-        padding: 11px 14px;
-        background: #171717;
-        color: #fff;
-        font-family: monospace;
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: .4px;
-    }
-
-    .dispatch-arrow {
-        font-size: 13px;
-        color: #555;
-    }
-
-    .assigned-provider {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding: 20px 16px;
-        margin-bottom: 26px;
-        background: #f5f1e8;
-        border: 1px solid #d8d3c8;
-    }
-
-    .assigned-provider-label {
-        margin-bottom: 5px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.5px;
-        color: #777;
-    }
-
-    .assigned-provider-name {
-        font-size: 18px;
-        font-weight: 900;
-    }
-
-    .assigned-badge {
-        flex-shrink: 0;
-        padding: 9px 14px;
-        background: #249c50;
-        color: #fff;
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: .5px;
-    }
-
-    .attempts-heading {
-        margin-bottom: 13px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        color: #777;
-    }
-
-    .attempt-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-height: 51px;
-        margin-bottom: 8px;
-        padding: 10px 16px;
-        border: 1px solid #d8d3c8;
-        background: #f5f1e8;
-    }
-
-    .attempt-number {
-        font-family: monospace;
-        font-size: 10px;
-        color: #777;
-    }
-
-    .attempt-provider {
-        flex: 1;
-        font-size: 14px;
-        font-weight: 900;
-    }
-
-    .attempt-status {
-        padding: 7px 11px;
-        color: #fff;
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: .5px;
-    }
-
-    .status-declined {
-        background: #ed1c24;
-    }
-
-    .status-expired {
-        background: #f0831e;
-        color: #111;
-    }
-
-    .status-accepted {
-        background: #249c50;
-    }
-
-    .attempt-message {
-        font-family: monospace;
-        font-size: 9px;
-        letter-spacing: 1.2px;
-        color: #777;
-    }
-
-    .result-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 24px;
-    }
-
-    .result-btn-outline,
-    .result-btn-dark {
-        min-height: 42px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: .6px;
-        text-decoration: none;
-    }
-
-    .result-btn-outline {
-        border: 1px solid #171717;
-        color: #171717;
-        background: #fff;
-    }
-
-    .result-btn-dark {
-        border: 1px solid #171717;
-        color: #fff;
-        background: #171717;
-    }
-
-    /* RIGHT SIDEBAR */
-
-    .result-sidebar-card {
-        margin-bottom: 24px;
-        padding: 25px;
-        background: #fff;
-        border: 1px solid #dadada;
-    }
-
-    .result-sidebar-title {
-        margin-bottom: 21px;
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        color: #777;
-    }
-
-    .result-dispatch-row {
-        display: grid;
-        grid-template-columns: 24px 1fr;
-        margin-bottom: 17px;
-    }
-
-    .result-dispatch-row:last-child {
-        margin-bottom: 0;
-    }
-
-    .result-dispatch-number {
-        font-family: monospace;
-        font-size: 10px;
-        color: #888;
-    }
-
-    .result-dispatch-text {
-        font-size: 14px;
-        font-weight: 800;
-        line-height: 1.25;
-    }
-
-    .result-selection-row {
-        min-height: 47px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .result-selection-row:last-child {
-        border-bottom: 0;
-    }
-
-    .result-selection-label {
-        font-family: monospace;
-        font-size: 10px;
-        letter-spacing: 1px;
-        color: #777;
-    }
-
-    .result-selection-value {
-        font-size: 14px;
-        font-weight: 900;
-        text-align: right;
-    }
-
-    .result-priority-badge {
-        padding: 7px 10px;
-        color: #fff;
-        background: #3289e8;
-        font-size: 10px;
-    }
-
-    .result-priority-badge.priority-critical {
-        background: #ed1c24;
-    }
-
-    .result-priority-badge.priority-high {
-        background: #f0831e;
-        color: #111;
-    }
-
-    .result-priority-badge.priority-medium {
-        background: #d2a900;
-        color: #111;
-    }
-
-    .result-safety-item {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 12px;
-        font-size: 14px;
-        font-weight: 800;
-    }
-
-    .result-safety-item:last-child {
-        margin-bottom: 0;
-    }
-
-    .result-safety-dot {
-        width: 6px;
-        height: 6px;
-        background: #ed1c24;
-    }
-
-    .result-demo-card {
-        border-left: 1px solid #1684ff;
-    }
-
-    .result-demo-card strong {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 12px;
-    }
-
-    .result-demo-card p {
-        margin: 0;
-        color: #777;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    @media (max-width: 950px) {
-        .dispatch-result-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 700px) {
-        .dispatch-result-page {
-            padding: 40px 0 60px;
-        }
-
-        .dispatch-result-container {
-            width: calc(100% - 30px);
-        }
-
-        .dispatch-result-title {
-            font-size: 34px;
-            letter-spacing: -1px;
-        }
-
-        .result-main-card {
-            padding: 20px;
-        }
-
-        .assigned-provider,
-        .attempt-row {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .attempt-provider {
-            width: 100%;
-        }
-    }
+}
 </style>
 
-
-<section class="dispatch-result-page">
-
+<div class="dispatch-result-page">
     <div class="dispatch-result-container">
 
-        <div class="dispatch-result-eyebrow">
-            CUSTOMER CONSOLE · EMERGENCY DISPATCH
+        <!-- HEADER -->
+        <div class="dispatch-header-box">
+            <div>
+                <div class="dispatch-eyebrow">DISPATCH RESULT · DEMO BROADCAST</div>
+                <h1>EMERGENCY REQUEST DISPATCHED</h1>
+            </div>
+            <div>
+                <a href="{{ route('home') }}" class="btn-nav-link">Home</a>
+            </div>
         </div>
 
-        <h1 class="dispatch-result-title">
-            REQUEST EMERGENCY ASSISTANCE
-        </h1>
-
-        <p class="dispatch-result-subtitle">
-            Tell us what happened. The system will identify the most suitable
-            verified and available provider.
-        </p>
-
-
         <div class="dispatch-result-grid">
-
-            {{-- LEFT SIDE --}}
-            <main class="result-main-card">
-
-                <div class="result-created-label">
-                    REQUEST CREATED · DEMONSTRATION ONLY
-                </div>
-
-                <h2 class="result-reference">
-                    {{ $emergency['reference'] }}
-                </h2>
-
-                <p class="result-description">
-
-                    {{ $emergency['priority'] }} priority ·
-                    {{ $emergency['service'] }}
-                    ({{ $emergency['group'] }}) ·
-                    {{ $emergency['area'] }},
-                    {{ $emergency['address'] }}.
-
-                    The dispatch engine is ranking eligible verified
-                    providers near your location.
-
-                    <br>
-
-                    No backend is connected — this is a frontend demonstration state.
-
+            <!-- MAIN CARD -->
+            <div class="result-main-card">
+                <h2 class="result-ref-title">Request 1 : {{ $emergency['service'] }} ({{ $emergency['group'] }})</h2>
+                <p class="result-desc">
+                    Priority: <strong>{{ $emergency['priority'] }}</strong> · Location: <strong>{{ $emergency['area'] }}</strong>, {{ $emergency['address'] }}.
+                    The dispatch engine has ranked and assigned the most suitable nearby verified provider.
                 </p>
 
-
-                <section class="dispatch-box">
-
-                    <div class="dispatch-box-label">
-                        EMERGENCY BROADCAST · DISPATCH ATTEMPTS
+                <!-- ASSIGNED PROVIDER -->
+                <div class="assigned-provider-box">
+                    <div>
+                        <small style="font-size:9.5px; font-weight:800; color:#166534; display:block;">ASSIGNED VERIFIED PROVIDER</small>
+                        <strong>{{ $emergency['assigned_provider'] }}</strong>
                     </div>
-
-                    <h2>
-                        PROVIDER ASSIGNED
-                    </h2>
-
-
-                    <div class="dispatch-progress">
-
-                        <span class="dispatch-progress-item">
-                            REQUEST CREATED
-                        </span>
-
-                        <span class="dispatch-arrow">
-                            →
-                        </span>
-
-                        <span class="dispatch-progress-item">
-                            ELIGIBLE PROVIDERS FILTERED
-                        </span>
-
-                        <span class="dispatch-arrow">
-                            →
-                        </span>
-
-                        <span class="dispatch-progress-item">
-                            SCORES CALCULATED
-                        </span>
-
-                        <span class="dispatch-arrow">
-                            →
-                        </span>
-
-                        <span class="dispatch-progress-item">
-                            BEST PROVIDER OFFERED REQUEST
-                        </span>
-
-                    </div>
-
-
-                    <div class="assigned-provider">
-
-                        <div>
-
-                            <div class="assigned-provider-label">
-                                ASSIGNED PROVIDER
-                            </div>
-
-                            <div class="assigned-provider-name">
-                                {{ $emergency['assigned_provider'] }}
-                            </div>
-
-                        </div>
-
-                        <span class="assigned-badge">
-                            PROVIDER ASSIGNED
-                        </span>
-
-                    </div>
-
-
-                    <div class="attempts-heading">
-                        DISPATCH ATTEMPTS HISTORY
-                    </div>
-
-
-                    @foreach($emergency['attempts'] as $index => $attempt)
-
-                        <div class="attempt-row">
-
-                            <span class="attempt-number">
-                                0{{ $index + 1 }}
-                            </span>
-
-                            <span class="attempt-provider">
-                                {{ $attempt['provider'] }}
-                            </span>
-
-
-                            @if($attempt['status'] === 'DECLINED')
-
-                                <span class="attempt-status status-declined">
-                                    DECLINED
-                                </span>
-
-                                <span class="attempt-message">
-                                    OFFER SENT TO NEXT PROVIDER
-                                </span>
-
-
-                            @elseif($attempt['status'] === 'EXPIRED')
-
-                                <span class="attempt-status status-expired">
-                                    EXPIRED (TIMEOUT)
-                                </span>
-
-                                <span class="attempt-message">
-                                    OFFER SENT TO NEXT PROVIDER
-                                </span>
-
-
-                            @else
-
-                                <span class="attempt-status status-accepted">
-                                    ACCEPTED
-                                </span>
-
-                                <span class="attempt-message">
-                                    PROVIDER ASSIGNED
-                                </span>
-
-                            @endif
-
-                        </div>
-
-                    @endforeach
-
-
-                </section>
-
-
-                <div class="result-actions">
-
-                    <a
-                        href="{{ route('emergency.form') }}"
-                        class="result-btn-outline"
-                    >
-                        CREATE ANOTHER REQUEST
-                    </a>
-
-                    <a
-                        href="{{ route('customer.dashboard') }}"
-                        class="result-btn-dark"
-                    >
-                        OPEN CUSTOMER TERMINAL
-                    </a>
-
+                    <span class="badge-assigned">✓ ASSIGNED</span>
                 </div>
 
-            </main>
+                <!-- ATTEMPTS -->
+                <h3 style="font-size:11.5px; font-weight:800; color:#0f172a; margin:14px 0 8px;">DISPATCH ATTEMPTS HISTORY</h3>
+                @foreach($emergency['attempts'] as $index => $attempt)
+                    <div class="attempt-row-item">
+                        <span><strong>#0{{ $index + 1 }}</strong> {{ $attempt['provider'] }}</span>
+                        @if($attempt['status'] === 'DECLINED')
+                            <span class="badge-att-status declined">DECLINED</span>
+                        @elseif($attempt['status'] === 'EXPIRED')
+                            <span class="badge-att-status expired">EXPIRED</span>
+                        @else
+                            <span class="badge-att-status accepted">ACCEPTED</span>
+                        @endif
+                    </div>
+                @endforeach
 
+                <div class="result-actions-row">
+                    <a href="{{ route('customer.dashboard') }}" class="btn-action-main">
+                        OPEN CUSTOMER DASHBOARD →
+                    </a>
+                    <a href="{{ route('emergency.form') }}" class="btn-nav-link">
+                        Create Another Request
+                    </a>
+                </div>
+            </div>
 
-
-            {{-- RIGHT SIDE --}}
+            <!-- SIDEBAR -->
             <aside>
-
-                <div class="result-sidebar-card">
-
-                    <div class="result-sidebar-title">
-                        HOW DISPATCH WORKS
-                    </div>
-
-                    <div class="result-dispatch-row">
-                        <span class="result-dispatch-number">01</span>
-                        <span class="result-dispatch-text">
-                            Request Created
-                        </span>
-                    </div>
-
-                    <div class="result-dispatch-row">
-                        <span class="result-dispatch-number">02</span>
-                        <span class="result-dispatch-text">
-                            Eligible Providers Filtered
-                        </span>
-                    </div>
-
-                    <div class="result-dispatch-row">
-                        <span class="result-dispatch-number">03</span>
-                        <span class="result-dispatch-text">
-                            Recommendation Score Calculated
-                        </span>
-                    </div>
-
-                    <div class="result-dispatch-row">
-                        <span class="result-dispatch-number">04</span>
-                        <span class="result-dispatch-text">
-                            Best Provider Contacted
-                        </span>
-                    </div>
-
-                    <div class="result-dispatch-row">
-                        <span class="result-dispatch-number">05</span>
-                        <span class="result-dispatch-text">
-                            Automatic Broadcast if Declined/Expired
-                        </span>
-                    </div>
-
+                <div class="sidebar-card">
+                    <h3>REQUEST SUMMARY</h3>
+                    <div class="summary-row"><span>Group</span><strong>{{ $emergency['group'] }}</strong></div>
+                    <div class="summary-row"><span>Service</span><strong>{{ $emergency['service'] }}</strong></div>
+                    <div class="summary-row"><span>Priority</span><strong>{{ $emergency['priority'] }}</strong></div>
+                    <div class="summary-row"><span>Area</span><strong>{{ $emergency['area'] }}</strong></div>
                 </div>
 
-
-                <div class="result-sidebar-card">
-
-                    <div class="result-sidebar-title">
-                        CURRENT SELECTION
+                <div class="sidebar-card">
+                    <h3>5 DISPATCH STEPS</h3>
+                    <div style="font-size:11px; color:#475569; display:flex; flex-direction:column; gap:6px;">
+                        <div>1. Pending</div>
+                        <div>2. Accepted</div>
+                        <div>3. On The Way</div>
+                        <div>4. Arrival PIN</div>
+                        <div>5. Completion PIN</div>
                     </div>
-
-                    <div class="result-selection-row">
-                        <span class="result-selection-label">
-                            GROUP
-                        </span>
-
-                        <strong class="result-selection-value">
-                            {{ $emergency['group'] }}
-                        </strong>
-                    </div>
-
-                    <div class="result-selection-row">
-                        <span class="result-selection-label">
-                            SERVICE
-                        </span>
-
-                        <strong class="result-selection-value">
-                            {{ $emergency['service'] }}
-                        </strong>
-                    </div>
-
-                    <div class="result-selection-row">
-                        <span class="result-selection-label">
-                            PRIORITY
-                        </span>
-
-                        <strong
-                            class="
-                                result-selection-value
-                                result-priority-badge
-                                priority-{{ strtolower($emergency['priority']) }}
-                            "
-                        >
-                            {{ strtoupper($emergency['priority']) }}
-                        </strong>
-                    </div>
-
-                    <div class="result-selection-row">
-                        <span class="result-selection-label">
-                            AREA
-                        </span>
-
-                        <strong class="result-selection-value">
-                            {{ $emergency['area'] }}
-                        </strong>
-                    </div>
-
                 </div>
-
-
-                <div class="result-sidebar-card">
-
-                    <div class="result-sidebar-title">
-                        SERVICE SAFETY
-                    </div>
-
-                    <div class="result-safety-item">
-                        <span class="result-safety-dot"></span>
-                        Arrival PIN
-                    </div>
-
-                    <div class="result-safety-item">
-                        <span class="result-safety-dot"></span>
-                        Before Photo
-                    </div>
-
-                    <div class="result-safety-item">
-                        <span class="result-safety-dot"></span>
-                        After Photo
-                    </div>
-
-                    <div class="result-safety-item">
-                        <span class="result-safety-dot"></span>
-                        Completion PIN
-                    </div>
-
-                </div>
-
-
-                <div class="result-sidebar-card result-demo-card">
-
-                    <strong>
-                        DEMONSTRATION ONLY
-                    </strong>
-
-                    <p>
-                        No backend is connected. Submitting creates a local
-                        request reference so you can preview the dispatch flow.
-                    </p>
-
-                </div>
-
             </aside>
-
         </div>
 
     </div>
-
-</section>
+</div>
 
 @endsection
