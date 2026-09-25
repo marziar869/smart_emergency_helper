@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Customer Profile — Smart Emergency Helper')
+@section('title', 'Customer Profile')
 
 @section('content')
 
 <style>
 /* =========================================================
-   CUSTOMER PROFILE STYLES (EMBEDDED IN BLADE)
+   CUSTOMER PROFILE STYLES
    ========================================================= */
 
 .customer-profile-page {
@@ -148,11 +148,6 @@
     margin-top: 14px;
 }
 
-@media (max-width: 768px) {
-    .customer-profile-grid {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="customer-profile-page">
@@ -161,7 +156,6 @@
         <!-- HEADER -->
         <div class="customer-profile-header">
             <div>
-                <p class="customer-profile-eyebrow">CLIENT PORTAL · ACCOUNT SETTINGS</p>
                 <h1>CUSTOMER PROFILE</h1>
                 <p class="customer-profile-name">Name: <strong>{{ auth()->user()->name }}</strong></p>
             </div>

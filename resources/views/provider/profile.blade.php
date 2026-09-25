@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Provider Profile & Trust — Smart Emergency Helper')
+@section('title', 'Provider Profile & Trust')
 
 @section('content')
 
 <style>
 /* =========================================================
-   PROVIDER PROFILE STYLES (EMBEDDED IN BLADE)
+   PROVIDER PROFILE STYLES 
    ========================================================= */
 
 .provider-profile-page {
@@ -187,9 +187,9 @@
             </div>
 
             <div class="profile-badges-row">
-                <span class="p-badge approved">✓ APPROVED</span>
-                <span class="p-badge verified">✓ PHONE OTP</span>
-                <span class="p-badge trusted">★ HIGHLY TRUSTED</span>
+                <span class="p-badge approved">APPROVED</span>
+                <span class="p-badge verified">PHONE OTP</span>
+                <span class="p-badge trusted">HIGHLY TRUSTED</span>
                 <a href="{{ route('provider.dashboard') }}" class="btn-nav-link">← My Dashboard</a>
             </div>
         </div>

@@ -264,7 +264,7 @@
             </div>
 
             <button type="submit" class="spr-submit">
-                SUBMIT PROVIDER APPLICATION →
+                SUBMIT PROVIDER APPLICATION 
             </button>
         </form>
 

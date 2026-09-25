@@ -1,6 +1,6 @@
 <style>
 /* =========================================================
-   HOMEPAGE NAVBAR STYLES (EMBEDDED IN BLADE)
+   HOMEPAGE NAVBAR STYLES
    ========================================================= */
 .main-navbar {
     background: #ffffff;
@@ -90,16 +90,7 @@
     color: #ffffff;
     text-decoration: none;
 }
-@media (max-width: 640px) {
-    .navbar-container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .nav-menu {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-}
+
 </style>
 
 <nav class="main-navbar">
@@ -114,7 +105,6 @@
             <a href="{{ route('home') }}">HOME</a>
             <a href="{{ route('services') }}">SERVICES</a>
             <a href="{{ route('providers') }}">PROVIDERS</a>
-            <a href="{{ route('about') }}">ABOUT</a>
             <a href="{{ route('contact') }}">CONTACT</a>
         </div>
 
@@ -137,9 +127,6 @@
                 </form>
             @else
                 <a href="{{ route('login') }}" class="nav-login">SIGN IN</a>
-                <a href="{{ route('emergency.form') }}" class="nav-emergency">
-                    REQUEST EMERGENCY
-                </a>
             @endauth
         </div>
     </div>

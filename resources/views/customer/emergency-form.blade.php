@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Request Emergency Assistance — Smart Emergency Helper')
+@section('title', 'Request Emergency Assistance')
 
 @section('content')
 
 <style>
 /* =========================================================
-   EMERGENCY FORM STYLES (EMBEDDED IN BLADE)
+   EMERGENCY FORM STYLES 
    ========================================================= */
 
 .emergency-form-page {
@@ -15,9 +15,11 @@
     padding: 24px 0 40px;
 }
 .emergency-form-container {
-    max-width: 980px;
+    max-width: 1185px;
     margin: 0 auto;
     padding: 0 16px;
+    width:100%;
+    
 }
 
 /* Header */
@@ -38,7 +40,7 @@
     font-weight: 800;
     color: #dc2626;
     letter-spacing: 0.8px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 .emergency-header-box h1 {
     font-size: 18px;
@@ -80,9 +82,13 @@
 /* Main Form Card */
 .emergency-card {
     background: #ffffff;
+    width:600px;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
-    padding: 20px;
+    padding: 60px;
+    margin: 0 auto;
+    width:100%;
+    box-sizing:border-box;
 }
 .form-field-row {
     margin-bottom: 14px;
@@ -229,9 +235,8 @@
         <!-- HEADER -->
         <div class="emergency-header-box">
             <div>
-                <div class="emergency-eyebrow">CUSTOMER CONSOLE · RAPID DISPATCH</div>
+                <div class="emergency-eyebrow">CUSTOMER CONSOLE</div>
                 <h1>REQUEST EMERGENCY ASSISTANCE</h1>
-                <p class="emergency-subtitle">System will identify the nearest verified responder in Dhaka.</p>
             </div>
             <div>
                 <a href="{{ route('home') }}" class="btn-nav-link">Home</a>
@@ -304,34 +309,14 @@
                     </div>
 
                     <button type="submit" class="btn-emergency-submit">
-                        CREATE REQUEST &amp; DISPATCH &rarr;
+                        CREATE REQUEST &amp; DISPATCH
                     </button>
                 </form>
             </div>
 
-            <!-- SIDEBAR -->
-            <aside>
-                <div class="sidebar-panel">
-                    <h3>5 DISPATCH STEPS</h3>
-                    <div class="step-item-sm"><span class="step-num-sm">01</span> <span>Pending Request</span></div>
-                    <div class="step-item-sm"><span class="step-num-sm">02</span> <span>Accepted by Responder</span></div>
-                    <div class="step-item-sm"><span class="step-num-sm">03</span> <span>On The Way to Site</span></div>
-                    <div class="step-item-sm"><span class="step-num-sm">04</span> <span>Arrival PIN Verification</span></div>
-                    <div class="step-item-sm"><span class="step-num-sm">05</span> <span>Completion PIN & Cash Fee</span></div>
-                </div>
+           
 
-                <div class="sidebar-panel">
-                    <h3>SERVICE SAFETY</h3>
-                    <div style="font-size:11px; color:#475569; display:flex; flex-direction:column; gap:6px;">
-                        <div>✓ 4-Digit Arrival PIN</div>
-                        <div>✓ 4-Digit Completion PIN</div>
-                        <div>✓ Fixed BDT Cash Fee</div>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-    </div>
+                
 </div>
 
 <script>

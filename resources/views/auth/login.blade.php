@@ -6,7 +6,7 @@
 
 <style>
 /* =========================================================
-   LOGIN PAGE STYLES (EMBEDDED IN BLADE)
+   LOGIN PAGE 
    ========================================================= */
 
 .login-page-wrapper {
@@ -133,7 +133,7 @@
 
         @if(session('login_error'))
             <div style="background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; padding:8px 10px; border-radius:4px; margin-bottom:12px; font-size:11px;">
-                ⚠ {{ session('login_error') }}
+                 {{ session('login_error') }}
             </div>
         @endif
 
@@ -181,7 +181,7 @@
             </div>
 
             <button type="submit" class="btn-login-submit">
-                SIGN IN →
+                SIGN IN 
             </button>
 
             <div class="login-footer-links">
@@ -190,7 +190,7 @@
                 <span>·</span>
                 <a href="{{ route('provider.register') }}">Provider Register</a>
                 <div style="margin-top:8px;">
-                    <a href="{{ route('home') }}" style="color:#64748b; font-size:10.5px;">← Back to Homepage</a>
+                    <a href="{{ route('home') }}" style="color:#64748b; font-size:10.5px;">Back to Homepage</a>
                 </div>
             </div>
         </form>

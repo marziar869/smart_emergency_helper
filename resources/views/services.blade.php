@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Service Catalogue — Smart Emergency Helper')
+@section('title', 'Service Catalogue')
 
 @section('content')
 
 <style>
 /* =========================================================
-   SERVICES CATALOGUE STYLES (EMBEDDED IN BLADE)
+   SERVICES CATALOGUE STYLES
    ========================================================= */
 
 .services-page {
@@ -165,11 +165,6 @@
     text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-    .services-grid-box {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="services-page">
@@ -178,7 +173,7 @@
         <!-- HEADER -->
         <div class="services-header-box">
             <div>
-                <div class="services-eyebrow">8 SERVICES · 3 DISPATCH TIERS</div>
+                <div class="services-eyebrow">8 SERVICES</div>
                 <h1>SERVICE CATALOGUE</h1>
                 <p class="services-subtitle">Every service vertical carries a default response window & SLA.</p>
             </div>
@@ -200,14 +195,13 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-crit">CRITICAL</span>
-                            <span class="eta-text">8–15 MIN</span>
                         </div>
                         <h3>Ambulance Service</h3>
                         <p>Life support transport to nearest hospital with verified emergency medical staff.</p>
                     </div>
                     <div class="service-bottom-row">
                         <span style="font-size:10px; color:#64748b;">Fixed Fee ৳500</span>
-                        <a href="{{ route('emergency.form') }}" class="btn-req-svc">REQUEST →</a>
+                        <a href="{{ route('emergency.form') }}" class="btn-req-svc">REQUEST</a>
                     </div>
                 </div>
 
@@ -215,7 +209,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-high">HIGH</span>
-                            <span class="eta-text">30–60 MIN</span>
                         </div>
                         <h3>Home Nurse</h3>
                         <p>Post-operative nursing, wound dressing, monitoring, and in-residence care.</p>
@@ -230,7 +223,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-crit">CRITICAL</span>
-                            <span class="eta-text">15–40 MIN</span>
                         </div>
                         <h3>Blood Donor</h3>
                         <p>Direct group-matched donor assistance across Dhaka volunteer blood networks.</p>
@@ -256,7 +248,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-high">HIGH</span>
-                            <span class="eta-text">25–45 MIN</span>
                         </div>
                         <h3>Electrician</h3>
                         <p>Short circuits, electrical board faults, wiring issues, and power restoration.</p>
@@ -271,7 +262,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-high">HIGH</span>
-                            <span class="eta-text">30–60 MIN</span>
                         </div>
                         <h3>Plumber</h3>
                         <p>Burst pipes, emergency drainage, leaks, and water motor pump troubleshooting.</p>
@@ -286,7 +276,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-med">MEDIUM</span>
-                            <span class="eta-text">45–90 MIN</span>
                         </div>
                         <h3>AC Technician</h3>
                         <p>Compressor troubleshooting, gas refill, leak repairs, and HVAC diagnostic service.</p>
@@ -312,7 +301,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-norm">NORMAL</span>
-                            <span class="eta-text">SAME DAY</span>
                         </div>
                         <h3>Cleaner</h3>
                         <p>Post-incident sanitization, room deep cleaning, and residential cleanup.</p>
@@ -327,7 +315,6 @@
                     <div>
                         <div class="service-card-head">
                             <span class="service-priority-badge p-norm">NORMAL</span>
-                            <span class="eta-text">SAME DAY</span>
                         </div>
                         <h3>Carpenter</h3>
                         <p>Door, window, lock fitting, and furniture structure urgent maintenance.</p>

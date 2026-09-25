@@ -89,52 +89,14 @@ class AdminController extends Controller
             }
         }
 
-        $id = str_replace('PRV-', '', $providerId);
+        $id = (int) str_replace('PRV-', '', $providerId);
         
-        $user = User::where('id', $id)
-            ->orWhereHas('providerProfile', function ($q) use ($id) {
-                $q->where('id', $id);
-            })
-            ->with(['providerProfile.serviceCategory'])
-            ->first();
-
-        if ($user && $user->providerProfile) {
-            $profile = $user->providerProfile;
-            $provider = [
-                'id' => $user->id,
-                'profile_id' => $profile->id,
-                'name' => $user->name,
-                'category' => $profile->serviceCategory?->name ?? 'General Service',
-                'submitted' => $profile->created_at ? $profile->created_at->diffForHumans() : 'Recently',
-                'phone' => $user->phone ?: 'N/A',
-                'created' => $user->created_at ? $user->created_at->format('M d, Y') : 'Recently',
-                'experience' => ($profile->experience_years ?? 0) . ' Years',
-                'area' => $profile->area ?? $user->area ?? 'Dhaka',
-                'email' => $user->email,
-                'address' => $profile->address ?: 'N/A',
-                'status' => $profile->approval_status ?? 'pending',
-                'phone_verified' => $profile->phone_verified,
-            ];
-        } else {
-            // Demo Fallback
-            $provider = [
-                'id' => 1052,
-                'profile_id' => 1052,
-                'name' => 'Nurse Farzana Akter',
-                'category' => 'Home Nurse',
-                'submitted' => '2 hours ago',
-                'phone' => '+880 1712 345 678',
-                'created' => 'Sep 21, 2026',
-                'experience' => '6 Years',
-                'area' => 'Dhanmondi, Dhaka',
-                'email' => 'farzana.nurse@example.com',
-                'address' => 'House 12, Road 5, Dhanmondi',
-                'status' => 'pending',
-                'phone_verified' => true,
-            ];
+        $profile = ProviderProfile::with(['user', 'serviceCategory'])->find($id);
+        if (!$profile) {
+            $profile = ProviderProfile::with(['user', 'serviceCategory'])->where('user_id', $id)->firstOrFail();
         }
 
-        return view('admin.provider-verification-review', compact('provider', 'providerId'));
+        return view('admin.provider-verification-review', compact('profile'));
     }
 
     /**
@@ -142,18 +104,22 @@ class AdminController extends Controller
      */
     public function approveProvider(Request $request, $id)
     {
-        $profile = ProviderProfile::where('id', $id)->orWhere('user_id', $id)->first();
-        if ($profile) {
-            $profile->update([
-                'approval_status' => 'approved',
-                'approved_at' => now(),
-                'is_active' => true,
-                'is_available' => true,
-            ]);
-            return redirect()->route('admin.dashboard')->with('success', 'Provider has been approved and verified successfully.');
+        $cleanId = (int) str_replace('PRV-', '', $id);
+        $profile = ProviderProfile::find($cleanId);
+        if (!$profile) {
+            $profile = ProviderProfile::where('user_id', $cleanId)->firstOrFail();
         }
 
-        return redirect()->route('admin.dashboard')->with('success', 'Provider verification marked as approved.');
+        $profile->update([
+            'approval_status' => 'approved',
+            'approved_at' => now(),
+            'admin_comment' => $request->input('admin_comment'),
+            'is_active' => true,
+            'is_available' => true,
+        ]);
+
+        $name = $profile->user?->name ?? 'Provider';
+        return redirect()->route('admin.dashboard')->with('success', "Provider {$name} has been approved.");
     }
 
     /**
@@ -161,16 +127,20 @@ class AdminController extends Controller
      */
     public function rejectProvider(Request $request, $id)
     {
-        $profile = ProviderProfile::where('id', $id)->orWhere('user_id', $id)->first();
-        if ($profile) {
-            $profile->update([
-                'approval_status' => 'rejected',
-                'is_available' => false,
-            ]);
-            return redirect()->route('admin.dashboard')->with('success', 'Provider verification has been rejected.');
+        $cleanId = (int) str_replace('PRV-', '', $id);
+        $profile = ProviderProfile::find($cleanId);
+        if (!$profile) {
+            $profile = ProviderProfile::where('user_id', $cleanId)->firstOrFail();
         }
 
-        return redirect()->route('admin.dashboard')->with('success', 'Provider application rejected.');
+        $profile->update([
+            'approval_status' => 'rejected',
+            'admin_comment' => $request->input('admin_comment'),
+            'is_available' => false,
+        ]);
+
+        $name = $profile->user?->name ?? 'Provider';
+        return redirect()->route('admin.dashboard')->with('success', "Provider {$name} has been rejected.");
     }
 
     /**

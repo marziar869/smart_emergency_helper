@@ -6,7 +6,7 @@
 
 <style>
 /* =========================================================
-   CONTACT PAGE STYLES (EMBEDDED IN BLADE)
+   CONTACT PAGE STYLES
    ========================================================= */
 
 .contact-page {
@@ -146,12 +146,6 @@
     line-height: 1.45;
 }
 
-@media (max-width: 768px) {
-    .contact-cards-row,
-    .contact-info-list {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="contact-page">
@@ -160,7 +154,6 @@
         <!-- HEADER -->
         <div class="contact-header-box">
             <div>
-                <div class="contact-eyebrow">CONTROL ROOM · 24/7 COORDINATION</div>
                 <h1>TALK TO DISPATCH</h1>
                 <p class="contact-subtitle">For urgent life-threatening emergencies, dial national 999 or 16263 directly.</p>
             </div>
@@ -173,7 +166,7 @@
         <div class="contact-cards-row">
             <div class="contact-card-box">
                 <small>NATIONAL EMERGENCY</small>
-                <h3>999 · 16263</h3>
+                <h3>999 · 16</h3>
                 <p>Government emergency lines for immediate police, fire service, and national health support.</p>
             </div>
             <div class="contact-card-box">
@@ -187,23 +180,5 @@
                 <p>Provider verification inquiries, technical support, and coordination assistance.</p>
             </div>
         </div>
-
-        <!-- DISPATCH HEADQUARTERS & HOURS -->
-        <div class="contact-detail-card">
-            <h2>DISPATCH COORDINATION & SUPPORT</h2>
-            <div class="contact-info-list">
-                <div class="contact-info-item">
-                    <strong>Central Operations Room</strong>
-                    <p>Level 4, Dispatch Center, Panthapath, Dhaka-1205, Bangladesh. Active 24 hours a day, 7 days a week.</p>
-                </div>
-                <div class="contact-info-item">
-                    <strong>Response Protocol</strong>
-                    <p>Priority requests are automatically routed to the closest online verified responders across all Dhaka zones.</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 @endsection

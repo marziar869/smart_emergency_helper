@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Operations Panel — Smart Emergency Helper')
+@section('title', 'Admin Operations Panel')
 
 @section('content')
 
 <style>
 /* =========================================================
-   ADMIN DASHBOARD STYLES (EMBEDDED IN BLADE)
+   ADMIN DASHBOARD STYLES
    ========================================================= */
 
 .admin-dashboard {
@@ -239,12 +239,6 @@
 .btn-suspend { color: #dc2626; border-color: #fca5a5; }
 .btn-reinstate { color: #16a34a; border-color: #86efac; }
 
-@media (max-width: 768px) {
-    .admin-kpi-grid,
-    .verify-list-grid {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="admin-dashboard">
@@ -253,9 +247,7 @@
         <!-- HEADER -->
         <div class="admin-header-card">
             <div>
-                <div class="admin-eyebrow">GLOBAL OPERATIONS CONTROL</div>
                 <h1>ADMINISTRATOR CONTROL PANEL</h1>
-                <p>Dhaka Emergency Dispatch Network Oversight & Quality Assurance</p>
             </div>
             <div class="admin-header-actions">
                 <a href="{{ route('home') }}" class="btn-nav-link">Home</a>
@@ -269,7 +261,7 @@
         {{-- FLASH ALERTS --}}
         @if(session('success'))
             <div style="background:#dcfce7; border:1px solid #86efac; color:#166534; padding:8px 12px; border-radius:4px; margin-bottom:12px; font-size:11.5px; font-weight:700;">
-                ✓ {{ session('success') }}
+                 {{ session('success') }}
             </div>
         @endif
 
@@ -283,17 +275,17 @@
             <div class="admin-kpi-card">
                 <span>Total Providers</span>
                 <strong>{{ $totalProviders ?? 0 }}</strong>
-                <small>{{ $onlineProviders ?? 0 }} Online Responders</small>
+                <small>{{ $onlineProviders ?? 0 }} Responders</small>
             </div>
             <div class="admin-kpi-card">
                 <span>Completed Jobs</span>
                 <strong>{{ $completedRequests ?? 0 }}</strong>
-                <small>Success Rate 100%</small>
+                <small>Rate 100%</small>
             </div>
             <div class="admin-kpi-card">
                 <span>Pending Verifications</span>
                 <strong>{{ $pendingVerifications ?? count($verificationQueue ?? []) }}</strong>
-                <small>Manual Review Queue</small>
+                <small>Review Queue</small>
             </div>
         </section>
 
@@ -313,7 +305,7 @@
                             <small>ID: {{ sprintf('%02d', $vq->id) }}</small>
                         </div>
                         <a href="{{ route('admin.provider.verification.review', sprintf('%02d', $vq->id)) }}" class="admin-light-btn">
-                            REVIEW →
+                            REVIEW 
                         </a>
                     </div>
                 @empty
@@ -369,7 +361,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <small style="color:#888;">SUPER ADMIN</small>
+                                        <small style="color:#888;">ADMIN</small>
                                     @endif
                                 </td>
                             </tr>
@@ -387,7 +379,6 @@
         <section class="admin-panel">
             <div class="panel-header-flex">
                 <h2 class="admin-panel-title">RECENT EMERGENCY MISSIONS &amp; WORK COMPLETION PROOFS</h2>
-                <span style="font-size:9.5px; font-weight:800; color:#dc2626;">● LIVE ADMIN AUDIT &amp; VERIFICATION</span>
             </div>
 
             <div style="overflow-x:auto;">
@@ -399,7 +390,7 @@
                             <th>PROVIDER</th>
                             <th>SERVICE / AREA</th>
                             <th>ARRIVAL PIN</th>
-                            <th>COMPLETION PROOF (PIN)</th>
+                            <th>COMPLETION PIN</th>
                             <th>STATUS</th>
                             <th>DATE</th>
                         </tr>
@@ -427,24 +418,24 @@
                                 <td>
                                     @if($req->arrival_pin_verified_at)
                                         <span style="font-size:9.5px; font-weight:800; color:#166534; background:#dcfce7; padding:2px 6px; border-radius:3px; display:inline-block;">
-                                            ✓ Verified (PIN: {{ $req->arrival_pin }})
+                                            Verified (PIN: {{ $req->arrival_pin }})
                                         </span>
                                         <small style="display:block; color:#64748b; font-size:9px;">{{ $req->arrival_pin_verified_at->format('h:i A') }}</small>
                                     @else
                                         <span style="font-size:9.5px; font-weight:700; color:#92400e; background:#fef3c7; padding:2px 6px; border-radius:3px;">
-                                            ⏳ PIN: {{ $req->arrival_pin }}
+                                           PIN: {{ $req->arrival_pin }}
                                         </span>
                                     @endif
                                 </td>
                                 <td>
                                     @if($req->completion_pin_verified_at)
                                         <span style="font-size:9.5px; font-weight:800; color:#166534; background:#dcfce7; padding:2px 6px; border-radius:3px; display:inline-block;">
-                                            ✓ Work Done (PIN: {{ $req->completion_pin }})
+                                             Work Done (PIN: {{ $req->completion_pin }})
                                         </span>
                                         <small style="display:block; color:#059669; font-weight:800; font-size:9px;">৳ {{ number_format($req->amount ?? 500, 2) }} Cash Paid</small>
                                     @else
                                         <span style="font-size:9.5px; font-weight:700; color:#92400e; background:#fef3c7; padding:2px 6px; border-radius:3px;">
-                                            ⏳ Pending (PIN: {{ $req->completion_pin }})
+                                             Pending (PIN: {{ $req->completion_pin }})
                                         </span>
                                     @endif
                                 </td>

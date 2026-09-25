@@ -55,11 +55,6 @@ Route::post(
 
 });
 
-Route::get('/register/provider', [ProviderRegistrationController::class, 'create'])
-    ->name('provider.register');
-
-Route::post('/register/provider', [ProviderRegistrationController::class, 'store'])
-    ->name('provider.register.submit');
 
 
 /*
@@ -159,8 +154,6 @@ Route::get(
 )->name('providers.show');
 
 
-Route::get('/about', fn() => view('about'))
-    ->name('about');
 
 
 Route::get('/contact', fn() => view('contact'))
@@ -615,12 +608,3 @@ Route::get('/emergency-result', function () {
     );
 
 })->name('emergency.result');
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-Route::post(
-    '/demo-logout',
-    [CustomerAuthController::class, 'logout']
-)->name('demo.logout');

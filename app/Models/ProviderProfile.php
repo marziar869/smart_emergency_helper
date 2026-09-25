@@ -18,6 +18,7 @@ class ProviderProfile extends Model
         'phone_verified_at',
         'approval_status',
         'approved_at',
+        'admin_comment',
         'is_active',
         'is_available',
     ];

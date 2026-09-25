@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Provider Dashboard — Smart Emergency Helper')
+@section('title', 'Provider Dashboard')
 
 @section('content')
 
 <style>
 /* =========================================================
-   PROVIDER DASHBOARD STYLES (EMBEDDED IN BLADE)
+   PROVIDER DASHBOARD STYLES 
    ========================================================= */
 
 .provider-dashboard-page {
@@ -569,16 +569,6 @@
     color: #334155;
 }
 
-@media (max-width: 800px) {
-    .provider-main-grid {
-        grid-template-columns: 1fr;
-    }
-    .stepper-grid,
-    .pin-row-grid,
-    .details-2col-grid {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="provider-dashboard-page">
@@ -649,12 +639,12 @@
         {{-- FLASH MESSAGES --}}
         @if(session('success'))
             <div class="provider-alert provider-alert-success">
-                ✓ {{ session('success') }}
+                {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
             <div class="provider-alert provider-alert-danger">
-                ⚠ {{ session('error') }}
+                {{ session('error') }}
             </div>
         @endif
 
@@ -688,7 +678,7 @@
                                 <form method="POST" action="{{ route('provider.request.accept', $req->id) }}" style="flex:1;">
                                     @csrf
                                     <button type="submit" class="btn-accept-job">
-                                        ACCEPT MISSION ✓
+                                        ACCEPT MISSION 
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ route('provider.request.reject', $req->id) }}">
@@ -775,40 +765,40 @@
                                     <form method="POST" action="{{ route('provider.request.advance', $activeJob->id) }}" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn-workflow-action">
-                                            START TRAVEL (ON THE WAY) →
+                                            START TRAVEL (ON THE WAY) 
                                         </button>
                                     </form>
                                 @elseif($activeJob->status === 'on_the_way')
                                     <form method="POST" action="{{ route('provider.request.advance', $activeJob->id) }}" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn-workflow-action">
-                                            MARK ARRIVED AT SITE →
+                                            MARK ARRIVED AT SITE 
                                         </button>
                                     </form>
                                 @elseif(in_array($activeJob->status, ['arrival_pin', 'arrival_pin_required', 'arrived']))
                                     <form method="POST" action="{{ route('provider.request.advance', $activeJob->id) }}" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn-workflow-action green">
-                                            WORK DONE (REQUEST COMPLETION PIN) →
+                                            WORK DONE (REQUEST COMPLETION PIN) 
                                         </button>
                                     </form>
                                 @elseif(in_array($activeJob->status, ['completion_pin', 'completion_pin_required']))
                                     <form method="POST" action="{{ route('provider.request.advance', $activeJob->id) }}" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn-workflow-action green">
-                                            COMPLETE MISSION (RECEIVE CASH ৳ 500) →
+                                            COMPLETE MISSION (RECEIVE CASH ৳ 500) 
                                         </button>
                                     </form>
                                 @elseif($activeJob->status === 'completed')
                                     <span style="font-size:11px; font-weight:800; color:#166534; background:#dcfce7; padding:5px 10px; border-radius:3px;">
-                                        ✓ MISSION COMPLETED
+                                         MISSION COMPLETED
                                     </span>
                                 @endif
 
                                 <form method="POST" action="{{ route('provider.request.advance', $activeJob->id) }}" style="display:inline;">
                                     @csrf
                                     <button type="submit" class="btn-workflow-action" style="background:#334155;">
-                                        ADVANCE →
+                                        ADVANCE 
                                     </button>
                                 </form>
                             </div>
@@ -853,12 +843,12 @@
                                             <input type="hidden" name="type" value="arrival">
                                             <input type="text" name="pin" placeholder="Enter Customer Arrival PIN" required maxlength="6" autocomplete="off" style="flex:1; padding:8px 10px; font-size:13px; font-weight:800; letter-spacing:1px; border:2px solid #cbd5e1; border-radius:4px; text-align:center; background:#f8fafc; color:#0f172a;">
                                             <button type="submit" style="background:#dc2626; color:#ffffff; font-size:11px; font-weight:800; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; white-space:nowrap;">
-                                                VERIFY ARRIVAL PIN ✓
+                                                VERIFY ARRIVAL PIN 
                                             </button>
                                         </form>
                                     @else
                                         <div style="font-size:11.5px; color:#166534; font-weight:800; margin-top:6px; background:#dcfce7; padding:6px 10px; border-radius:4px;">
-                                            ✓ Verified at {{ $activeJob->arrival_pin_verified_at->format('h:i A') }} (Arrival Confirmed)
+                                             Verified at {{ $activeJob->arrival_pin_verified_at->format('h:i A') }} (Arrival Confirmed)
                                         </div>
                                     @endif
                                 </div>
@@ -868,7 +858,7 @@
                                     <div class="pin-item-head" style="margin-bottom:8px;">
                                         <span style="font-size:12px; font-weight:900; color:#0f172a;">2. WORK COMPLETION PROOF &amp; CASH</span>
                                         <span class="badge-pin-v {{ $activeJob->completion_pin_verified_at ? 'success' : 'pending' }}">
-                                            {{ $activeJob->payment_status === 'paid' ? '✓ CASH RECEIVED' : 'STEP 5' }}
+                                            {{ $activeJob->payment_status === 'paid' ? ' CASH RECEIVED' : 'STEP 5' }}
                                         </span>
                                     </div>
                                     <p style="font-size:11px; color:#475569; margin:0 0 8px; line-height:1.4;">
@@ -880,12 +870,12 @@
                                             <input type="hidden" name="type" value="completion">
                                             <input type="text" name="pin" placeholder="Enter Customer Completion PIN" required maxlength="6" autocomplete="off" style="flex:1; padding:8px 10px; font-size:13px; font-weight:800; letter-spacing:1px; border:2px solid #cbd5e1; border-radius:4px; text-align:center; background:#f8fafc; color:#0f172a;">
                                             <button type="submit" style="background:#059669; color:#ffffff; font-size:11px; font-weight:800; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; white-space:nowrap;">
-                                                CONFIRM WORK DONE &amp; FINISH ✓
+                                                CONFIRM WORK DONE &amp; FINISH 
                                             </button>
                                         </form>
                                     @else
                                         <div style="font-size:11.5px; color:#166534; font-weight:800; margin-top:6px; background:#dcfce7; padding:6px 10px; border-radius:4px;">
-                                            ✓ Work Completed at {{ $activeJob->completion_pin_verified_at->format('h:i A') }} (Cash ৳ {{ number_format($activeJob->amount ?? 500, 2) }} Received)
+                                             Work Completed at {{ $activeJob->completion_pin_verified_at->format('h:i A') }} (Cash ৳ {{ number_format($activeJob->amount ?? 500, 2) }} Received)
                                         </div>
                                     @endif
                                 </div>
@@ -936,7 +926,7 @@
                                     <td>{{ $cJob->area }}</td>
                                     <td><strong>৳ {{ number_format($cJob->amount ?? 500, 2) }} BDT</strong></td>
                                     <td style="color:#64748b; font-size:10px;">{{ $cJob->completed_at ? $cJob->completed_at->format('d M, h:i A') : $cJob->created_at->format('d M, h:i A') }}</td>
-                                    <td><span class="badge-pin-v success">✓ COMPLETED</span></td>
+                                    <td><span class="badge-pin-v success"> COMPLETED</span></td>
                                 </tr>
                             @endforeach
                         </tbody>

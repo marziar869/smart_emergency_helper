@@ -220,7 +220,7 @@
             </div>
 
             <button type="submit" class="scr-create-account-btn">
-                CREATE CUSTOMER ACCOUNT →
+                CREATE CUSTOMER ACCOUNT 
             </button>
         </form>
 

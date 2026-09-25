@@ -1,7 +1,5 @@
 /* =========================================================
-   SMART EMERGENCY HELPER — MINIMAL PRACTICUM STYLESHEET
-   Clean, compact, student-level BCSE practicum design
-   Optimized for 100% Zoom, Centered Layout & Cohesion
+   SMART EMERGENCY HELPER
    ========================================================= */
 
 * {
@@ -411,7 +409,7 @@ label {
 }
 
 /* =========================================================
-   CUSTOMER DASHBOARD COMPACT STYLES (100% ZOOM OPTIMIZED)
+   CUSTOMER DASHBOARD COMPACT STYLES
    ========================================================= */
 .customer-dashboard-page {
     padding: 12px 0 24px;
@@ -1264,7 +1262,7 @@ label {
 }
 
 /* =========================================================
-   PROVIDER DASHBOARD SPECIFIC STYLES
+   PROVIDER DASHBOARD 
    ========================================================= */
 .provider-dashboard-page {
     padding: 12px 0 24px;

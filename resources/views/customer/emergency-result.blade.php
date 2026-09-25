@@ -6,7 +6,7 @@
 
 <style>
 /* =========================================================
-   EMERGENCY RESULT STYLES (EMBEDDED IN BLADE)
+   EMERGENCY RESULT STYLES
    ========================================================= */
 
 .dispatch-result-page {
@@ -175,11 +175,6 @@
 .summary-row span { color: #64748b; }
 .summary-row strong { color: #0f172a; }
 
-@media (max-width: 768px) {
-    .dispatch-result-grid {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
 
 <div class="dispatch-result-page">

@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Customer Dashboard — Smart Emergency Helper')
+@section('title', 'Customer Dashboard')
 
 @section('content')
 
 <style>
 /* =========================================================
-   CUSTOMER DASHBOARD STYLES (EMBEDDED IN BLADE)
+   CUSTOMER DASHBOARD STYLES
    ========================================================= */
 
 .customer-dashboard-page {
@@ -583,16 +583,7 @@
     color: #334155;
 }
 
-@media (max-width: 800px) {
-    .customer-main-grid {
-        grid-template-columns: 1fr;
-    }
-    .stepper-grid,
-    .pin-row-grid,
-    .details-2col-grid {
-        grid-template-columns: 1fr;
-    }
-}
+
 </style>
 
 <div class="customer-dashboard-page">
@@ -601,7 +592,6 @@
         <!-- HEADER -->
         <div class="customer-dashboard-header">
             <div>
-                <div class="customer-eyebrow">CLIENT PORTAL · EMERGENCY DISPATCH</div>
                 <h1>CUSTOMER DASHBOARD</h1>
                 <p class="customer-subtitle">Welcome, <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->phone ?? 'Dhaka, Bangladesh' }})</p>
             </div>
@@ -620,12 +610,12 @@
         {{-- FLASH MESSAGES --}}
         @if(session('success'))
             <div class="customer-alert customer-alert-success">
-                ✓ {{ session('success') }}
+                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
             <div class="customer-alert customer-alert-danger">
-                ⚠ {{ session('error') }}
+                 {{ session('error') }}
             </div>
         @endif
 
@@ -702,7 +692,7 @@
                     </div>
 
                     <button type="submit" class="btn-dispatch-submit">
-                        DISPATCH REQUEST NOW →
+                        DISPATCH REQUEST NOW 
                     </button>
                 </form>
             </div>
@@ -729,10 +719,6 @@
                                         <em>Broadcasting to nearest responders in {{ $activeRequest->area }}...</em>
                                     @endif
                                 </p>
-                            </div>
-                            <div style="text-align:right;">
-                                <strong style="font-size:12px; color:#0f172a;">{{ $activeRequest->created_at->format('h:i A') }}</strong>
-                                <small style="display:block; color:#64748b; font-size:9.5px;">ACTIVE SINCE</small>
                             </div>
                         </div>
 
@@ -799,95 +785,69 @@
                             </div>
                         </div>
 
-                        <!-- TWO-WAY VERIFICATION PINS -->
-                        <div class="pins-card" style="background:#ffffff; border:2px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:14px;">
-                            <div class="pins-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #f1f5f9;">
-                                <h3 style="font-size:13px; font-weight:900; color:#0f172a; margin:0; display:flex; align-items:center; gap:6px;">
-                                    TWO-WAY DISPATCH SECURITY PINS
-                                </h3>
-                                <span class="badge-pin-v success" style="padding:3px 8px; font-size:10px;">CLIENT &amp; PROVIDER VERIFIED</span>
-                            </div>
-
-                            <div class="pin-row-grid">
-                                <!-- 1. ARRIVAL PIN (CUSTOMER GIVES TO PROVIDER) -->
-                                <div class="pin-item-box {{ $activeRequest->arrival_pin_verified_at ? 'verified' : '' }}" style="background:{{ $activeRequest->arrival_pin_verified_at ? '#f0fdf4' : '#ffffff' }}; border:2px solid {{ $activeRequest->arrival_pin_verified_at ? '#86efac' : '#e2e8f0' }}; border-radius:6px; padding:14px;">
-                                    <div class="pin-item-head" style="margin-bottom:8px;">
-                                        <span style="font-size:12px; font-weight:900; color:#0f172a;">1. YOUR ARRIVAL PIN</span>
+                        <!-- MINIMAL PIN & PAYMENT SECTION -->
+                        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:12px; margin-bottom:12px;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                                <!-- ARRIVAL PIN -->
+                                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:8px 10px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:9.5px; font-weight:800; color:#64748b; text-transform:uppercase;">Arrival PIN</span>
                                         <span class="badge-pin-v {{ $activeRequest->arrival_pin_verified_at ? 'success' : 'pending' }}">
-                                            {{ $activeRequest->arrival_pin_verified_at ? '✓ VERIFIED' : 'GIVE TO PROVIDER' }}
+                                            {{ $activeRequest->arrival_pin_verified_at ? 'VERIFIED' : 'GIVE ON ARRIVAL' }}
                                         </span>
                                     </div>
-                                    <div class="pin-display-row" style="display:flex; align-items:center; gap:6px; margin:6px 0;">
-                                        <div id="arrivalPinCode" class="pin-code-text" style="font-size:16px; font-weight:900; letter-spacing:3px; padding:6px 12px; border:2px solid #dc2626; border-radius:4px; background:#fff5f5; color:#dc2626;">{{ $activeRequest->arrival_pin }}</div>
-                                        <button type="button" id="arrivalToggleBtn" onclick="toggleCustomerPin('arrival')" class="pin-toggle-btn" style="padding:6px 10px; font-weight:800; font-size:10px; background:#0f172a; color:#ffffff; border-radius:4px; cursor:pointer; border:none;">HIDE PIN</button>
+                                    <div style="font-size:16px; font-weight:900; letter-spacing:2px; color:#dc2626; margin-top:2px;">
+                                        {{ $activeRequest->arrival_pin }}
                                     </div>
-                                    <p style="color:#475569; font-size:11px; margin:6px 0 0; line-height:1.4;">
-                                        @if(!$activeRequest->arrival_pin_verified_at)
-                                            Tell this 4-digit PIN to the provider when they arrive at your location. The provider will type it in their app to verify arrival.
-                                        @else
-                                            <strong style="color:#166534;">✓ Provider verified arrival at {{ $activeRequest->arrival_pin_verified_at->format('h:i A') }}</strong>
-                                        @endif
-                                    </p>
                                 </div>
 
-                                <!-- 2. COMPLETION PIN (CUSTOMER GIVES TO PROVIDER AS PROOF OF WORK) -->
-                                <div class="pin-item-box {{ $activeRequest->completion_pin_verified_at ? 'verified' : '' }}" style="background:{{ $activeRequest->completion_pin_verified_at ? '#f0fdf4' : '#ffffff' }}; border:2px solid {{ $activeRequest->completion_pin_verified_at ? '#86efac' : '#e2e8f0' }}; border-radius:6px; padding:14px;">
-                                    <div class="pin-item-head" style="margin-bottom:8px;">
-                                        <span style="font-size:12px; font-weight:900; color:#0f172a;">2. YOUR COMPLETION PIN</span>
+                                <!-- COMPLETION PIN -->
+                                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:8px 10px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:9.5px; font-weight:800; color:#64748b; text-transform:uppercase;">Completion PIN</span>
                                         <span class="badge-pin-v {{ $activeRequest->completion_pin_verified_at ? 'success' : 'pending' }}">
-                                            {{ $activeRequest->completion_pin_verified_at ? '✓ COMPLETED' : 'GIVE UPON FINISH' }}
+                                            {{ $activeRequest->completion_pin_verified_at ? 'COMPLETED' : 'GIVE ON FINISH' }}
                                         </span>
                                     </div>
-                                    <div class="pin-display-row" style="display:flex; align-items:center; gap:6px; margin:6px 0;">
-                                        <div id="completionPinCode" class="pin-code-text" style="font-size:16px; font-weight:900; letter-spacing:3px; padding:6px 12px; border:2px solid #059669; border-radius:4px; background:#f0fdf4; color:#059669;">{{ $activeRequest->completion_pin }}</div>
-                                        <button type="button" id="completionToggleBtn" onclick="toggleCustomerPin('completion')" class="pin-toggle-btn" style="padding:6px 10px; font-weight:800; font-size:10px; background:#0f172a; color:#ffffff; border-radius:4px; cursor:pointer; border:none;">HIDE PIN</button>
+                                    <div style="font-size:16px; font-weight:900; letter-spacing:2px; color:#059669; margin-top:2px;">
+                                        {{ $activeRequest->completion_pin }}
                                     </div>
-                                    <p style="color:#475569; font-size:11px; margin:6px 0 0; line-height:1.4;">
-                                        @if(!$activeRequest->completion_pin_verified_at)
-                                            Give this 4-digit Completion PIN to the provider <strong>ONLY when the job is done</strong> and pay cash <strong>৳ {{ number_format($activeRequest->amount ?? 500, 2) }} BDT</strong>. The provider types it to prove the work is completed.
-                                        @else
-                                            <strong style="color:#166534;">✓ Work completed &amp; cash ৳ {{ number_format($activeRequest->amount ?? 500, 2) }} paid at {{ $activeRequest->completion_pin_verified_at->format('h:i A') }}</strong>
-                                        @endif
-                                    </p>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- CASH PAYMENT BAR -->
-                        <div class="cash-payment-bar">
-                            <div>
-                                <small style="display:block; font-size:9.5px; color:#64748b; font-weight:700;">PAYMENT (CASH ON SERVICE)</small>
-                                <span class="pay-amount-text">৳ {{ number_format($activeRequest->amount ?? 500, 2) }} BDT</span>
-                            </div>
-                            <div>
-                                @if($activeRequest->payment_status === 'paid')
-                                    <span class="badge-pin-v success">✓ CASH PAID &amp; RECEIVED</span>
-                                @else
-                                    <span class="badge-pin-v pending">⏳ CASH DUE UPON COMPLETION</span>
-                                @endif
+                            <!-- PAYMENT ROW -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid #f1f5f9; font-size:11px;">
+                                <span style="color:#64748b; font-weight:700;">Payment (Cash on Service): <strong style="color:#0f172a;">৳ {{ number_format($activeRequest->amount ?? 500, 2) }} BDT</strong></span>
+                                <span class="badge-pin-v {{ $activeRequest->payment_status === 'paid' ? 'success' : 'pending' }}">
+                                    {{ $activeRequest->payment_status === 'paid' ? 'CASH PAID' : 'DUE ON COMPLETION' }}
+                                </span>
                             </div>
                         </div>
 
-                        <!-- RATING & REVIEW CARD -->
+                        <!-- MINIMAL RATING & REVIEW -->
                         @if(in_array($activeRequest->status, ['completed', 'rating_review']))
-                            <div class="rating-action-card">
-                                <h3>★ Service Completed · Rate Your Experience</h3>
-                                <p style="font-size:11px; color:#78350f; margin:0 0 6px;">Submit rating to close Request 1:</p>
-                                <form method="POST" action="{{ route('customer.request.rate', $activeRequest->id) }}">
+                            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:12px; margin-top:10px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span style="font-size:11.5px; font-weight:800; color:#0f172a;">Rate Service Experience</span>
+                                    <div style="display:flex; align-items:center; gap:4px;">
+                                        <div id="starIconsRow" style="font-size:16px; color:#f59e0b; cursor:pointer; display:flex; gap:2px; line-height:1;">
+                                            <span onclick="pickRating(1)">★</span>
+                                            <span onclick="pickRating(2)">★</span>
+                                            <span onclick="pickRating(3)">★</span>
+                                            <span onclick="pickRating(4)">★</span>
+                                            <span onclick="pickRating(5)">★</span>
+                                        </div>
+                                        <span id="ratingLabel" style="font-size:10.5px; font-weight:700; color:#64748b; margin-left:4px;">5/5</span>
+                                    </div>
+                                </div>
+
+                                <form method="POST" action="{{ route('customer.request.rate', $activeRequest->id) }}" style="display:flex; gap:8px;">
                                     @csrf
                                     <input type="hidden" name="rating" id="ratingScoreInput" value="5">
-                                    <div class="star-icons-group" id="starIconsRow">
-                                        <span onclick="pickRating(1)">★</span>
-                                        <span onclick="pickRating(2)">★</span>
-                                        <span onclick="pickRating(3)">★</span>
-                                        <span onclick="pickRating(4)">★</span>
-                                        <span onclick="pickRating(5)">★</span>
-                                        <small id="ratingLabel" style="font-size:11px; font-weight:700; color:#92400e; margin-left:6px;">5 / 5 Stars</small>
-                                    </div>
-                                    <div style="margin: 6px 0;">
-                                        <input type="text" name="comment" placeholder="Optional comments (e.g. Prompt ambulance arrived on time)" class="customer-form-control">
-                                    </div>
-                                    <button type="submit" class="btn-rate-submit">✓ SUBMIT REVIEW &amp; CLOSE</button>
+                                    <input type="text" name="comment" placeholder="Optional review comment..." style="flex:1; padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; outline:none; font-family:inherit;">
+                                    <button type="submit" style="background:#0f172a; color:#ffffff; font-size:11px; font-weight:700; border:none; padding:6px 14px; border-radius:4px; cursor:pointer; white-space:nowrap;">
+                                        Submit Review
+                                    </button>
                                 </form>
                             </div>
                         @endif
@@ -937,7 +897,7 @@
                                     <td><strong>৳ {{ number_format($cReq->amount ?? 500, 2) }}</strong></td>
                                     <td><span class="badge-pin-v success">Cash Paid</span></td>
                                     <td style="color:#64748b; font-size:10px;">{{ $cReq->completed_at ? $cReq->completed_at->format('d M, h:i A') : $cReq->created_at->format('d M, h:i A') }}</td>
-                                    <td><span class="badge-pin-v success">✓ COMPLETED</span></td>
+                                    <td><span class="badge-pin-v success"> COMPLETED</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -1001,37 +961,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function toggleCustomerPin(type) {
-    if (type === 'arrival') {
-        const code = document.getElementById('arrivalPinCode');
-        const btn = document.getElementById('arrivalToggleBtn');
-        const pin = "{{ $activeRequest->arrival_pin ?? '' }}";
-        if (btn.innerText.includes('SHOW')) {
-            code.innerText = pin ? pin : '----';
-            btn.innerText = 'HIDE PIN';
-        } else {
-            code.innerText = '● ● ● ●';
-            btn.innerText = 'SHOW PIN';
-        }
-    } else if (type === 'completion') {
-        const code = document.getElementById('completionPinCode');
-        const btn = document.getElementById('completionToggleBtn');
-        const pin = "{{ $activeRequest->completion_pin ?? '' }}";
-        if (btn.innerText.includes('SHOW')) {
-            code.innerText = pin ? pin : '----';
-            btn.innerText = 'HIDE PIN';
-        } else {
-            code.innerText = '● ● ● ●';
-            btn.innerText = 'SHOW PIN';
-        }
-    }
-}
 
 function pickRating(val) {
     const input = document.getElementById('ratingScoreInput');
     const label = document.getElementById('ratingLabel');
     if (input) input.value = val;
-    if (label) label.innerText = val + ' / 5 Stars';
+    if (label) label.innerText = val + '/5';
     const stars = document.querySelectorAll('#starIconsRow span');
     stars.forEach((st, idx) => {
         st.style.color = (idx < val) ? '#f59e0b' : '#cbd5e1';

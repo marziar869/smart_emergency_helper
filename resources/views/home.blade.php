@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Smart Emergency Helper — Dhaka Emergency Dispatch')
+@section('title', 'Smart Emergency Helper')
 
 @section('content')
 
@@ -9,9 +9,6 @@
     <section class="home-hero-section">
         <div class="home-hero-container">
             <div>
-                <div class="home-hero-badge">
-                    PRIORITY-BASED EMERGENCY NETWORK · DHAKA
-                </div>
                 <h1 class="home-hero-title">
                     Emergency response,<br>
                     <span>re-engineered for trust.</span>
@@ -31,7 +28,7 @@
 
             <div>
                 <div class="home-hero-card">
-                    <img src="{{ asset('images/emergency-city.png.png') }}" alt="Dhaka Emergency City Response" class="home-hero-card-img" onerror="this.onerror=null; this.src='{{ asset('images/ambulanceprovider1.jpg') }}';">
+                    <img src="{{ asset('images/emergency-city.png') }}" alt="Dhaka Emergency City Response" class="home-hero-card-img" onerror="this.onerror=null; this.src='{{ asset('images/ambulanceprovider1.jpg') }}';">
                     <div class="home-hero-pill-grid">
                         <div class="hero-mini-pill">Verified Providers</div>
                         <div class="hero-mini-pill">Priority Dispatch</div>
@@ -77,7 +74,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-crit">CRITICAL</span>
-                        <span class="service-response-time">8–15 MIN</span>
                     </div>
                     <h3>Ambulance Service</h3>
                     <p>Rapid emergency medical transport to the nearest Dhaka hospital with life support equipment.</p>
@@ -90,7 +86,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-high">HIGH</span>
-                        <span class="service-response-time">30–60 MIN</span>
                     </div>
                     <h3>Home Nurse</h3>
                     <p>Post-operative nursing, wound dressing, patient monitoring, and in-home injections.</p>
@@ -103,7 +98,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-crit">CRITICAL</span>
-                        <span class="service-response-time">15–40 MIN</span>
                     </div>
                     <h3>Blood Donor</h3>
                     <p>Direct matched blood donor coordination across Dhaka blood banks and verified donors.</p>
@@ -116,7 +110,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-high">HIGH</span>
-                        <span class="service-response-time">25–45 MIN</span>
                     </div>
                     <h3>Electrician</h3>
                     <p>Short circuit diagnosis, power failure repair, circuit breaker troubleshooting, and wiring.</p>
@@ -129,7 +122,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-high">HIGH</span>
-                        <span class="service-response-time">30–60 MIN</span>
                     </div>
                     <h3>Plumber</h3>
                     <p>Burst pipe control, emergency water leakage, drain cleaning, and water pump repair.</p>
@@ -142,7 +134,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-norm">MEDIUM</span>
-                        <span class="service-response-time">45–90 MIN</span>
                     </div>
                     <h3>AC Technician</h3>
                     <p>Compressor repair, gas refill, electrical faults, and emergency cooling maintenance.</p>
@@ -155,7 +146,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-norm">NORMAL</span>
-                        <span class="service-response-time">SAME DAY</span>
                     </div>
                     <h3>Cleaner</h3>
                     <p>Sanitization, post-incident cleanup, and thorough residential cleaning assistance.</p>
@@ -168,7 +158,6 @@
                 <div>
                     <div class="card-top-tag">
                         <span class="badge-service-norm">NORMAL</span>
-                        <span class="service-response-time">SAME DAY</span>
                     </div>
                     <h3>Carpenter</h3>
                     <p>Door, window, lock fitting, and emergency woodwork repair for residential homes.</p>
@@ -256,17 +245,7 @@
         </div>
     </section>
 
-    <!-- BOTTOM ACTIONS (ONLY 2 BUTTONS) -->
-    <section class="bottom-cta-strip" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:24px 16px; margin-top:32px; text-align:center;">
-        <div style="display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap;">
-            <a href="{{ route('emergency.form') }}" class="btn-emergency-hero">
-                REQUEST NOW
-            </a>
-            <a href="{{ route('providers') }}" class="btn-provider-hero">
-                VIEW PROVIDERS
-            </a>
-        </div>
-    </section>
+
 </div>
 
 @endsection
